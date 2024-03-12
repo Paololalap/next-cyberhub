@@ -1,6 +1,11 @@
 const Home = () => {
   return (
-    <main></main>
+    <main>
+        <div className="Footer">
+            Copyright here
+        </div>
+
+    </main>
   )
 }
 
