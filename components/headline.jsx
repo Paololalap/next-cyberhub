@@ -1,4 +1,3 @@
-
 const getHeadline = async () => {
   try {
     const res = await fetch("http://localhost:3000/api/content", {
@@ -16,20 +15,24 @@ const getHeadline = async () => {
 };
 export default async function headline() {
   const { content } = await getHeadline();
+
   return content.map((t) => (
-    <div key={t._id}>
+    <div key={t._id} className="sm:mx-52">
       <a href={t.link} target="_blank">
         <div
           id="headline-container"
-          className="group border-2 sm:border-black sm:mx-52 sm:flex sm:flex-row"
+          className="group p-1 overflow-hidden bg-white border-2 border-solid border-[#00563F] rounded-md  sm:flex sm:flex-row"
         >
-          <div id="headline-image" className="sm:w-3/5  ">
+          <div
+            id="headline-image"
+            className="hover:scale-[1.03] transition-all sm:w-3/5  "
+          >
             <img className="rounded-md" src={t.imageL} />
           </div>
           <div id="headline-content" className="p-5 sm:w-2/5 sm:p-5">
             <div
               id="headline-title"
-              className="group-hover:underline font-bold "
+              className="group-hover:underline font-bold text-gray-500 "
             >
               {t.title}
             </div>
@@ -38,7 +41,7 @@ export default async function headline() {
                 <span> {t.date}</span>
               </div>
               <div id="headline-tags">
-                <span> {t.tags} </span>
+                <span> {t.tags.join(" / ").replace(/,/g, "/,")} </span>
               </div>
             </div>
             <div id="headline-description">
@@ -52,6 +55,4 @@ export default async function headline() {
       </a>
     </div>
   ));
-};
-
- 
+}
