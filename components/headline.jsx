@@ -29,23 +29,28 @@ export default async function headline() {
           >
             <img className="rounded-md" src={t.imageL} />
           </div>
-          <div id="headline-content" className="p-5 sm:w-2/5 sm:p-5">
-            <div
-              id="headline-title"
-              className="group-hover:underline font-bold text-gray-500 "
-            >
-              {t.title}
-            </div>
-            <div className="flex flex-row mb-5 ">
-              <div id="headline-date" className="mr-10">
-                <span> {t.date}</span>
+          <div
+            id="headline-content"
+            className="flex flex-col justify-between p-5 sm:w-2/5 sm:p-5"
+          >
+            <div className="flex flex-col">
+              <div
+                id="headline-title"
+                className="group-hover:underline font-bold text-gray-500 "
+              >
+                {t.title}
               </div>
-              <div id="headline-tags">
-                <span> {t.tags.join(" / ").replace(/,/g, "/,")} </span>
+              <div className="flex flex-row mb-5 ">
+                <div id="headline-date" className="text-sm mr-10">
+                  <span> {t.date}</span>
+                </div>
+                <div id="headline-tags" className="text-sm">
+                  <span> {t.tags.join(" / ").replace(/,/g, "/,")} </span>
+                </div>
               </div>
-            </div>
-            <div id="headline-description">
-              <span>{t.description}</span>
+              <div id="headline-description">
+                <span>{t.description}</span>
+              </div>
             </div>
             <div id="readmore" className="flex flex-row-reverse">
               <span>Read more</span>
