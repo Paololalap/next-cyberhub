@@ -16,7 +16,7 @@ import Twitter from "@/public/twitter.svg";
 import Youtube from "@/public/youtube.svg";
 import React, { useState } from "react";
 
-const Footer = () => {
+const Footer = ({className}) => {
   const currentYear = new Date().getFullYear();
   const [fontSize, setFontSize] = useState(15);
 
@@ -25,7 +25,7 @@ const Footer = () => {
   };
 
   return (
-    <footer>
+    <footer className={className}>
       <section className='px-8 py-24 lg:grid lg:grid-cols-4 xl:px-20 xl:grid-cols-5'>
         <section className='max-w-[257px] flex flex-col gap-y-6 mb-[50px] md:flex-1 lg:items-center'>
           <Link href='https://www.upou.edu.ph/philippines-transparency-seal'>
