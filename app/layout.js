@@ -1,7 +1,11 @@
-import { Inter } from "next/font/google";
+import { Inter, Open_Sans } from "next/font/google";
 import "./reset.css";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+
 
 const inter = Inter({ subsets: ["latin"] });
+const openSans = Open_Sans({ subsets: ["latin"] });
 
 export const metadata = {
   title: "Cyberhub",
@@ -10,8 +14,12 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
+    <html lang='en'>
+      <body className={inter.className}>
+        <Header />
+        {children}
+        <Footer className={openSans.className} />
+      </body>
     </html>
   );
 }
