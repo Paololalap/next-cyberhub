@@ -258,7 +258,7 @@ const Footer = ({ className }) => {
                   className="text-[13.5px] text-[#8a1538]"
                   onClick={() => handleFontSizeChange(13.5)}
                 >
-                  Small-
+                  Small
                 </button>
               </li>
               <li>
