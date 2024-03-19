@@ -1,7 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import GError from "@/app/news/error";
-
 const getHeadline = async () => {
   try {
     const res = await fetch("http://localhost:3000/api/content", {
@@ -71,4 +70,4 @@ export default async function headline() {
       </Link>
     </div>
   ));
-}
+}  
