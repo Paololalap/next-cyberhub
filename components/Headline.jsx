@@ -69,5 +69,5 @@ export default async function headline() {
         </div>
       </Link>
     </div>
-  ));
-}  
+   ));
+ }  
