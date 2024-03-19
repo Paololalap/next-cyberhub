@@ -3,34 +3,34 @@ import Headline from "@/components/Headline";
 import { connectToDatabase } from "@/libs/connectMongo";
 import Link from "next/link";
 import Image from "next/image";
-async function getData(perPage, p) {
+async function getData(perPage, pageNumber) {
   try {
     // DB Connect
     const client = await connectToDatabase();
     const db = client.db("CyberDB");
 
     // DB Query
-    
-   const latestN = await db
-     .collection("contents")
-     .findOne({ type: "News" }, { sort: { createdAt: -1 } });
 
-   const items = await db
-     .collection("contents")
-     .find({
-       type: "News",
-       _id: { $ne: latestN._id }, // Exclude the latest news item by its _id
-       createdAt: { $ne: latestN.createdAt },
-     })
-     .sort({ createdAt: -1 })
-     .skip(perPage * (p - 1))
-     .limit(perPage)
-     .toArray();
+    const latestNews = await db
+      .collection("contents")
+      .findOne({ type: "News" }, { sort: { createdAt: -1 } });
+
+    const items = await db
+      .collection("contents")
+      .find({
+        type: "News",
+        _id: { $ne: latestNews._id }, // Exclude the latest news item by its _id
+        createdAt: { $ne: latestNews.createdAt },
+      })
+      .sort({ createdAt: -1 })
+      .skip(perPage * (pageNumber - 1))
+      .limit(perPage)
+      .toArray();
 
     const itemCount = await db.collection("contents").countDocuments({});
 
-    const respnse = { items, itemCount };
-    return respnse;
+    const response = { items, itemCount };
+    return response;
   } catch (error) {
     throw new Error("Failed to fetch data. Please try again later.");
   }
@@ -56,17 +56,17 @@ export default async function Newspage({ searchParams }) {
     }
   }
   return (
-    <div id="page" className="bg-[#f7f7e3]  h-max items-center">
+    <div id="page" className="h-max  items-center bg-[#f7f7e3]">
       <div
         id="news-container"
-        className="items-center bg-transparent flex-col justify-center   "
+        className="flex-col items-center justify-center bg-transparent   "
       >
         <div
           id="news-container-title"
-          className="text-[#6e102c] text-center text-2xl font-semibold p-5 flex-col justify-center items-center"
+          className="flex-col items-center justify-center p-5 text-center text-2xl font-semibold text-[#6e102c]"
         >
           <span>News and Updates</span>
-          <hr className="border-2 border-solid border-[#FFB61B]  w-64 mx-auto" />
+          <hr className="mx-auto w-64 border-2  border-solid border-[#FFB61B]" />
         </div>
         {page === 1 ? (
           <div id="headline-wrapper" className="mb-5">
@@ -80,18 +80,18 @@ export default async function Newspage({ searchParams }) {
       </div>
       <div
         id="pagination-wrapper"
-        className=" flex flex-col justify-center items-center sm:mx-52  my-5"
+        className=" my-5 flex flex-col items-center justify-center  sm:mx-52"
       >
         {data.items.map((item) => (
           <div key={item._id} className="mb-1">
             <Link href={item.link} target="_blank">
               <div
                 id="feed-container"
-                className="group flex flex-row max-h-56 overflow-hidden bg-white border-2 border-solid border-[#00563F] rounded-md sm:flex sm:flex-row sm:max-h-56"
+                className="group flex max-h-56 flex-row overflow-hidden rounded-md border-2 border-solid border-[#00563F] bg-white sm:flex sm:max-h-56 sm:flex-row"
               >
                 <div
                   id="feed-image"
-                  className="hover:scale-[1.03] transition-all w-2/5 sm:py-0 py-10"
+                  className="w-2/5 py-10 transition-all hover:scale-[1.03] sm:py-0"
                 >
                   <Image
                     className="rounded-md"
@@ -104,33 +104,33 @@ export default async function Newspage({ searchParams }) {
                 </div>
                 <div
                   id="feed-content"
-                  className="flex flex-col sm:flex sm:flex-col justify-between p-5 w-3/5 sm:p-5"
+                  className="flex w-3/5 flex-col justify-between p-5 sm:flex sm:flex-col sm:p-5"
                 >
                   <div className="sm:flex sm:flex-col">
                     <div
                       id="feed-title"
-                      className="group-hover:underline sm:text-sm text-sm font-bold text-gray-500"
+                      className="text-sm font-bold text-gray-500 group-hover:underline sm:text-sm"
                     >
                       {item.title}
                     </div>
                     <div className="mb-5">
                       <div
                         id="feed-date"
-                        className="sm:text-sm text-xs mr-10 mb-1"
+                        className="mb-1 mr-10 text-xs sm:text-sm"
                       >
                         <span>{item.date}</span>
                       </div>
-                      <div id="feed-tags" className="sm:text-sm text-xs">
+                      <div id="feed-tags" className="text-xs sm:text-sm">
                         <span>{item.tags.join(" / ").replace(/,/g, "/,")}</span>
                       </div>
                     </div>
-                    <div id="feed-description" className="sm:text-sm text-xs">
+                    <div id="feed-description" className="text-xs sm:text-sm">
                       <span>{item.description}</span>
                     </div>
                   </div>
                   <div
                     id="feed-readmore"
-                    className="sm:text-sm text-xs flex flex-row-reverse"
+                    className="flex flex-row-reverse text-xs sm:text-sm"
                   >
                     <span>Read more</span>
                   </div>
@@ -143,8 +143,8 @@ export default async function Newspage({ searchParams }) {
         {isPageOutOfRange ? (
           <div>No more pages...</div>
         ) : (
-          <div className="flex justify-center items-center mt-16">
-            <div className="flex border-[1px] gap-4 rounded-[10px] border-light-green p-4">
+          <div className="mt-16 flex items-center justify-center">
+            <div className="border-light-green flex gap-4 rounded-[10px] border-[1px] p-4">
               {page === 1 ? (
                 <div className="opacity-60" aria-disabled="true">
                   Previous
@@ -160,8 +160,8 @@ export default async function Newspage({ searchParams }) {
                   key={index}
                   className={
                     page === pageNumber
-                      ? "bg-[#00563f] fw-bold px-2 rounded-md text-[#FFB61B]"
-                      : "hover:bg-[#00563f] px-1 rounded-md"
+                      ? "fw-bold rounded-md bg-[#00563f] px-2 text-[#FFB61B]"
+                      : "rounded-md px-1 hover:bg-[#00563f]"
                   }
                   href={`?page=${pageNumber}`}
                 >
@@ -184,5 +184,4 @@ export default async function Newspage({ searchParams }) {
       </div>
     </div>
   );
-};
-
+}
