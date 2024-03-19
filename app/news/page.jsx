@@ -1,5 +1,5 @@
 import React from "react";
-import Headline from "@/components/headline"
+import Headline from "@/components/Headline";
 const Newspage = () => {
   return (
     <div id="page" className="bg-[#f7f7e3]  h-screen items-center">

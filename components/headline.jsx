@@ -1,3 +1,7 @@
+import Link from "next/link";
+import Image from "next/image";
+import GError from "@/app/news/error";
+
 const getHeadline = async () => {
   try {
     const res = await fetch("http://localhost:3000/api/content", {
@@ -5,12 +9,12 @@ const getHeadline = async () => {
     });
 
     if (!res.ok) {
-      throw new Error("Failed to fetch topics");
+      throw new Error(GError);
     }
 
     return res.json();
   } catch (error) {
-    console.log("Error loading topics: ", error);
+    console.log("Something went wrong! ", error);
   }
 };
 export default async function headline() {
@@ -18,16 +22,23 @@ export default async function headline() {
 
   return content.map((t) => (
     <div key={t._id} className="sm:mx-52">
-      <a href={t.link} target="_blank">
+      <Link href={t.link} target="_blank">
         <div
           id="headline-container"
           className="group p-1 overflow-hidden bg-white border-2 border-solid border-[#00563F] rounded-md  sm:flex sm:flex-row"
         >
           <div
             id="headline-image"
-            className="hover:scale-[1.03] transition-all sm:w-3/5  "
+            className="hover:scale-[1.03] transition-all  sm:w-3/5 "
           >
-            <img className="rounded-md" src={t.imageL} />
+            <Image
+              className="rounded-md"
+              src={t.imageL}
+              alt="/"
+              width={640}
+              height={334}
+              sizes="(min-width: 680px) 640px, calc(94.44vw + 17px)"
+            />
           </div>
           <div
             id="headline-content"
@@ -57,7 +68,7 @@ export default async function headline() {
             </div>
           </div>
         </div>
-      </a>
+      </Link>
     </div>
   ));
 }
