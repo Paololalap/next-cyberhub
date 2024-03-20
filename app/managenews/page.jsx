@@ -2,6 +2,7 @@ import React from "react";
 import { connectToDatabase } from "@/libs/connectMongo";
 import Link from "next/link";
 import Image from "next/image";
+import RemoveBtn from "@/components/Removebtn";
 async function getData(perPage, pageNumber) {
   try {
     // DB Connect
@@ -77,14 +78,14 @@ export default async function Newspage({ searchParams }) {
       >
         {data.items.map((item) => (
           <div id="feed-content" key={item._id} className="mb-1">
-            <Link href={item.link} target="_blank">
+           {/*  <Link href={item.link} target="_blank"> */}
               <div
                 id="feed-container"
                 className="group flex max-h-56 flex-row overflow-hidden rounded-md border-2 border-solid border-[#00563F] bg-white sm:flex sm:max-h-56 sm:flex-row"
               >
                 <div
                   id="feed-image"
-                  className="w-2/5 py-10 transition-all hover:scale-[1.03] sm:py-0"
+                  className="w-2/5 py-10 transition-all hover:scale-[1.03] sm:py-5"
                 >
                   <Image
                     className="rounded-md"
@@ -127,20 +128,15 @@ export default async function Newspage({ searchParams }) {
                   >
                     <button
                       id="addentry-btn"
-                      className="rounded-md border-2 border-solid border-[#00563F] mx-1 p-2"
+                      className="mx-1 rounded-md border-2 border-solid border-[#00563F] p-2"
                     >
                       Update
                     </button>
-                    <button
-                      id="addentry-btn"
-                      className="rounded-md border-2 border-solid border-[#00563F] mx-1 p-2"
-                    >
-                      Delete
-                    </button>
+                    <RemoveBtn id={item._id} />
                   </div>
                 </div>
               </div>
-            </Link>
+           {/*  </Link> */}
           </div>
         ))}
 
