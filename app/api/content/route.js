@@ -9,4 +9,30 @@ export async function GET() {
     .limit(1);
   return NextResponse.json({ content });
 }
+export async function POST(request) {
+  const { title, tags, author, date, link, description, body, imageL, type } =
+    await request.json();
+  await connectMongoDB();
+  await Content.create({
+    title,
+    tags,
+    author,
+    date,
+    link,
+    description,
+    body,
+    imageL,
+    type,
+  });
+  {
+    
+  }
+  return NextResponse.json({ message: "Content Created" }, { status: 201 });
+}
 
+export async function DELETE(request) {
+  const id = request.nextUrl.searchParams.get("id");
+  await connectMongoDB();
+  await Content.findByIdAndDelete(id);
+  return NextResponse.json({ message: "Content deleted" }, { status: 200 });
+}
