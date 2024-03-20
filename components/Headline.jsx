@@ -1,7 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import GError from "@/app/news/error";
-
 const getHeadline = async () => {
   try {
     const res = await fetch("http://localhost:3000/api/content", {
@@ -25,11 +24,11 @@ export default async function headline() {
       <Link href={t.link} target="_blank">
         <div
           id="headline-container"
-          className="group p-1 overflow-hidden bg-white border-2 border-solid border-[#00563F] rounded-md  sm:flex sm:flex-row"
+          className="group overflow-hidden rounded-md border-2 border-solid border-[#00563F] bg-white p-1  sm:flex sm:flex-row"
         >
           <div
             id="headline-image"
-            className="hover:scale-[1.03] transition-all  sm:w-3/5 "
+            className="transition-all hover:scale-[1.03]  sm:w-3/5 "
           >
             <Image
               className="rounded-md"
@@ -47,12 +46,12 @@ export default async function headline() {
             <div className="flex flex-col">
               <div
                 id="headline-title"
-                className="group-hover:underline font-bold text-gray-500 "
+                className="font-bold text-gray-500 group-hover:underline "
               >
                 {t.title}
               </div>
-              <div className="flex flex-row mb-5 ">
-                <div id="headline-date" className="text-sm mr-10">
+              <div className="mb-5 flex flex-row ">
+                <div id="headline-date" className="mr-10 text-sm">
                   <span> {t.date}</span>
                 </div>
                 <div id="headline-tags" className="text-sm">

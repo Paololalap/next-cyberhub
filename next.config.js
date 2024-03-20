@@ -1,5 +1,12 @@
 module.exports = {
   images: {
-    domains: ["blogger.googleusercontent.com"],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'blogger.googleusercontent.com',
+        port: '',
+        pathname: '**',
+      },
+    ],
   },
 };
