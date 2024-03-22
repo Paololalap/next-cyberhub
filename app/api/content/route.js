@@ -9,10 +9,13 @@ export async function GET() {
     .limit(1);
   return NextResponse.json({ content });
 }
+
 export async function POST(request) {
   const { title, tags, author, date, link, description, body, imageL, type } =
-    await request.json();
+    await request.json({ limit: "2mb" });
   await connectMongoDB();
+  const content = new Content({ imageL: request.body.imageL });
+  await content.save();
   await Content.create({
     title,
     tags,
@@ -24,9 +27,6 @@ export async function POST(request) {
     imageL,
     type,
   });
-  {
-    
-  }
   return NextResponse.json({ message: "Content Created" }, { status: 201 });
 }
 

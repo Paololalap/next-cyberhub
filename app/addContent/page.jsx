@@ -47,6 +47,8 @@ const AddContent = () => {
           type,
         }),
       });
+      const data = await res.json();
+      console.log(data);
 
       if (res.ok) {
         router.push("/");
@@ -68,6 +70,22 @@ const AddContent = () => {
     if (e.keyCode === 8 || e.target.value === " ") {
       setTags((prevTags) => prevTags.slice(0, -1));
     }
+  };
+
+  const imageBase64 = async (file) => {
+    const reader = new FileReader();
+    await reader.readAsDataURL(file);
+    const data = new Promise((resolve, reject) => {
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (err) => reject(err);
+    });
+    return data;
+  };
+
+  const handleUploadImage = async (e) => {
+    const file = e.target.files[0];
+    const image = await imageBase64(file);
+    setImageL(image);
   };
 
   return (
@@ -171,6 +189,8 @@ const AddContent = () => {
             <input
               type="file"
               {...register("attachFile")}
+              onChange={handleUploadImage}
+              accept="image/jpeg, image/jpg, image/png"
               className="block w-full text-sm text-slate-500
               file:mr-4 file:rounded-full file:border-0 file:bg-[#8a1538] file:px-4 file:py-2 file:text-sm file:font-semibold file:text-[#FFB61B] hover:file:scale-[1.01] hover:file:cursor-pointer hover:file:bg-[#00563F]"
             />
