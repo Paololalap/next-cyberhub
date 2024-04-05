@@ -10,3 +10,9 @@ export async function GET() {
   return NextResponse.json({ content });
 }
 
+export async function DELETE(request) {
+  const id = request.nextUrl.searchParams.get("id");
+  await connectMongoDB();
+  await Content.findByIdAndDelete(id);
+  return NextResponse.json({ message: "News deleted" }, { status: 200 });
+}
