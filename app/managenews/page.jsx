@@ -1,8 +1,8 @@
 import React from "react";
-import Headline from "@/components/Headline";
 import { connectToDatabase } from "@/libs/connectMongo";
 import Link from "next/link";
 import Image from "next/image";
+import RemoveBtn from "@/components/Removebtn";
 async function getData(perPage, pageNumber) {
   try {
     // DB Connect
@@ -11,17 +11,9 @@ async function getData(perPage, pageNumber) {
 
     // DB Query
 
-    const latestNews = await db
-      .collection("contents")
-      .findOne({ type: "News" }, { sort: { createdAt: -1 } });
-
     const items = await db
       .collection("contents")
-      .find({
-        type: "News",
-        _id: { $ne: latestNews._id }, // Exclude the latest news item by its _id
-        createdAt: { $ne: latestNews.createdAt },
-      })
+      .find({ type: "News" })
       .sort({ createdAt: -1 })
       .skip(perPage * (pageNumber - 1))
       .limit(perPage)
@@ -65,33 +57,35 @@ export default async function Newspage({ searchParams }) {
           id="news-container-title"
           className="flex-col items-center justify-center p-5 text-center text-2xl font-semibold text-[#6e102c]"
         >
-          <span>News and Updates</span>
+          <span>Manage News</span>
           <hr className="mx-auto w-64 border-2  border-solid border-[#FFB61B]" />
         </div>
-        {page === 1 ? (
-          <div id="headline-wrapper" className="mb-5">
-            <Headline></Headline>
-          </div>
-        ) : (
-          <div id="headline-wrapper" className="mb-5 hidden">
-            <Headline></Headline>
-          </div>
-        )}
+      </div>
+      <div
+        id="managenews-addbtn-container"
+        className="flex flex-col items-center justify-center"
+      >
+        <button
+          id="addentry-btn"
+          className="rounded-md border-2 border-solid border-[#00563F] p-2"
+        >
+          Add News Entry
+        </button>
       </div>
       <div
         id="pagination-wrapper"
-        className=" my-5 flex flex-col items-center justify-center  sm:mx-52"
+        className=" my-5 flex flex-col items-center justify-center  sm:mx-80"
       >
         {data.items.map((item) => (
-          <div key={item._id} className="mb-1">
-            <Link href={item.link} target="_blank">
+          <div id="feed-content" key={item._id} className="mb-1">
+           {/*  <Link href={item.link} target="_blank"> */}
               <div
                 id="feed-container"
                 className="group flex max-h-56 flex-row overflow-hidden rounded-md border-2 border-solid border-[#00563F] bg-white sm:flex sm:max-h-56 sm:flex-row"
               >
                 <div
                   id="feed-image"
-                  className="w-2/5 py-10 transition-all hover:scale-[1.03] sm:py-0"
+                  className="w-2/5 py-10 transition-all hover:scale-[1.03] sm:py-5"
                 >
                   <Image
                     className="rounded-md"
@@ -129,14 +123,20 @@ export default async function Newspage({ searchParams }) {
                     </div>
                   </div>
                   <div
-                    id="feed-readmore"
+                    id="feed-btn"
                     className="flex flex-row-reverse text-xs sm:text-sm"
                   >
-                    <span>Read more</span>
+                    <button
+                      id="addentry-btn"
+                      className="mx-1 rounded-md border-2 border-solid border-[#00563F] p-2"
+                    >
+                      Update
+                    </button>
+                    <RemoveBtn id={item._id} />
                   </div>
                 </div>
               </div>
-            </Link>
+           {/*  </Link> */}
           </div>
         ))}
 
