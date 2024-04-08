@@ -27,7 +27,9 @@ async function getData(perPage, pageNumber) {
       .limit(perPage)
       .toArray();
 
-    const itemCount = await db.collection("contents").countDocuments({});
+    const itemCount = await db
+      .collection("contents")
+      .countDocuments({ type: "News" });
 
     const response = { items, itemCount };
     return response;
@@ -39,7 +41,7 @@ async function getData(perPage, pageNumber) {
 export default async function Newspage({ searchParams }) {
   let page = parseInt(searchParams.page, 10);
   page = !page || page < 1 ? 1 : page;
-  const perPage = 8;
+  const perPage = 10;
   const data = await getData(perPage, page);
 
   const totalPages = Math.ceil(data.itemCount / perPage);
