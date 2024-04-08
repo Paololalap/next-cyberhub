@@ -10,7 +10,6 @@ async function getData(perPage, pageNumber) {
     const db = client.db("CyberDB");
 
     // DB Query
-
     const items = await db
       .collection("contents")
       .find({ type: "Tips" })
@@ -48,7 +47,7 @@ export default async function TipsPage({ searchParams }) {
     }
   }
   return (
-    <div className="h-max  items-center bg-[#f7f7e3]">
+    <div className="h-max items-center bg-[#f7f7e3]">
       <div
         className="flex-col items-center justify-center bg-transparent"
       >
