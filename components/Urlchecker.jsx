@@ -13,32 +13,24 @@ export default function Home() {
 
   const handleGSafeBrowsing = async () => {
     try {
-      const response = await axios.post(
-        `https://safebrowsing.googleapis.com/v4/threatMatches:find?key=AIzaSyAsOeMIOLc0JO8GXHaSQUCSmMDr_NqDjsg`,
-        {
-          threatInfo: {
-            threatTypes: [
-              "THREAT_TYPE_UNSPECIFIED",
-              "MALWARE",
-              "SOCIAL_ENGINEERING",
-              "UNWANTED_SOFTWARE",
-              "POTENTIALLY_HARMFUL_APPLICATION",
-            ],
-            platformTypes: ["ANY_PLATFORM"],
-            threatEntryTypes: ["URL"],
-            threatEntries: [{ url: url }],
-          },
-        }
-      );
-      setResult(response.data);
+      const response = await fetch("http://localhost:3000/api/google-api", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ url }), // Pass the URL in the request body
+      });
+
+      const data = await response.json();
+      setResult(data); // Set the risk score in state
     } catch (error) {
-      console.error("Error checking URL:", error);
+      console.error("Error fetching data:", error);
     }
   };
 
   const handleIPQuality = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/check-url", {
+      const response = await fetch("http://localhost:3000/api/ipquality-api", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
