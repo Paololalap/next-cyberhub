@@ -4,7 +4,7 @@ export async function POST(request) {
   try {
     const { url } = await request.json();
     const response = await fetch(
-      `https://www.ipqualityscore.com/api/json/url/${process.env.IQS_APIkey}/${encodeURIComponent(
+      `https://www.ipqualityscore.com/api/json/url/${process.env.IQS_APIKEY}/${encodeURIComponent(
         url
       )}`
     );
