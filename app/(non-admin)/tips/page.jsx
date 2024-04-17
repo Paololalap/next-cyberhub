@@ -1,5 +1,5 @@
 import React from "react";
-import { connectToDatabase } from "@/libs/connectMongo";
+import { connectToDatabase } from "@/lib/connectMongo";
 import Link from "next/link";
 import Image from "next/image";
 
