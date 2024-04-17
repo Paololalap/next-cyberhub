@@ -1,5 +1,5 @@
 import React from "react";
-import { connectToDatabase } from "@/libs/connectMongo";
+import { connectToDatabase } from "@/lib/connectMongo";
 import Link from "next/link";
 import Image from "next/image";
 import RemoveBtn from "@/components/Removebtn";
@@ -10,9 +10,10 @@ async function getData(perPage, pageNumber) {
     const db = client.db("CyberDB");
 
     // DB Query
+
     const items = await db
       .collection("contents")
-      .find({ type: "Tips" })
+      .find({ type: "News" })
       .sort({ createdAt: -1 })
       .skip(perPage * (pageNumber - 1))
       .limit(perPage)
@@ -27,7 +28,7 @@ async function getData(perPage, pageNumber) {
   }
 }
 
-export default async function TipsPage({ searchParams }) {
+export default async function Newspage({ searchParams }) {
   let page = parseInt(searchParams.page, 10);
   page = !page || page < 1 ? 1 : page;
   const perPage = 8;
@@ -47,81 +48,96 @@ export default async function TipsPage({ searchParams }) {
     }
   }
   return (
-    <div className="h-max items-center bg-[#f7f7e3]">
+    <div id="page" className="h-max  items-center bg-[#f7f7e3]">
       <div
-        className="flex-col items-center justify-center bg-transparent"
+        id="news-container"
+        className="flex-col items-center justify-center bg-transparent   "
       >
         <div
+          id="news-container-title"
           className="flex-col items-center justify-center p-5 text-center text-2xl font-semibold text-[#6e102c]"
         >
-          <span>Manage Tips</span>
+          <span>Manage News</span>
           <hr className="mx-auto w-64 border-2  border-solid border-[#FFB61B]" />
         </div>
       </div>
       <div
+        id="managenews-addbtn-container"
         className="flex flex-col items-center justify-center"
       >
-        <button
+        <Link href={'/add-content'}
+          id="addentry-btn"
           className="rounded-md border-2 border-solid border-[#00563F] p-2"
         >
-          Add Tips Entry
-        </button>
+          Add News Entry
+        </Link>
       </div>
       <div
-        className="my-5 flex flex-col items-center justify-center sm:mx-80"
+        id="pagination-wrapper"
+        className=" my-5 flex flex-col items-center justify-center  sm:mx-80"
       >
         {data.items.map((item) => (
-          <div key={item._id} className="mb-1">
+          <div id="feed-content" key={item._id} className="mb-1">
+            {/*  <Link href={item.link} target="_blank"> */}
+            <div
+              id="feed-container"
+              className="group flex max-h-56 flex-row overflow-hidden rounded-md border-2 border-solid border-[#00563F] bg-white sm:flex sm:max-h-56 sm:flex-row"
+            >
               <div
-                className="group flex max-h-56 flex-row overflow-hidden rounded-md border-2 border-solid border-[#00563F] bg-white sm:flex sm:max-h-56 sm:flex-row"
+                id="feed-image"
+                className="w-2/5 py-10 transition-all hover:scale-[1.03] sm:py-5"
               >
-                <div
-                  className="w-2/5 py-10 transition-all hover:scale-[1.03] sm:py-5"
-                >
-                  <Image
-                    className="rounded-md"
-                    src={item.imageL}
-                    alt="/"
-                    width={640}
-                    height={334}
-                    sizes="(min-width: 680px) 640px, calc(94.44vw + 17px)"
-                  />
+                <Image
+                  className="rounded-md"
+                  src={item.imageL}
+                  alt="/"
+                  width={640}
+                  height={334}
+                  sizes="(min-width: 680px) 640px, calc(94.44vw + 17px)"
+                  priority
+                />
+              </div>
+              <div
+                id="feed-content"
+                className="flex w-3/5 flex-col justify-between p-5 sm:flex sm:flex-col sm:p-5"
+              >
+                <div className="sm:flex sm:flex-col">
+                  <div
+                    id="feed-title"
+                    className="text-sm font-bold text-gray-500 group-hover:underline sm:text-sm"
+                  >
+                    {item.title}
+                  </div>
+                  <div className="mb-5">
+                    <div
+                      id="feed-date"
+                      className="mb-1 mr-10 text-xs sm:text-sm"
+                    >
+                      <span>{item.date}</span>
+                    </div>
+                    <div id="feed-tags" className="text-xs sm:text-sm">
+                      <span>{item.tags.join(" / ").replace(/,/g, "/,")}</span>
+                    </div>
+                  </div>
+                  <div id="feed-description" className="text-xs sm:text-sm">
+                    <span>{item.description}</span>
+                  </div>
                 </div>
                 <div
-                  className="flex w-3/5 flex-col justify-between p-5 sm:flex sm:flex-col sm:p-5"
+                  id="feed-btn"
+                  className="flex flex-row-reverse text-xs sm:text-sm"
                 >
-                  <div className="sm:flex sm:flex-col">
-                    <div
-                      className="text-sm font-bold text-gray-500 group-hover:underline sm:text-sm"
-                    >
-                      {item.title}
-                    </div>
-                    <div className="mb-5">
-                      <div
-                        className="mb-1 mr-10 text-xs sm:text-sm"
-                      >
-                        <span>{item.date}</span>
-                      </div>
-                      <div className="text-xs sm:text-sm">
-                        <span>{item.tags.join(" / ").replace(/,/g, "/,")}</span>
-                      </div>
-                    </div>
-                    <div className="text-xs sm:text-sm">
-                      <span>{item.description}</span>
-                    </div>
-                  </div>
-                  <div
-                    className="flex flex-row-reverse text-xs sm:text-sm"
+                  <Link href={`/edit-content/${item._id}`}
+                    id="addentry-btn"
+                    className="mx-1 rounded-md border-2 border-solid border-[#00563F] p-2"
                   >
-                    <button
-                      className="mx-1 rounded-md border-2 border-solid border-[#00563F] p-2"
-                    >
-                      Update
-                    </button>
-                    <RemoveBtn id={item._id} />
-                  </div>
+                    Update
+                  </Link>
+                  <RemoveBtn id={item._id} />
                 </div>
               </div>
+            </div>
+            {/*  </Link> */}
           </div>
         ))}
 
@@ -145,7 +161,7 @@ export default async function TipsPage({ searchParams }) {
                   key={index}
                   className={
                     page === pageNumber
-                      ? "rounded-md bg-[#00563f] px-2 text-[#FFB61B]"
+                      ? "fw-bold rounded-md bg-[#00563f] px-2 text-[#FFB61B]"
                       : "rounded-md px-1 hover:bg-[#00563f]"
                   }
                   href={`?page=${pageNumber}`}

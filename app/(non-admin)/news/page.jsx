@@ -1,6 +1,6 @@
 import React from "react";
 import Headline from "@/components/Headline";
-import { connectToDatabase } from "@/libs/connectMongo";
+import { connectToDatabase } from "@/lib/connectMongo";
 import Link from "next/link";
 import Image from "next/image";
 async function getData(perPage, pageNumber) {

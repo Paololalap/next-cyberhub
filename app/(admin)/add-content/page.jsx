@@ -2,7 +2,8 @@
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-const AddContent = () => {
+
+export default function AddContentPage() {
   const {
     register,
     handleSubmit,
@@ -89,7 +90,7 @@ const AddContent = () => {
   };
 
   return (
-    <div className="grid min-h-screen place-items-center">
+    <div className="grid min-h-screen place-items-center mt-10">
       <form
         className="w-96 rounded-lg border-t-[6px] border-[#8a1538] p-4 shadow-2xl sm:w-[30rem] md:w-auto"
         onSubmit={handleSubmit(onSubmit)}
@@ -194,16 +195,14 @@ const AddContent = () => {
               className="block w-full text-sm text-slate-500
               file:mr-4 file:rounded-full file:border-0 file:bg-[#8a1538] file:px-4 file:py-2 file:text-sm file:font-semibold file:text-[#FFB61B] hover:file:scale-[1.01] hover:file:cursor-pointer hover:file:bg-[#00563F]"
             />
-            <div class="relative mt-3 inline-block ">
+            <div className="relative mt-3 inline-block ">
               <span className="text-sm text-gray-400">Type:</span>
               <select
-                class="block w-full appearance-none rounded border border-gray-300 bg-white px-2 py-1 text-sm leading-tight shadow  hover:border-gray-400 focus:border-blue-300 focus:outline-none focus:ring"
+                className="block w-full appearance-none rounded border border-gray-300 bg-white px-2 py-1 text-sm leading-tight shadow  hover:border-gray-400 focus:border-blue-300 focus:outline-none focus:ring"
                 onChange={(e) => setType(e.target.value)}
                 value={type}
               >
-                <option value="News" selected>
-                  News
-                </option>
+                <option value="News">News</option>
                 <option value="Tips">Tips</option>
               </select>
             </div>
@@ -220,7 +219,7 @@ const AddContent = () => {
         </section>
 
         <button
-          Type="submit"
+          type="submit"
           className="mt-5 h-9 w-full rounded-md border bg-[#8a1538] text-center text-sm text-[#FFB61B] transition-all hover:opacity-95"
         >
           Publish
@@ -228,6 +227,4 @@ const AddContent = () => {
       </form>
     </div>
   );
-};
-
-export default AddContent;
+}

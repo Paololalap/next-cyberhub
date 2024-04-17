@@ -1,4 +1,4 @@
-import connectMongoDB from "@/libs/db";
+import connectMongoDB from "@/lib/db";
 import Content from "@/models/content";
 import { NextResponse } from "next/server";
 
