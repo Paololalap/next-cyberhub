@@ -1,8 +1,8 @@
 import React from "react";
-import Headline from "@/components/Headline";
 import { connectToDatabase } from "@/lib/connectMongo";
 import Link from "next/link";
 import Image from "next/image";
+
 async function getData(perPage, pageNumber) {
   try {
     // DB Connect
@@ -31,7 +31,7 @@ async function getData(perPage, pageNumber) {
       .collection("contents")
       .countDocuments({ type: "News" });
 
-    const response = { items, itemCount };
+    const response = { items, latestNews, itemCount };
     return response;
   } catch (error) {
     throw new Error("Failed to fetch data. Please try again later.");
@@ -42,7 +42,13 @@ export default async function Newspage({ searchParams }) {
   let page = parseInt(searchParams.page, 10);
   page = !page || page < 1 ? 1 : page;
   const perPage = 10;
-  const data = await getData(perPage, page);
+
+  let data;
+  if (page === 2) {
+    data = await getData(perPage, page);
+  } else {
+    data = await getData(perPage, page);
+  }
 
   const totalPages = Math.ceil(data.itemCount / perPage);
 
@@ -58,10 +64,10 @@ export default async function Newspage({ searchParams }) {
     }
   }
   return (
-    <div id="page" className="h-max  items-center bg-[#f7f7e3]">
+    <div id="page" className="h-max items-center bg-[#f7f7e3]">
       <div
         id="news-container"
-        className="flex-col items-center justify-center bg-transparent   "
+        className="flex-col items-center justify-center bg-transparent"
       >
         <div
           id="news-container-title"
@@ -70,19 +76,63 @@ export default async function Newspage({ searchParams }) {
           <span>News and Updates</span>
           <hr className="mx-auto w-64 border-2  border-solid border-[#FFB61B]" />
         </div>
-        {page === 1 ? (
-          <div id="headline-wrapper" className="mb-5">
-            <Headline></Headline>
-          </div>
-        ) : (
-          <div id="headline-wrapper" className="mb-5 hidden">
-            <Headline></Headline>
+        {page === 1 && data.latestNews && (
+          <div key={data.latestNews._id} className="sm:mx-52">
+            <Link href={data.latestNews.link} target="_blank">
+              <div
+                id="headline-container"
+                className="group overflow-hidden rounded-md border-2 border-solid border-[#00563F] bg-white p-1 sm:flex sm:flex-row"
+              >
+                <div
+                  id="headline-image"
+                  className="transition-all hover:scale-[1.03] sm:w-3/5"
+                >
+                  <Image
+                    className="rounded-md"
+                    src={data.latestNews.imageL}
+                    alt="/"
+                    width={640}
+                    height={334}
+                    sizes="(min-width: 680px) 640px, calc(94.44vw + 17px)"
+                  />
+                </div>
+                <div
+                  id="headline-content"
+                  className="flex flex-col justify-between p-5 sm:w-2/5 sm:p-5"
+                >
+                  <div className="flex flex-col">
+                    <div
+                      id="headline-title"
+                      className="font-bold text-gray-500 group-hover:underline"
+                    >
+                      {data.latestNews.title}
+                    </div>
+                    <div className="mb-5 flex flex-row">
+                      <div id="headline-date" className="mr-10 text-sm">
+                        <span>{data.latestNews.date}</span>
+                      </div>
+                      <div id="headline-tags" className="text-sm">
+                        <span>
+                          {data.latestNews.tags.join(" / ").replace(/,/g, "/,")}
+                        </span>
+                      </div>
+                    </div>
+                    <div id="headline-description">
+                      <span>{data.latestNews.description}</span>
+                    </div>
+                  </div>
+                  <div id="readmore" className="flex flex-row-reverse">
+                    <span>Read more</span>
+                  </div>
+                </div>
+              </div>
+            </Link>
           </div>
         )}
       </div>
       <div
         id="pagination-wrapper"
-        className=" my-5 flex flex-col items-center justify-center  sm:mx-52"
+        className=" my-5 flex flex-col items-center justify-center sm:mx-52"
       >
         {data.items.map((item) => (
           <div key={item._id} className="mb-1">
