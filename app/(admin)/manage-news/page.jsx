@@ -65,12 +65,12 @@ export default async function Newspage({ searchParams }) {
         id="managenews-addbtn-container"
         className="flex flex-col items-center justify-center"
       >
-        <button
+        <Link href={'/add-content'}
           id="addentry-btn"
           className="rounded-md border-2 border-solid border-[#00563F] p-2"
         >
           Add News Entry
-        </button>
+        </Link>
       </div>
       <div
         id="pagination-wrapper"
@@ -94,6 +94,7 @@ export default async function Newspage({ searchParams }) {
                   width={640}
                   height={334}
                   sizes="(min-width: 680px) 640px, calc(94.44vw + 17px)"
+                  priority
                 />
               </div>
               <div
@@ -126,12 +127,12 @@ export default async function Newspage({ searchParams }) {
                   id="feed-btn"
                   className="flex flex-row-reverse text-xs sm:text-sm"
                 >
-                  <button
+                  <Link href={`/edit-content/${item._id}`}
                     id="addentry-btn"
                     className="mx-1 rounded-md border-2 border-solid border-[#00563F] p-2"
                   >
                     Update
-                  </button>
+                  </Link>
                   <RemoveBtn id={item._id} />
                 </div>
               </div>

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import GError from "@/app/(contents)/news/error";
+import GError from "@/app/(non-admin)/news/error";
 const getHeadline = async () => {
   try {
     const res = await fetch("http://localhost:3000/api/content", {
