@@ -65,7 +65,8 @@ export default async function Newspage({ searchParams }) {
         id="managenews-addbtn-container"
         className="flex flex-col items-center justify-center"
       >
-        <Link href={'/add-content'}
+        <Link
+          href={"/add-content"}
           id="addentry-btn"
           className="rounded-md border-2 border-solid border-[#00563F] p-2"
         >
@@ -127,13 +128,14 @@ export default async function Newspage({ searchParams }) {
                   id="feed-btn"
                   className="flex flex-row-reverse text-xs sm:text-sm"
                 >
-                  <Link href={`/edit-content/${item._id}`}
+                  <Link
+                    href={`/edit-content/${item._id}`}
                     id="addentry-btn"
                     className="mx-1 rounded-md border-2 border-solid border-[#00563F] p-2"
                   >
                     Update
                   </Link>
-                  <RemoveBtn id={item._id} />
+                  <RemoveBtn id={item._id.buffer.toString("hex")} />
                 </div>
               </div>
             </div>

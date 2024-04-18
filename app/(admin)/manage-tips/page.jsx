@@ -55,7 +55,10 @@ export default async function TipsPage({ searchParams }) {
         </div>
       </div>
       <div className="flex flex-col items-center justify-center">
-        <Link href={'/add-content'} className="rounded-md border-2 border-solid border-[#00563F] p-2">
+        <Link
+          href={"/add-content"}
+          className="rounded-md border-2 border-solid border-[#00563F] p-2"
+        >
           Add Tips Entry
         </Link>
       </div>
@@ -92,10 +95,13 @@ export default async function TipsPage({ searchParams }) {
                   </div>
                 </div>
                 <div className="flex flex-row-reverse text-xs sm:text-sm">
-                  <Link href={`/edit-content/${item._id}`} className="mx-1 rounded-md border-2 border-solid border-[#00563F] p-2">
+                  <Link
+                    href={`/edit-content/${item._id}`}
+                    className="mx-1 rounded-md border-2 border-solid border-[#00563F] p-2"
+                  >
                     Update
                   </Link>
-                  <RemoveBtn id={item._id} />
+                  <RemoveBtn id={item._id.buffer.toString("hex")} />
                 </div>
               </div>
             </div>
