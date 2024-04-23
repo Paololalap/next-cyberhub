@@ -2,7 +2,7 @@
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-
+import { useToast } from "@/components/ui/use-toast"
 export default function AddContentPage() {
   const {
     register,
@@ -26,7 +26,7 @@ export default function AddContentPage() {
 
   const onSubmit = async () => {
     if (!title || !author || !description || !body) {
-      console.log("Title, Author, Description, and Body are required");
+      toast({ variant: "Warning", description: "All fields are required" });
       return;
     }
 
@@ -53,10 +53,12 @@ export default function AddContentPage() {
 
       if (res.ok) {
         router.push("/");
+         toast({ variant: "Success", description: "Add Successful" });
       } else {
-        throw new Error("Failed to create a topic");
+        throw toast({ variant: "Error", description: "Failed to Post" });
       }
     } catch (error) {
+       toast({ variant: "Error", description: "Failed to Post" });
       console.log(error);
     }
   };
