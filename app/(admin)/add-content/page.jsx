@@ -9,7 +9,7 @@ export default function AddContentPage() {
     handleSubmit,
     formState: { errors },
   } = useForm();
-
+  const { toast } = useToast();
   const [title, setTitle] = useState("");
   const [tags, setTags] = useState([]);
   const [author, setAuthor] = useState("");

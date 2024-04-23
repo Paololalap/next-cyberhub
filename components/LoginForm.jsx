@@ -4,12 +4,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-
+import { useToast } from "@/components/ui/use-toast";
 export default function LoginForm() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-
+  const { toast } = useToast();
+  
   const router = useRouter();
 
   const handleSubmit = async (e) => {
@@ -23,12 +23,14 @@ export default function LoginForm() {
       });
 
       if (res.error) {
-        setError("Invalid Credentials");
+    
+        toast({ variant: "Error", description: "Wrong Credentials" });
         return;
       }
-      alert("Login Successfully!");
+      toast({ variant: "Success", description: "Welcome Admin" });
       router.replace("/");  
     } catch (error) {
+      toast({ variant: "Error", description: "Failed to Login" });
       console.log(error);       
     }
   };
@@ -71,11 +73,7 @@ export default function LoginForm() {
                 Log in
               </button>
             </div>
-            {error && (
-              <div className="mt-2 w-fit rounded-md bg-red-500 px-3 py-1 text-sm text-white">
-                {error}
-              </div>
-            )}
+           
           </form>
           <div className="flex text-center">
             <Link
