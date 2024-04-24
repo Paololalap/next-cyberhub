@@ -5,6 +5,7 @@ import Logo from "@/public/logo.png";
 import Burger from "@/public/burger.svg";
 import Cross from "@/public/cross.svg";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const linkStyles =
   "block py-2 px-3 text-white rounded hover:bg-[#FFB61B] md:hover:bg-[#6e102c] md:p-30";
@@ -12,7 +13,7 @@ const activeStyle =
   "bg-[#00563F] !text-[#FFB61B] hover:bg-[#00563F] hover:cursor-not-allowed md:bg-transparent md:text-[#FFB61B]";
 
 const links = [
-  { id: "news", href: "/", text: "News" },
+  { id: "news", href: "/news", text: "News" },
   { id: "tips", href: "/tips", text: "Tips & Guides" },
   { id: "tools", href: "/tools", text: "Tools" },
   { id: "ask", href: "/ask", text: "Ask a Question" },
@@ -23,11 +24,7 @@ const links = [
 const Navbar = () => {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [mainMenuOpen, setMainMenuOpen] = useState(false);
-  const [activeLink, setActiveLink] = useState(links[0].id);
-
-  const handleLinkClick = (id) => {
-    setActiveLink(id);
-  };
+  const pathname = usePathname()
 
   const toggleUserMenu = () => {
     setUserMenuOpen(!userMenuOpen);
@@ -90,9 +87,8 @@ const Navbar = () => {
                   <Link
                     href={link.href}
                     className={`${linkStyles} ${
-                      link.id === activeLink ? activeStyle : ""
+                      pathname === link.href ? activeStyle : ""
                     }`}
-                    onClick={() => handleLinkClick(link.id)}
                   >
                     {link.text}
                   </Link>
