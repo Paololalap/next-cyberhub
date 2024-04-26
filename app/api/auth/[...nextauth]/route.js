@@ -1,3 +1,5 @@
+// app/api/auth/[...nextauth]/route.js
+
 import connectMongoDB from "@/lib/db";
 import User from "@/models/user";
 import NextAuth from "next-auth/next";
@@ -26,7 +28,8 @@ export const authOptions = {
             return null;
           }
 
-          return user;
+          const userinfo = { _id: user._id };
+          return {...user, ...userinfo}
         } catch (error) {
           console.log("Error: ", error);
         }
