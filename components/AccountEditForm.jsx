@@ -1,38 +1,48 @@
 "use client";
-import { z } from "zod";
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-const formSchema = z.object({
-  username: z.string().min(2).max(50),
-});
+function EditContentForm({ firstName, lastName, username, profilePic }) {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
-export default function AccountEditForm({
-  username,
-  firstName,
-  lastName,
-  profilePic,
-}) {
-  const [newUsername, setNewUsername] = useState(username);
   const [newFirstName, setNewFirstName] = useState(firstName);
   const [newLastName, setNewLastName] = useState(lastName);
+  const [newUsername, setNewUsername] = useState(username);
   const [newProfilePic, setNewProfilePic] = useState(profilePic);
 
   const router = useRouter();
+
+  const onSubmit = async () => {
+    try {
+      const res = await fetch("http://localhost:3000/api/admin-user", {
+        method: "PUT",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({
+          newFirstName,
+          newLastName,
+          newUsername,
+          newProfilePic,
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to update user");
+      }
+
+      router.refresh();
+      router.push("/");
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const imageBase64 = async (file) => {
     const reader = new FileReader();
@@ -47,112 +57,90 @@ export default function AccountEditForm({
   const handleUploadImage = async (e) => {
     const file = e.target.files[0];
     const image = await imageBase64(file);
-    setNewImageL(image);
-  };
-
-  const form = useForm({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      username: "",
-    },
-  });
-
-  const onSubmit = async () => {
-    try {
-      const res = await fetch(`http://localhost:3000/api/admin-user/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify({
-          newUsername,
-          newFirstName,
-          newLastName,
-          newProfilePic,
-        }),
-      });
-
-      if (!res.ok) {
-        throw new Error("Failed to update topic");
-      }
-
-      router.refresh();
-      router.push("/");
-    } catch (error) {
-      console.log(error);
-    }
+    setNewProfilePic(image);
   };
 
   return (
-    <Form {...form}>
+    <div className="grid min-h-screen place-items-center mt-2">
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="mx-auto w-1/2 space-y-8"
+        className="w-96 rounded-lg border-t-[6px] border-[#8a1538] p-4 shadow-2xl sm:w-[30rem] md:w-auto"
+        onSubmit={handleSubmit(onSubmit)}
       >
-        <Avatar>
-          <input
-            {...field}
-            value={newProfilePic}
-            onChange={(e) => setNewProfilePic(e.target.value)}
-          />
-          <AvatarImage src={newProfilePic} />
+        <h1 className="mx-auto mt-3 w-full text-center text-3xl">
+          Update User
+        </h1>
+        <Avatar className="size-[250px] mx-auto border-2 border-black">
+          <AvatarImage src={profilePic} />
+          <AvatarFallback>CN</AvatarFallback>
         </Avatar>
-        <FormField
-          control={form.control}
-          name="firstName"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>First name</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="first name"
-                  {...field}
-                  value={newFirstName}
-                  onChange={(e) => setNewFirstName(e.target.value)}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+        <input
+          type="file"
+          {...register("attachFile")}
+          onChange={handleUploadImage}
+          className="block w-full text-sm text-slate-500
+              file:mr-4 file:rounded-full file:border-0 file:bg-[#8a1538] file:px-4 file:py-2 file:text-sm file:font-semibold file:text-[#FFB61B] hover:file:scale-[1.01] hover:file:cursor-pointer hover:file:bg-[#00563F]"
         />
-        <FormField
-          control={form.control}
-          name="lastName"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Last Name</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="last Name"
-                  {...field}
-                  value={newLastName}
-                  onChange={(e) => setNewLastName(e.target.value)}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="username"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Username</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="username"
-                  {...field}
-                  value={newUsername}
-                  onChange={(e) => setNewUsername(e.target.value)}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit">Save Changes</Button>
+        <div className="relative mt-6">
+          <input
+            {...register("newFirstName")}
+            placeholder="First Name"
+            id="newFirstName"
+            type="text"
+            className="peer h-10 w-full cursor-text border-b-2 border-gray-200 text-gray-900 placeholder-transparent placeholder:select-none focus:border-[#8a1538] focus:outline-none"
+            onChange={(e) => setNewFirstName(e.target.value)}
+            value={newFirstName}
+          />
+          <label
+            htmlFor="newFirstName"
+            className="absolute -top-3.5 left-0 cursor-text text-sm  text-gray-600 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-gray-600"
+          >
+            First Name:
+          </label>
+        </div>
+        <div className="relative mt-6">
+          <input
+            {...register("newLastName")}
+            placeholder="Last Name"
+            id="newLastName"
+            type="text"
+            className="peer h-10 w-full cursor-text border-b-2 border-gray-200 text-gray-900 placeholder-transparent placeholder:select-none focus:border-[#8a1538] focus:outline-none"
+            onChange={(e) => setNewLastName(e.target.value)}
+            value={newLastName}
+          />
+          <label
+            htmlFor="newLastName"
+            className="absolute -top-3.5 left-0 cursor-text text-sm  text-gray-600 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-gray-600"
+          >
+            Last Name:
+          </label>
+        </div>
+        <div className="relative mt-6">
+          <input
+            {...register("newUsername")}
+            placeholder="Username"
+            id="newUsername"
+            type="text"
+            className="peer h-10 w-full cursor-text border-b-2 border-gray-200 text-gray-900 placeholder-transparent placeholder:select-none focus:border-[#8a1538] focus:outline-none"
+            onChange={(e) => setNewUsername(e.target.value)}
+            value={newUsername}
+          />
+          <label
+            htmlFor="newUsername"
+            className="absolute -top-3.5 left-0 cursor-text text-sm  text-gray-600 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-gray-600"
+          >
+            Username:
+          </label>
+        </div>
+
+        <button
+          type="submit"
+          className="mt-5 h-9 w-full rounded-md border bg-[#8a1538] text-center text-sm text-[#FFB61B] transition-all hover:opacity-95"
+        >
+          Update
+        </button>
       </form>
-    </Form>
+    </div>
   );
 }
+
+export default EditContentForm;
