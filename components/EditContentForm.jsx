@@ -150,7 +150,7 @@ function EditContentForm({
               />
               <label
                 htmlFor="author"
-                className="absolute -top-3.5 left-0 cursor-text text-sm  text-gray-600 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-gray-600"
+                className="absolute -top-3.5 left-0 cursor-text text-sm text-gray-600 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-gray-600"
               >
                 Author:
               </label>
@@ -199,14 +199,14 @@ function EditContentForm({
               className="block w-full text-sm text-slate-500
               file:mr-4 file:rounded-full file:border-0 file:bg-[#8a1538] file:px-4 file:py-2 file:text-sm file:font-semibold file:text-[#FFB61B] hover:file:scale-[1.01] hover:file:cursor-pointer hover:file:bg-[#00563F]"
             />
-            <div class="relative mt-3 inline-block ">
+            <div className="relative mt-3 inline-block ">
               <span className="text-sm text-gray-400">Type:</span>
               <select
-                class="block w-full appearance-none rounded border border-gray-300 bg-white px-2 py-1 text-sm leading-tight shadow  hover:border-gray-400 focus:border-blue-300 focus:outline-none focus:ring"
+                className="block w-full appearance-none rounded border border-gray-300 bg-white px-2 py-1 text-sm leading-tight shadow  hover:border-gray-400 focus:border-blue-300 focus:outline-none focus:ring"
                 onChange={(e) => setNewType(e.target.value)}
                 value={newType}
               >
-                <option value="News" selected>
+                <option value="News">
                   News
                 </option>
                 <option value="Tips">Tips</option>
@@ -225,7 +225,7 @@ function EditContentForm({
         </section>
 
         <button
-          Type="submit"
+          type="submit"
           className="mt-5 h-9 w-full rounded-md border bg-[#8a1538] text-center text-sm text-[#FFB61B] transition-all hover:opacity-95"
         >
           Update

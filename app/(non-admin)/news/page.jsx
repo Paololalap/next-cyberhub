@@ -1,8 +1,9 @@
 import React from "react";
-import { connectToDatabase } from "@/libs/connectMongo";
+import { connectToDatabase } from "@/lib/connectMongo";
 import Link from "next/link";
 import Image from "next/image";
-import RemoveBtn from "@/components/Removebtn";
+import formatDateToWords from "@/constants/DATE_TO_WORDS";
+
 async function getData(perPage, pageNumber) {
   try {
     // DB Connect
@@ -11,17 +12,27 @@ async function getData(perPage, pageNumber) {
 
     // DB Query
 
+    const latestNews = await db
+      .collection("contents")
+      .findOne({ type: "News" }, { sort: { createdAt: -1 } });
+
     const items = await db
       .collection("contents")
-      .find({ type: "News" })
+      .find({
+        type: "News",
+        _id: { $ne: latestNews._id }, // Exclude the latest news item by its _id
+        createdAt: { $ne: latestNews.createdAt },
+      })
       .sort({ createdAt: -1 })
       .skip(perPage * (pageNumber - 1))
       .limit(perPage)
       .toArray();
 
-    const itemCount = await db.collection("contents").countDocuments({});
+    const itemCount = await db
+      .collection("contents")
+      .countDocuments({ type: "News" });
 
-    const response = { items, itemCount };
+    const response = { items, latestNews, itemCount };
     return response;
   } catch (error) {
     throw new Error("Failed to fetch data. Please try again later.");
@@ -31,8 +42,14 @@ async function getData(perPage, pageNumber) {
 export default async function Newspage({ searchParams }) {
   let page = parseInt(searchParams.page, 10);
   page = !page || page < 1 ? 1 : page;
-  const perPage = 8;
-  const data = await getData(perPage, page);
+  const perPage = 10;
+
+  let data;
+  if (page === 2) {
+    data = await getData(perPage, page);
+  } else {
+    data = await getData(perPage, page);
+  }
 
   const totalPages = Math.ceil(data.itemCount / perPage);
 
@@ -48,44 +65,86 @@ export default async function Newspage({ searchParams }) {
     }
   }
   return (
-    <div id="page" className="h-max  items-center bg-[#f7f7e3]">
+    <div id="page" className="h-max items-center bg-[#f7f7e3]">
       <div
         id="news-container"
-        className="flex-col items-center justify-center bg-transparent   "
+        className="flex-col items-center justify-center bg-transparent"
       >
         <div
           id="news-container-title"
           className="flex-col items-center justify-center p-5 text-center text-2xl font-semibold text-[#6e102c]"
         >
-          <span>Manage News</span>
+          <span>News and Updates</span>
           <hr className="mx-auto w-64 border-2  border-solid border-[#FFB61B]" />
         </div>
-      </div>
-      <div
-        id="managenews-addbtn-container"
-        className="flex flex-col items-center justify-center"
-      >
-        <button
-          id="addentry-btn"
-          className="rounded-md border-2 border-solid border-[#00563F] p-2"
-        >
-          Add News Entry
-        </button>
+        {page === 1 && data.latestNews && (
+          <div key={data.latestNews._id} className="sm:mx-60">
+            <Link href={`/more-info/${data.latestNews._id}`}>
+              <div
+                id="headline-container"
+                className="group overflow-hidden rounded-md border-2 border-solid border-[#00563F] bg-white p-1 sm:flex sm:flex-row"
+              >
+                <div
+                  id="headline-image"
+                  className="transition-all hover:scale-[1.03] sm:w-3/5"
+                >
+                  <Image
+                    className="rounded-md"
+                    src={data.latestNews.imageL}
+                    alt="/"
+                    width={640}
+                    height={334}
+                    sizes="(min-width: 680px) 640px, calc(94.44vw + 17px)"
+                  />
+                </div>
+                <div
+                  id="headline-content"
+                  className="flex flex-col justify-between p-5 sm:w-2/5 sm:p-5"
+                >
+                  <div className="flex flex-col">
+                    <div
+                      id="headline-title"
+                      className="font-bold text-gray-500 group-hover:underline"
+                    >
+                      {data.latestNews.title}
+                    </div>
+                    <div className="mb-5 flex flex-row">
+                      <div id="headline-date" className="mr-10 text-sm">
+                        <span>{formatDateToWords(data.latestNews.date)}</span>
+                      </div>
+                      <div id="headline-tags" className="text-sm">
+                        <span>
+                          {data.latestNews.tags.join(" / ").replace(/,/g, "/,")}
+                        </span>
+                      </div>
+                    </div>
+                    <div id="headline-description">
+                      <span>{data.latestNews.description}</span>
+                    </div>
+                  </div>
+                  <div id="readmore" className="flex flex-row-reverse">
+                    <span>Read more</span>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          </div>
+        )}
       </div>
       <div
         id="pagination-wrapper"
-        className=" my-5 flex flex-col items-center justify-center  sm:mx-80"
+        className=" mt-5 flex flex-col items-center justify-center sm:mx-60"
       >
         {data.items.map((item) => (
-          <div id="feed-content" key={item._id} className="mb-1">
-           {/*  <Link href={item.link} target="_blank"> */}
+          <div key={item._id} className="mb-1">
+            <Link href={`/more-info/${item._id}`}>
               <div
                 id="feed-container"
                 className="group flex max-h-56 flex-row overflow-hidden rounded-md border-2 border-solid border-[#00563F] bg-white sm:flex sm:max-h-56 sm:flex-row"
               >
                 <div
                   id="feed-image"
-                  className="w-2/5 py-10 transition-all hover:scale-[1.03] sm:py-5"
+                  className="w-2/5 py-10 transition-all hover:scale-[1.03] sm:py-0"
                 >
                   <Image
                     className="rounded-md"
@@ -112,7 +171,7 @@ export default async function Newspage({ searchParams }) {
                         id="feed-date"
                         className="mb-1 mr-10 text-xs sm:text-sm"
                       >
-                        <span>{item.date}</span>
+                        <span>{formatDateToWords(item.date)}</span>
                       </div>
                       <div id="feed-tags" className="text-xs sm:text-sm">
                         <span>{item.tags.join(" / ").replace(/,/g, "/,")}</span>
@@ -123,25 +182,19 @@ export default async function Newspage({ searchParams }) {
                     </div>
                   </div>
                   <div
-                    id="feed-btn"
+                    id="feed-readmore"
                     className="flex flex-row-reverse text-xs sm:text-sm"
                   >
-                    <button
-                      id="addentry-btn"
-                      className="mx-1 rounded-md border-2 border-solid border-[#00563F] p-2"
-                    >
-                      Update
-                    </button>
-                    <RemoveBtn id={item._id} />
+                    <span>Read more</span>
                   </div>
                 </div>
               </div>
-           {/*  </Link> */}
+            </Link>
           </div>
         ))}
 
         {isPageOutOfRange ? (
-          <div>No more pages...</div>
+          <div className="h-screen">No more pages...</div>
         ) : (
           <div className="mt-16 flex items-center justify-center">
             <div className="border-light-green flex gap-4 rounded-[10px] border-[1px] p-4">

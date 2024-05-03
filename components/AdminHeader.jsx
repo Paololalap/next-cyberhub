@@ -5,26 +5,23 @@ import Logo from "@/public/logo.png";
 import Burger from "@/public/burger.svg";
 import Cross from "@/public/cross.svg";
 import Link from "next/link";
+import { signOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
 
 const linkStyles =
-  "block py-2 px-3 text-white rounded hover:bg-[#FFB61B] md:hover:bg-[#6e102c] md:p-30";
+  "block py-2 px-3 text-white rounded hover:bg-[#FFB61B] md:hover:bg-[#6e102c]";
 const activeStyle =
   "bg-[#00563F] !text-[#FFB61B] hover:bg-[#00563F] hover:cursor-not-allowed md:bg-transparent md:text-[#FFB61B]";
 
 const links = [
-  { id: "news", href: "/news", text: "News" },
-  { id: "tips", href: "/tips", text: "Tips & Guides" },
-  { id: "tools", href: "/tools", text: "Tools" },
-  { id: "ask", href: "/ask", text: "Ask a Question" },
-  { id: "learn", href: "/learn", text: "Learn Cybersecurity" },
-  { id: "about", href: "/about", text: "About" },
+  { id: "manage-news", href: "/manage-news", text: "Manage News" },
+  { id: "manage-tips", href: "/manage-tips", text: "Manage Tips & Guides" },
 ];
 
 const Navbar = () => {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [mainMenuOpen, setMainMenuOpen] = useState(false);
-  const pathname = usePathname()
+  const pathname = usePathname();
 
   const toggleUserMenu = () => {
     setUserMenuOpen(!userMenuOpen);
@@ -35,53 +32,53 @@ const Navbar = () => {
   };
 
   return (
-    <header className=' bg-[#8A1538] max-w-full h-auto'>
-      <section className='max-w-screen-xl flex flex-wrap sm:flex-col items-center justify-between mx-auto p-4'>
-        <div className='flex justify-between w-[600px] md:w-auto'>
-          <Link href='/' className='mx-auto'>
+    <header className=" h-auto max-w-full bg-[#8A1538]">
+      <section className="mx-auto flex max-w-screen-xl flex-wrap items-center justify-between p-4 sm:flex-col">
+        <div className="flex w-[600px] justify-between md:w-auto">
+          <Link href="/" className="mx-auto">
             <Image
               src={Logo}
-              alt='UPOU Logo'
-              className='w-full h-auto'
+              alt="UPOU Logo"
+              className="h-auto w-full"
               width={465}
               height={122}
-              sizes='(min-width: 540px) 465px, 89.55vw'
+              sizes="(min-width: 540px) 465px, 89.55vw"
             />
           </Link>
 
-          <div className='flex items-center space-x-3  '>
+          <div className="flex items-center space-x-3  ">
             <button
-              type='button'
-              className='inline-flex items-center p-2 size-10  transition-all hover:scale-110 justify-center text-sm  text-[#FFB61B] rounded-lg md:hidden bg-[#00563F] outline-none ring-2 ring-[#FFB61B]'
+              type="button"
+              className="inline-flex size-10 items-center justify-center  rounded-lg bg-[#00563F] p-2 text-sm  text-[#FFB61B] outline-none ring-2 ring-[#FFB61B] transition-all hover:scale-110 md:hidden"
               onClick={toggleMainMenu}
             >
               {mainMenuOpen ? (
                 <Image
                   src={Cross}
-                  alt=''
+                  alt=""
                   width={24}
                   height={24}
-                  className='w-full h-12'
+                  className="h-12 w-full"
                 />
               ) : (
-                <Image src={Burger} alt='' width={24} height={20} />
+                <Image src={Burger} alt="" width={24} height={20} />
               )}
             </button>
           </div>
         </div>
         <Link
-          href=''
-          className='text-3xl md:text-4xl font-semibold whitespace-nowrap text-white mx-auto md:mb-4'
+          href=""
+          className="mx-auto whitespace-nowrap text-3xl font-semibold text-white md:mb-4 md:text-4xl"
         >
           Cyberhub
         </Link>
-        <div className='flex justify-center w-full'>
+        <div className="flex w-full justify-center">
           <nav
-            className={`items-center justify-between w-full md:flex md:w-auto ${
+            className={`w-full items-center justify-between md:flex md:w-auto ${
               mainMenuOpen ? "block" : "hidden"
             }`}
           >
-            <ul className='flex max-w-[300px] text-center  mx-auto flex-col font-medium pt-4 mt-4 bg-[#8A1538] rounded-lg md:max-w-[800px] md:justify-evenly md:flex-row md:p-0 whitespace-nowrap'>
+            <ul className="mx-auto mt-4 flex max-w-[300px] flex-col whitespace-nowrap rounded-lg bg-[#8A1538] pt-4 text-center font-medium md:max-w-[800px] md:flex-row md:justify-between md:p-0">
               {links.map((link) => (
                 <li key={link.id}>
                   <Link
@@ -94,6 +91,12 @@ const Navbar = () => {
                   </Link>
                 </li>
               ))}
+              <button
+                onClick={() => signOut()}
+                className="block rounded bg-[#00563F] px-3 py-2 text-white hover:text-[#FFB61B]"
+              >
+                Log Out
+              </button>
             </ul>
           </nav>
         </div>

@@ -1,4 +1,4 @@
-import connectMongoDB from "@/libs/db";
+import connectMongoDB from "@/lib/db";
 import Content from "@/models/content";
 import { NextResponse } from "next/server";
 
@@ -34,5 +34,5 @@ export async function GET(request, { params }) {
   const { id } = params;
   await connectMongoDB();
   const content = await Content.findOne({ _id: id });
-  return NextResponse.json({ content }, { status: 200 });
+  return NextResponse.json({ content }, { status: 200 }); 
 }
