@@ -2,6 +2,7 @@ import React from "react";
 import { connectToDatabase } from "@/lib/connectMongo";
 import Link from "next/link";
 import Image from "next/image";
+import formatDateToWords from "@/constants/DATE_TO_WORDS";
 
 async function getData(perPage, pageNumber) {
   try {
@@ -77,8 +78,8 @@ export default async function Newspage({ searchParams }) {
           <hr className="mx-auto w-64 border-2  border-solid border-[#FFB61B]" />
         </div>
         {page === 1 && data.latestNews && (
-          <div key={data.latestNews._id} className="sm:mx-52">
-            <Link href={data.latestNews.link} target="_blank">
+          <div key={data.latestNews._id} className="sm:mx-60">
+            <Link href={`/more-info/${data.latestNews._id}`}>
               <div
                 id="headline-container"
                 className="group overflow-hidden rounded-md border-2 border-solid border-[#00563F] bg-white p-1 sm:flex sm:flex-row"
@@ -109,7 +110,7 @@ export default async function Newspage({ searchParams }) {
                     </div>
                     <div className="mb-5 flex flex-row">
                       <div id="headline-date" className="mr-10 text-sm">
-                        <span>{data.latestNews.date}</span>
+                        <span>{formatDateToWords(data.latestNews.date)}</span>
                       </div>
                       <div id="headline-tags" className="text-sm">
                         <span>
@@ -132,11 +133,11 @@ export default async function Newspage({ searchParams }) {
       </div>
       <div
         id="pagination-wrapper"
-        className=" my-5 flex flex-col items-center justify-center sm:mx-52"
+        className=" mt-5 flex flex-col items-center justify-center sm:mx-60"
       >
         {data.items.map((item) => (
           <div key={item._id} className="mb-1">
-            <Link href={item.link} target="_blank">
+            <Link href={`/more-info/${item._id}`}>
               <div
                 id="feed-container"
                 className="group flex max-h-56 flex-row overflow-hidden rounded-md border-2 border-solid border-[#00563F] bg-white sm:flex sm:max-h-56 sm:flex-row"
@@ -170,7 +171,7 @@ export default async function Newspage({ searchParams }) {
                         id="feed-date"
                         className="mb-1 mr-10 text-xs sm:text-sm"
                       >
-                        <span>{item.date}</span>
+                        <span>{formatDateToWords(item.date)}</span>
                       </div>
                       <div id="feed-tags" className="text-xs sm:text-sm">
                         <span>{item.tags.join(" / ").replace(/,/g, "/,")}</span>
@@ -193,7 +194,7 @@ export default async function Newspage({ searchParams }) {
         ))}
 
         {isPageOutOfRange ? (
-          <div>No more pages...</div>
+          <div className="h-screen">No more pages...</div>
         ) : (
           <div className="mt-16 flex items-center justify-center">
             <div className="border-light-green flex gap-4 rounded-[10px] border-[1px] p-4">

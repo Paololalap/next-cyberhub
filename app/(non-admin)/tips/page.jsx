@@ -2,6 +2,7 @@ import React from "react";
 import { connectToDatabase } from "@/lib/connectMongo";
 import Link from "next/link";
 import Image from "next/image";
+import formatDateToWords from "@/constants/DATE_TO_WORDS";
 
 async function getData(perPage, pageNumber) {
   try {
@@ -62,7 +63,7 @@ export default async function TipsPage({ searchParams }) {
       <div className="my-5 flex flex-col items-center justify-center sm:mx-52">
         {data.items.map((item) => (
           <div key={item._id} className="mb-1">
-            <Link href={item.link} target="_blank">
+            <Link href={`/more-info/${item._id}`}>
               <div className="group flex max-h-56 flex-row overflow-hidden rounded-md border-2 border-solid border-[#00563F] bg-white sm:flex sm:max-h-56 sm:flex-row">
                 <div
                   id="feed-image"
@@ -84,7 +85,7 @@ export default async function TipsPage({ searchParams }) {
                     </div>
                     <div className="mb-5">
                       <div className="mb-1 mr-10 text-xs sm:text-sm">
-                        <span>{item.date}</span>
+                        <span>{formatDateToWords(item.date)}</span>
                       </div>
                       <div className="text-xs sm:text-sm">
                         <span>{item.tags.join(" / ").replace(/,/g, "/,")}</span>
