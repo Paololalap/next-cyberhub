@@ -2,14 +2,11 @@ import mongoose, { Schema, models } from "mongoose";
 
 const userSchema = new Schema(
   {
-    username: {
-      type: String,
-      required: true,
-    },
-    password: {
-      type: String,
-      required: true,
-    },
+    username: String,
+    password: String,
+    profilePic: String,
+    firstName: String,
+    lastName: String,
   },
   { timestamps: true },
 );
