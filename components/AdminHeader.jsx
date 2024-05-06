@@ -43,38 +43,71 @@ const Navbar = () => {
   };
 
   return (
-    <header className=" h-auto max-w-full bg-[#8A1538]">
+    <header className=" h-auto w-fit sm:w-screen bg-[#8A1538]">
       <section className="mx-auto flex max-w-screen-xl flex-wrap items-center justify-between p-4 sm:flex-col">
-        <div className="flex w-[600px] justify-between md:w-auto">
-          <Link href="/" className="mx-auto">
-            <Image
-              src={Logo}
-              alt="UPOU Logo"
-              className="h-auto w-full"
-              width={465}
-              height={122}
-              sizes="(min-width: 540px) 465px, 89.55vw"
-            />
+        <div className="flex w-full flex-col md:flex-row">
+          <div className="hidden w-full md:block flex-1"></div>
+          
+          <Link href="/" className="w-auto flex-1">
+            <div className="flex relative w-[512px] h-[134px] items-center justify-between ">
+              <Image
+                src={Logo}
+                alt="UPOU Logo"
+                className="object-cover"
+                fill
+                sizes="100vw"
+              />
+            </div>
           </Link>
 
-          <div className="flex items-center space-x-3  ">
-            <button
-              type="button"
-              className="inline-flex size-10 items-center justify-center  rounded-lg bg-[#00563F] p-2 text-sm  text-[#FFB61B] outline-none ring-2 ring-[#FFB61B] transition-all hover:scale-110 md:hidden"
-              onClick={toggleMainMenu}
-            >
-              {mainMenuOpen ? (
-                <Image
-                  src={Cross}
-                  alt=""
-                  width={24}
-                  height={24}
-                  className="h-12 w-full"
-                />
-              ) : (
-                <Image src={Burger} alt="" width={24} height={20} />
-              )}
-            </button>
+            
+          
+          <div className="w-full relative  flex-1">
+            <div className="flex items-center space-x-3  ">
+              <button
+                type="button"
+                className="inline-flex size-10 items-center justify-center rounded-lg bg-[#00563F] p-2 text-sm text-[#FFB61B] outline-none ring-2 ring-[#FFB61B] transition-all hover:scale-110 md:hidden"
+                onClick={toggleMainMenu}
+              >
+                {mainMenuOpen ? (
+                  <Image
+                    src={Cross}
+                    alt=""
+                    width={24}
+                    height={24}
+                    className="h-12 w-full"
+                  />
+                ) : (
+                  <Image src={Burger} alt="" width={24} height={20} />
+                )}
+              </button>
+            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Avatar className='absolute border-4 border-[#FFB61B] right-0 md:right-[-50px] top-1/2 -translate-y-1/2 md:size-12'>
+                  <AvatarImage
+                    src="https://github.com/shadcn.png"
+                    alt="Profile"
+                  />
+                  <AvatarFallback>A</AvatarFallback>
+                </Avatar>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56">
+                <DropdownMenuGroup>
+                  <DropdownMenuItem>
+                    <Settings className="mr-2 h-4 w-4" />
+                    <Link href={"/account-settings"}>Account Settings</Link>
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                  <DropdownMenuItem onClick={() => signOut()}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
         <Link
@@ -83,31 +116,7 @@ const Navbar = () => {
         >
           Cyberhub
         </Link>
-        <div className="">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Avatar>
-                <AvatarImage src="" alt="Profile" />
-                <AvatarFallback>A</AvatarFallback>
-              </Avatar>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56">
-              <DropdownMenuGroup>
-                <DropdownMenuItem>
-                  <Settings className="mr-2 h-4 w-4" />
-                  <Link href={"/account-settings"}>Account Settings</Link>
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-              <DropdownMenuSeparator />
-              <DropdownMenuGroup>
-                <DropdownMenuItem onClick={() => signOut()}>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>Log out</span>
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+
         <div className="flex w-full justify-center">
           <nav
             className={`w-full items-center justify-between md:flex md:w-auto ${
