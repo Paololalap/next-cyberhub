@@ -1,13 +1,23 @@
-// app/api/auth/[...nextauth]/route.js
-
 import connectMongoDB from "@/lib/db";
 import User from "@/models/user";
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
+import GoogleProvider from "next-auth/providers/google";
 
 export const authOptions = {
   providers: [
+    GoogleProvider({
+      profile(profile) {
+        return {
+          ...profile,
+          id: profile.sub,
+          role: "user",
+        };
+      },
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    }),
     CredentialsProvider({
       name: "credentials",
       credentials: {},
@@ -30,9 +40,9 @@ export const authOptions = {
 
           return {
             _id: user._id,
-            name: user.name,
+            name: user.username,
             email: user.email,
-            // isAdmin: user.isAdmin,
+            role: user.role,
           };
         } catch (error) {
           console.log("Error: ", error);
@@ -43,12 +53,12 @@ export const authOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user?._id) token._id = user._id;
-      if (user?.isAdmin) token.isAdmin = user.isAdmin;
+      if (user?.role) token.role = user.role;
       return token;
     },
     async session({ session, token }) {
       if (token?._id) session.user._id = token._id;
-      if (token?.isAdmin) session.user.isAdmin = token.isAdmin;
+      if (token?.role) session.user.role = token.role;
       return session;
     },
   },
