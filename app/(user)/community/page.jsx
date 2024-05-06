@@ -14,7 +14,7 @@ export default async function CommunityPage() {
   return (
     <div className="h-full bg-gray-500">
       <SignOutGoogle />
-
+      <CommunityThread />
     </div>
   );
 }
