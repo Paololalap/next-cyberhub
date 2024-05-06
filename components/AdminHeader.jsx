@@ -7,6 +7,17 @@ import Cross from "@/public/cross.svg";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
+import { Settings, LogOut } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuShortcut,
+  DropdownMenuSeparator,
+  DropdownMenuGroup,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const linkStyles =
   "block py-2 px-3 text-white rounded hover:bg-[#FFB61B] md:hover:bg-[#6e102c]";
@@ -16,16 +27,16 @@ const activeStyle =
 const links = [
   { id: "manage-news", href: "/manage-news", text: "Manage News" },
   { id: "manage-tips", href: "/manage-tips", text: "Manage Tips & Guides" },
+  {
+    id: "edit-announcement",
+    href: "/edit-announcement",
+    text: "Edit Announcement",
+  },
 ];
 
 const Navbar = () => {
-  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [mainMenuOpen, setMainMenuOpen] = useState(false);
   const pathname = usePathname();
-
-  const toggleUserMenu = () => {
-    setUserMenuOpen(!userMenuOpen);
-  };
 
   const toggleMainMenu = () => {
     setMainMenuOpen(!mainMenuOpen);
@@ -72,6 +83,31 @@ const Navbar = () => {
         >
           Cyberhub
         </Link>
+        <div className="">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Avatar>
+                <AvatarImage src="" alt="Profile" />
+                <AvatarFallback>A</AvatarFallback>
+              </Avatar>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+              <DropdownMenuGroup>
+                <DropdownMenuItem>
+                  <Settings className="mr-2 h-4 w-4" />
+                  <Link href={"/account-settings"}>Account Settings</Link>
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuItem onClick={() => signOut()}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Log out</span>
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
         <div className="flex w-full justify-center">
           <nav
             className={`w-full items-center justify-between md:flex md:w-auto ${
@@ -91,12 +127,6 @@ const Navbar = () => {
                   </Link>
                 </li>
               ))}
-              <button
-                onClick={() => signOut()}
-                className="block rounded bg-[#00563F] px-3 py-2 text-white hover:text-[#FFB61B]"
-              >
-                Log Out
-              </button>
             </ul>
           </nav>
         </div>
