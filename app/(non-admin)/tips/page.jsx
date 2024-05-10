@@ -63,7 +63,7 @@ export default async function TipsPage({ searchParams }) {
       <div className="my-5 flex flex-col items-center justify-center sm:mx-52">
         {data.items.map((item) => (
           <div key={item._id} className="mb-1">
-            <Link href={`/more-info/${item._id}`}>
+            <Link href={`/article/${item._id}`}>
               <div className="group flex max-h-56 flex-row overflow-hidden rounded-md border-2 border-solid border-[#00563F] bg-white sm:flex sm:max-h-56 sm:flex-row">
                 <div
                   id="feed-image"
