@@ -15,10 +15,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={inter.className}>
-        {/* <Header /> */}
+        <Header />
         {children}
         <Toaster />
-        {/* <Footer className={openSans.className} /> */}
+        <Footer className={openSans.className} />
       </body>
     </html>
   );
