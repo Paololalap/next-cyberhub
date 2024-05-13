@@ -15,10 +15,8 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={openSans.className}>
-        <Header />
         {children}
         <Toaster />
-        <Footer className={openSans.className} />
       </body>
     </html>
   );
