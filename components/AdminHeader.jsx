@@ -46,9 +46,9 @@ const Navbar = () => {
     <header className=" h-auto w-fit sm:w-screen bg-[#8A1538]">
       <section className="mx-auto flex max-w-screen-xl flex-wrap items-center justify-between p-4 sm:flex-col">
         <div className="flex w-full flex-col md:flex-row">
-          <div className="hidden w-full md:block bg-blue-500 flex-1"></div>
+          <div className="hidden w-full md:block flex-1"></div>
           
-          <Link href="/" className="w-auto bg-green-500 flex-1">
+          <Link href="/" className="w-auto flex-1">
             <div className="flex relative w-[512px] h-[134px] items-center justify-between ">
               <Image
                 src={Logo}
@@ -62,7 +62,7 @@ const Navbar = () => {
 
             
           
-          <div className="w-full relative bg-blue-500 flex-1">
+          <div className="w-full relative flex-1">
             <div className="flex items-center space-x-3  ">
               <button
                 type="button"
