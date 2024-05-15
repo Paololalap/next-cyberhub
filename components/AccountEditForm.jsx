@@ -1,5 +1,4 @@
 "use client";
-
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -38,7 +37,6 @@ export default function EditContentForm({
       newProfilePic: profilePic,
     },
   });
-
   const router = useRouter();
 
   const onSubmit = async () => {
@@ -57,11 +55,9 @@ export default function EditContentForm({
           newProfilePic,
         }),
       });
-
       if (!res.ok) {
         throw new Error("Failed to update user");
       }
-
       router.refresh();
       router.push("/");
     } catch (error) {
@@ -96,23 +92,18 @@ export default function EditContentForm({
         <h1 className="mx-auto mt-3 w-full text-center text-3xl">
           Update User
         </h1>
-        <Avatar className="mx-auto size-[250px] border-2 border-black">
+        <Avatar
+          className="mx-auto size-[250px] cursor-pointer border-2 border-black"
+          onClick={() => {
+            const fileInput = document.createElement("input");
+            fileInput.type = "file";
+            fileInput.addEventListener("change", handleUploadImage);
+            fileInput.click();
+          }}
+        >
           <AvatarImage src={profilePic} />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
-        <FormField
-          control={form.control}
-          name="newProfilePic"
-          render={() => (
-            <FormItem>
-              <FormLabel>Picture</FormLabel>
-              <FormControl>
-                <Input type="file" onChange={(e) => handleUploadImage(e)} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         <FormField
           control={form.control}
           name="newFirstName"
@@ -152,7 +143,6 @@ export default function EditContentForm({
             </FormItem>
           )}
         />
-
         <Button type="submit">Update</Button>
       </form>
     </Form>
