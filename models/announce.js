@@ -11,6 +11,6 @@ const announceSchema = new Schema(
     timestamps: true,
   },
 );
-const Announce =
-  mongoose.models.Announce || mongoose.model("Announce", announceSchema);
-export default Announce;
+const Announces =
+  mongoose.models.Announces || mongoose.model("Announces", announceSchema);
+export default Announces;

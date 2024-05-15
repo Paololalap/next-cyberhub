@@ -11,14 +11,14 @@ async function getData(perPage, pageNumber) {
 
     // DB Query
     const items = await db
-      .collection("announcement")
+      .collection("announces")
       .find({})
       .sort({ startDate: -1 })
       .skip(perPage * (pageNumber - 1))
       .limit(perPage)
       .toArray();
 
-    const itemCount = await db.collection("announcement").countDocuments({});
+    const itemCount = await db.collection("announces").countDocuments({});
 
     const response = { items, itemCount };
     return response;

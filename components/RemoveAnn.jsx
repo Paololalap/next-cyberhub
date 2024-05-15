@@ -8,9 +8,11 @@ export default function RemoveAnn({ id }) {
     const confirmed = confirm("Are you sure?");
 
     if (confirmed) {
-      const res = await fetch(`/api/announcement?id=${id}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(
+        `http://localhost:3000/api/announces?id=${id}`,
+        {
+          method: "DELETE",
+        });
 
       if (res.ok) {
         router.refresh();
