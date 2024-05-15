@@ -66,3 +66,22 @@ export async function PATCH(request, { params }) {
   }
 }
 
+export async function PUT(request, { params }) {
+  const { id } = params;
+  const { content } = await request.json();
+  try {
+    await connectMongoDB();
+    const comment = await Comment.findByIdAndUpdate(
+      id,
+      { content },
+      { new: true },
+    );
+    if (!comment) {
+      return NextResponse.error("Comment not found", { status: 404 });
+    }
+    return NextResponse.json({ message: "Comment updated successfully" });
+  } catch (error) {
+    console.error("Error updating comment:", error);
+    return NextResponse.error("Internal server error", { status: 500 });
+  }
+}

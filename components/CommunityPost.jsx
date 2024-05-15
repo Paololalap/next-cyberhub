@@ -7,6 +7,7 @@ export const Communityposts = ({ author }) => {
   const { data: session } = useSession();
   const [posts, setPosts] = useState([]);
   const [commentTexts, setCommentTexts] = useState({});
+  const [editingComment, setEditingComment] = useState(null);
 
   useEffect(() => {
     fetchPosts();
@@ -200,6 +201,61 @@ export const Communityposts = ({ author }) => {
     }
   };
 
+  // Function to handle initiating comment edit
+  const initiateCommentEdit = (postId, commentId, currentContent) => {
+    setEditingComment({ postId, commentId, content: currentContent });
+  };
+
+  // Function to handle saving edited comment
+  const handleSaveCommentEdit = async () => {
+    const { postId, commentId, content } = editingComment;
+    try {
+      const response = await fetch(`/api/comments/${commentId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          content: content,
+        }),
+      });
+
+      if (response.ok) {
+        // Update the state with the edited comment content
+        setPosts((prevPosts) => {
+          return prevPosts.map((post) => {
+            if (post._id === postId) {
+              return {
+                ...post,
+                comments: post.comments.map((comment) => {
+                  if (comment._id === commentId) {
+                    return {
+                      ...comment,
+                      content: content,
+                    };
+                  }
+                  return comment;
+                }),
+              };
+            }
+            return post;
+          });
+        });
+        // Clear editing state
+        setEditingComment(null);
+      } else {
+        console.error("Failed to update comment:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error updating comment:", error);
+    }
+  };
+
+  // Function to handle canceling comment edit
+  const cancelCommentEdit = () => {
+    setEditingComment(null);
+  };
+
   // Render UI
   return (
     <div className="flex flex-col items-center justify-center gap-y-4 py-2">
@@ -241,47 +297,74 @@ export const Communityposts = ({ author }) => {
                 <p>No comments yet, you are the first one to comment.</p>
               ) : (
                 post.comments.map((comment) => (
-                  <div key={comment._id} className="mb-2 border-2 border-black">
-                    {/* Render icon based on pinStatus */}
-                    {session?.user?.role === "admin" ? (
-                      comment.pinStatus === "pinned" ? (
-                        <Pin
-                          className="mr-2 cursor-pointer text-green-500"
-                          onClick={() =>
-                            handlePinComment(
-                              post._id,
-                              comment._id,
-                              comment.pinStatus,
-                            )
-                          }
-                        />
-                      ) : (
-                        <PinOff
-                          className="mr-2 cursor-pointer text-red-500"
-                          onClick={() =>
-                            handlePinComment(
-                              post._id,
-                              comment._id,
-                              comment.pinStatus,
-                            )
-                          }
-                        />
-                      )
-                    ) : (
-                      comment.pinStatus === "pinned" && (
-                        <CheckCheck className="mr-2 text-green-500" />
-                      )
-                    )}
+                  <div
+                    key={comment._id}
+                    className="mb-2 border-2 border-black p-2"
+                  >
                     <div className="flex items-center">
+                      {/* Render icon based on pinStatus */}
+                      {session?.user?.role === "admin" ? (
+                        comment.pinStatus === "pinned" ? (
+                          <Pin
+                            className="mr-2 cursor-pointer text-green-500"
+                            onClick={() =>
+                              handlePinComment(
+                                post._id,
+                                comment._id,
+                                comment.pinStatus,
+                              )
+                            }
+                          />
+                        ) : (
+                          <PinOff
+                            className="mr-2 cursor-pointer text-red-500"
+                            onClick={() =>
+                              handlePinComment(
+                                post._id,
+                                comment._id,
+                                comment.pinStatus,
+                              )
+                            }
+                          />
+                        )
+                      ) : (
+                        comment.pinStatus === "pinned" && (
+                          <CheckCheck className="mr-2 text-green-500" />
+                        )
+                      )}
                       <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-300 text-2xl font-bold text-gray-700">
                         {comment.author[0]}
                       </div>
                       <div className="ml-2 w-full px-2 py-2">
-                        {comment.content}
+                        {editingComment &&
+                        editingComment.commentId === comment._id ? (
+                          <input
+                            type="text"
+                            value={editingComment.content}
+                            onChange={(e) =>
+                              setEditingComment({
+                                ...editingComment,
+                                content: e.target.value,
+                              })
+                            }
+                            className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none"
+                          />
+                        ) : (
+                          comment.content
+                        )}
                       </div>
                       {/* Render edit icon if the session.user._id is the same as the comment userId */}
                       {session?.user?._id === comment.userID && (
-                        <SquarePen className="ml-auto cursor-pointer text-blue-500" />
+                        <SquarePen
+                          className="ml-auto cursor-pointer text-blue-500"
+                          onClick={() =>
+                            initiateCommentEdit(
+                              post._id,
+                              comment._id,
+                              comment.content,
+                            )
+                          }
+                        />
                       )}
                       {/* Render delete button for comments if the user is an admin */}
                       {session?.user?.role === "admin" && (
@@ -296,6 +379,24 @@ export const Communityposts = ({ author }) => {
                         </button>
                       )}
                     </div>
+                    {/* Render save and cancel buttons when editing a comment */}
+                    {editingComment &&
+                      editingComment.commentId === comment._id && (
+                        <div className="mt-2 flex">
+                          <button
+                            onClick={handleSaveCommentEdit}
+                            className="mr-2 rounded-md bg-green-500 px-4 py-2 text-white hover:bg-green-600 focus:outline-none"
+                          >
+                            Save
+                          </button>
+                          <button
+                            onClick={cancelCommentEdit}
+                            className="rounded-md bg-red-500 px-4 py-2 text-white hover:bg-red-600 focus:outline-none"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      )}
                   </div>
                 ))
               )}
