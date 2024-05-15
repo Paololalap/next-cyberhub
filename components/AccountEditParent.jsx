@@ -42,8 +42,6 @@ export default function EditContent() {
     return null; // Return null or a loading indicator while data is being fetched
   }
 
-  console.log("User Data:", user.firstName);
-
   return (
     <EditUserForm
       firstName={user.firstName}
