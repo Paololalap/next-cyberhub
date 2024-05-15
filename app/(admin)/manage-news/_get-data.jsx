@@ -12,8 +12,7 @@ import Image from "next/image";
 import RemoveBtn from "@/components/Removebtn";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { CalendarDays } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import UpdateButton from "@/components/button/Update";
 
 async function getData(perPage, pageNumber) {
   try {
@@ -66,7 +65,7 @@ export default async function GetData({ searchParams }) {
           <div className="relative col-span-5 overflow-hidden">
             <AspectRatio ratio={16 / 9}>
               <Image
-                className="rounded-md object-contain transition-all md:hover:scale-110"
+                className="object-contain transition-all md:hover:scale-110"
                 src={item.imageL}
                 alt={item.title}
                 sizes="(min-width: 680px) 640px, calc(94.44vw + 17px)"
@@ -87,14 +86,7 @@ export default async function GetData({ searchParams }) {
             </div>
             <div className="h-full">{item.description}</div>
             <div className="mt-5 flex gap-x-2 md:mt-0 md:self-end">
-              <Link href={`/edit-content/${item._id}`} tabIndex={-1}>
-                <Button
-                  aria-label="update button"
-                  className="bg-[#8a1438] hover:bg-[#8a1438]/90"
-                >
-                  Update
-                </Button>
-              </Link>
+              <UpdateButton id={item._id.buffer.toString()} />
               <RemoveBtn
                 id={item._id.buffer.toString("hex")}
                 className={"border-2 border-[#8a1438]"}

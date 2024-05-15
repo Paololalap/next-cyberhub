@@ -1,27 +1,55 @@
 "use client";
-
 import { useRouter } from "next/navigation";
 import { Button } from "./ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
-export default function RemoveBtn({ id,className }) {
+export default function RemoveBtn({ id, className }) {
   const router = useRouter();
+
   const removeContent = async () => {
-    const confirmed = confirm("Are you sure?");
-
-    if (confirmed) {
-      const res = await fetch(`http://localhost:3000/api/content?id=${id}`, {
-        method: "DELETE",
-      });
-
-      if (res.ok) {
-        router.refresh();
-      }
+    const res = await fetch(`http://localhost:3000/api/content?id=${id}`, {
+      method: "DELETE",
+    });
+    if (res.ok) {
+      router.refresh();
     }
   };
 
   return (
-    <Button onClick={removeContent} className={className} variant={"outline"}>
-      Delete
-    </Button>
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button className={className} variant={"outline"}>
+          Delete
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This action cannot be undone. This will permanently delete data from
+            our servers.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={removeContent}
+            className='bg-[#8a1438] hover:bg-[#8a1438]/90"'
+          >
+            Continue
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }
