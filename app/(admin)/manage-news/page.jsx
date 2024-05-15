@@ -3,13 +3,23 @@ import { connectToDatabase } from "@/lib/connectMongo";
 import Link from "next/link";
 import Image from "next/image";
 import RemoveBtn from "@/components/Removebtn";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { CalendarDays } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+
 async function getData(perPage, pageNumber) {
   try {
-    // DB Connect
     const client = await connectToDatabase();
     const db = client.db("CyberDB");
-
-    // DB Query
 
     const items = await db
       .collection("contents")
@@ -28,7 +38,7 @@ async function getData(perPage, pageNumber) {
   }
 }
 
-export default async function Newspage({ searchParams }) {
+export default async function NewsPage({ searchParams }) {
   let page = parseInt(searchParams.page, 10);
   page = !page || page < 1 ? 1 : page;
   const perPage = 8;
@@ -48,141 +58,101 @@ export default async function Newspage({ searchParams }) {
     }
   }
   return (
-    <div id="page" className="h-max  items-center bg-[#f7f7e3]">
-      <div
-        id="news-container"
-        className="flex-col items-center justify-center bg-transparent   "
-      >
-        <div
-          id="news-container-title"
-          className="flex-col items-center justify-center p-5 text-center text-2xl font-semibold text-[#6e102c]"
-        >
-          <span>Manage News</span>
-          <hr className="mx-auto w-64 border-2  border-solid border-[#FFB61B]" />
-        </div>
-      </div>
-      <div
-        id="managenews-addbtn-container"
-        className="flex flex-col items-center justify-center"
-      >
-        <Link
-          href={"/add-content"}
-          id="addentry-btn"
-          className="rounded-md border-2 border-solid border-[#00563F] p-2"
+    <div className="flex min-h-screen w-screen flex-col bg-[#f7f7e3] px-3">
+      <div className="mt-5 text-center text-3xl font-black">Manage News</div>
+      <hr className="mx-auto mt-3 w-64 border-2 border-solid border-[#FFB61B]" />
+      <Link href={"/add-content"} tabIndex={-1} className="mx-auto mt-5">
+        <Button
+          className="bg-[#8a1438] hover:bg-[#8a1438]/90"
+          aria-label="add news button"
         >
           Add News Entry
-        </Link>
-      </div>
-      <div
-        id="pagination-wrapper"
-        className=" my-5 flex flex-col items-center justify-center  sm:mx-80"
-      >
+        </Button>
+      </Link>
+      <div className="mx-auto my-5 w-full max-w-[75rem]">
         {data.items.map((item) => (
-          <div id="feed-content" key={item._id} className="mb-1">
-            {/*  <Link href={item.link} target="_blank"> */}
-            <div
-              id="feed-container"
-              className="group flex max-h-56 flex-row overflow-hidden rounded-md border-2 border-solid border-[#00563F] bg-white sm:flex sm:max-h-56 sm:flex-row"
-            >
-              <div
-                id="feed-image"
-                className="w-2/5 py-10 transition-all hover:scale-[1.03] sm:py-5"
-              >
+          <div
+            key={item._id}
+            className="group mt-2 grid grid-cols-1 rounded-md border-2 border-solid border-[#00563F] bg-white first:mt-0 md:grid-cols-12"
+          >
+            <div className="relative col-span-5 overflow-hidden">
+              <AspectRatio ratio={16 / 9}>
                 <Image
-                  className="rounded-md"
+                  className="rounded-md object-contain transition-all md:hover:scale-110"
                   src={item.imageL}
-                  alt="/"
-                  width={640}
-                  height={334}
+                  alt={item.title}
                   sizes="(min-width: 680px) 640px, calc(94.44vw + 17px)"
-                  priority
+                  fill
                 />
-              </div>
-              <div
-                id="feed-content"
-                className="flex w-3/5 flex-col justify-between p-5 sm:flex sm:flex-col sm:p-5"
-              >
-                <div className="sm:flex sm:flex-col">
-                  <div
-                    id="feed-title"
-                    className="text-sm font-bold text-gray-500 group-hover:underline sm:text-sm"
-                  >
-                    {item.title}
-                  </div>
-                  <div className="mb-5">
-                    <div
-                      id="feed-date"
-                      className="mb-1 mr-10 text-xs sm:text-sm"
-                    >
-                      <span>{item.date}</span>
-                    </div>
-                    <div id="feed-tags" className="text-xs sm:text-sm">
-                      <span>{item.tags.join(" / ").replace(/,/g, "/,")}</span>
-                    </div>
-                  </div>
-                  <div id="feed-description" className="text-xs sm:text-sm">
-                    <span>{item.description}</span>
-                  </div>
+              </AspectRatio>
+            </div>
+            <div className="col-span-7 flex flex-col p-5">
+              <div className="text-lg font-black">{item.title}</div>
+              <div className="mb-5 flex">
+                <div className="mb-1 mr-10 flex items-center gap-x-1 text-xs sm:text-sm">
+                  <CalendarDays className="size-5" />
+                  <span>{item.date}</span>
                 </div>
-                <div
-                  id="feed-btn"
-                  className="flex flex-row-reverse text-xs sm:text-sm"
-                >
-                  <Link
-                    href={`/edit-content/${item._id}`}
-                    id="addentry-btn"
-                    className="mx-1 rounded-md border-2 border-solid border-[#00563F] p-2"
+                <div className="text-xs italic sm:text-sm">
+                  <span>{item.tags.join(" / ").replace(/,/g, "/,")}</span>
+                </div>
+              </div>
+              <div className="h-full">{item.description}</div>
+              <div className="mt-5 flex gap-x-2 md:mt-0 md:self-end">
+                <Link href={`/edit-content/${item._id}`} tabIndex={-1}>
+                  <Button
+                    aria-label="update button"
+                    className="bg-[#8a1438] hover:bg-[#8a1438]/90"
                   >
                     Update
-                  </Link>
-                  <RemoveBtn id={item._id.buffer.toString("hex")} />
-                </div>
+                  </Button>
+                </Link>
+                <RemoveBtn
+                  id={item._id.buffer.toString("hex")}
+                  className={"border-2 border-[#8a1438]"}
+                />
               </div>
             </div>
-            {/*  </Link> */}
           </div>
         ))}
 
         {isPageOutOfRange ? (
           <div>No more pages...</div>
         ) : (
-          <div className="mt-16 flex items-center justify-center">
-            <div className="border-light-green flex gap-4 rounded-[10px] border-[1px] p-4">
-              {page === 1 ? (
-                <div className="opacity-60" aria-disabled="true">
-                  Previous
-                </div>
-              ) : (
-                <Link href={`?page=${prevPage}`} aria-label="Previous Page">
-                  Previous
-                </Link>
-              )}
-
-              {pageNumbers.map((pageNumber, index) => (
-                <Link
-                  key={index}
-                  className={
-                    page === pageNumber
-                      ? "fw-bold rounded-md bg-[#00563f] px-2 text-[#FFB61B]"
-                      : "rounded-md px-1 hover:bg-[#00563f]"
-                  }
-                  href={`?page=${pageNumber}`}
-                >
-                  {pageNumber}
-                </Link>
-              ))}
-
-              {page === totalPages ? (
-                <div className="opacity-60" aria-disabled="true">
-                  Next
-                </div>
-              ) : (
-                <Link href={`?page=${nextPage}`} aria-label="Next Page">
-                  Next
-                </Link>
-              )}
-            </div>
-          </div>
+          <Pagination className={"mt-3"}>
+            <PaginationContent>
+              <PaginationItem>
+                {page === 1 ? (
+                  <PaginationPrevious className="pointer-events-none opacity-70" />
+                ) : (
+                  <PaginationPrevious href={`?page=${prevPage}`} />
+                )}
+              </PaginationItem>
+              <PaginationItem>
+                {pageNumbers.map((pageNumber, index) => (
+                  <PaginationLink key={index} href={`?page=${pageNumber}`}>
+                    {pageNumber}
+                  </PaginationLink>
+                ))}
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationEllipsis />
+              </PaginationItem>
+              <PaginationItem>
+                {page === totalPages ? (
+                  <PaginationNext
+                    className="pointer-events-none opacity-70"
+                    aria-disabled="true"
+                  />
+                ) : (
+                  <PaginationNext
+                    href={`?page=${nextPage}`}
+                    aria-label="Next Page"
+                  />
+                )}
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
         )}
       </div>
     </div>

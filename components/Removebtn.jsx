@@ -1,8 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { Button } from "./ui/button";
 
-export default function RemoveBtn({ id }) {
+export default function RemoveBtn({ id,className }) {
   const router = useRouter();
   const removeContent = async () => {
     const confirmed = confirm("Are you sure?");
@@ -19,11 +20,8 @@ export default function RemoveBtn({ id }) {
   };
 
   return (
-    <button
-      onClick={removeContent}
-      className="mx-1 rounded-md border-2 border-solid border-[#00563F] p-2"
-    >
+    <Button onClick={removeContent} className={className} variant={"outline"}>
       Delete
-    </button>
+    </Button>
   );
 }
