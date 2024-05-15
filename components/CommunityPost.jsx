@@ -1,11 +1,13 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { CheckCheck, Trash2, Pin, PinOff } from "lucide-react"; // Import the icons
+import { CheckCheck, Trash2, Pin, PinOff, SquarePen } from "lucide-react"; // Import the icons
 import { useSession } from "next-auth/react";
+
 export const Communityposts = ({ author }) => {
   const { data: session } = useSession();
   const [posts, setPosts] = useState([]);
   const [commentTexts, setCommentTexts] = useState({});
+
   useEffect(() => {
     fetchPosts();
   }, []);
@@ -69,7 +71,7 @@ export const Communityposts = ({ author }) => {
           userID: session?.user?._id,
         }),
       });
-     
+
       // If the request is successful, update the state with the new comment
       if (response.ok) {
         const newComment = await response.json();
@@ -270,24 +272,30 @@ export const Communityposts = ({ author }) => {
                         <CheckCheck className="mr-2 text-green-500" />
                       )
                     )}
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-300 text-2xl font-bold text-gray-700">
-                      {comment.author[0]}
+                    <div className="flex items-center">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-300 text-2xl font-bold text-gray-700">
+                        {comment.author[0]}
+                      </div>
+                      <div className="ml-2 w-full px-2 py-2">
+                        {comment.content}
+                      </div>
+                      {/* Render edit icon if the session.user._id is the same as the comment userId */}
+                      {session?.user?._id === comment.userID && (
+                        <SquarePen className="ml-auto cursor-pointer text-blue-500" />
+                      )}
+                      {/* Render delete button for comments if the user is an admin */}
+                      {session?.user?.role === "admin" && (
+                        <button
+                          onClick={() =>
+                            handleCommentDelete(post._id, comment._id)
+                          }
+                          className="ml-auto text-red-500 hover:text-red-700 focus:outline-none"
+                        >
+                          <Trash2 className="mr-1 inline-block h-6 w-6" />
+                          Delete
+                        </button>
+                      )}
                     </div>
-                    <div className="ml-2 w-full px-2 py-2">
-                      {comment.content}
-                    </div>
-                    {/* Render delete button for comments if the user is an admin */}
-                    {session?.user?.role === "admin" && (
-                      <button
-                        onClick={() =>
-                          handleCommentDelete(post._id, comment._id)
-                        }
-                        className="ml-auto text-red-500 hover:text-red-700 focus:outline-none"
-                      >
-                        <Trash2 className="mr-1 inline-block h-6 w-6" />
-                        Delete
-                      </button>
-                    )}
                   </div>
                 ))
               )}
