@@ -52,7 +52,7 @@ export const authOptions = {
           }
 
           return {
-            _id: user._id,
+            id: user._id,
             name: user.username,
             email: user.email,
             role: user.role,

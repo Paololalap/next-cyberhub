@@ -66,9 +66,10 @@ export const Communityposts = ({ author }) => {
           author: author,
           content: commentText,
           pinStatus: pinStatus,
+          userID: session?.user?._id,
         }),
       });
-
+     
       // If the request is successful, update the state with the new comment
       if (response.ok) {
         const newComment = await response.json();

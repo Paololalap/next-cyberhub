@@ -4,7 +4,7 @@ import { Post, Comment } from "@/models/thread"; // Ensure Comment is imported
 
 export async function POST(request, { params }) {
   const { id } = params;
-  const { author, content, pinStatus } = await request.json(); // Retrieve author and content from request body
+  const { author, content, pinStatus, userID } = await request.json(); // Retrieve author and content from request body
   try {
     await connectMongoDB();
     const post = await Post.findById(id);
@@ -15,7 +15,9 @@ export async function POST(request, { params }) {
       author,
       content,
       pinStatus,
+      userID,
       postId: post._id,
+      
     });
     await comment.save();
     // Push commentId to post's comments array
