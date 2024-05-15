@@ -19,20 +19,20 @@ const getContentById = async (id) => {
 export default async function ViewMore({ params }) {
   const { id } = params;
   const { content } = await getContentById(id);
-  const { title, tags, author, date, description, body, imageL } =
-    content;
+  const { title, tags, author, date, description, body, imageL } = content;
 
   return (
     <div className="h-max bg-[#f7f7e3]">
-    <MoreInfo
-      id={id}
-      title={title}
-      tags={tags}
-      author={author}
-      date={date}
-      description={description}
-      body={body}
-      imageL={imageL}
-    /></div>
+      <MoreInfo
+        id={id}
+        title={title}
+        tags={tags}
+        author={author}
+        date={date}
+        description={description}
+        body={body}
+        imageL={imageL}
+      />
+    </div>
   );
 }

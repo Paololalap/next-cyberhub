@@ -1,6 +1,8 @@
-import Link from "next/link";
 import Image from "next/image";
 import GError from "@/app/(non-admin)/news/error";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { CalendarDays } from "lucide-react";
+
 const getHeadline = async () => {
   try {
     const res = await fetch("http://localhost:3000/api/content", {
@@ -16,58 +18,50 @@ const getHeadline = async () => {
     console.log("Something went wrong! ", error);
   }
 };
+
 export default async function HomePage() {
   const { content } = await getHeadline();
 
-  return content.map((t) => (
-    <div key={t._id} className="sm:mx-52">
-      <Link href={t.link} target="_blank">
-        <div
-          id="headline-container"
-          className="group overflow-hidden rounded-md border-2 border-solid border-[#00563F] bg-white p-1  sm:flex sm:flex-row"
-        >
-          <div
-            id="headline-image"
-            className="transition-all hover:scale-[1.03]  sm:w-3/5 "
-          >
+  return content.map((headline) => (
+    <div
+      key={headline._id}
+      className="mx-auto mt-5 w-full max-w-[75rem] px-5 lg:p-0"
+    >
+      <div className="overflow-hidden rounded-md border-2 border-solid border-[#00563F] bg-white sm:grid sm:grid-cols-2">
+        <div className="relative w-full overflow-hidden transition-all md:hover:scale-110">
+          <AspectRatio ratio={16 / 9}>
             <Image
-              className="rounded-md"
-              src={t.imageL}
-              alt="/"
-              width={640}
-              height={334}
-              sizes="(min-width: 680px) 640px, calc(94.44vw + 17px)"
+              src={headline.imageL}
+              alt={headline.title}
+              fill
+              sizes="(min-width: 580px) 465px, calc(91.15vw - 45px)"
+              className="rounded-lg object-contain"
+              priority
             />
-          </div>
-          <div
-            id="headline-content"
-            className="flex flex-col justify-between p-5 sm:w-2/5 sm:p-5"
-          >
-            <div className="flex flex-col">
-              <div
-                id="headline-title"
-                className="font-bold text-gray-500 group-hover:underline "
-              >
-                {t.title}
+          </AspectRatio>
+        </div>
+        <div className="p-5">
+          <div className="flex flex-col">
+            <div className="text-xl font-black">
+              {headline.title}
+            </div>
+            <div className="flex flex-row">
+              <div className="mr-10 text-sm">
+                <span className="flex items-center gap-x-1">
+                  <CalendarDays className="size-5"/>
+                  {headline.date}
+                </span>
               </div>
-              <div className="mb-5 flex flex-row ">
-                <div id="headline-date" className="mr-10 text-sm">
-                  <span> {t.date}</span>
-                </div>
-                <div id="headline-tags" className="text-sm">
-                  <span> {t.tags.join(" / ").replace(/,/g, "/,")} </span>
-                </div>
-              </div>
-              <div id="headline-description">
-                <span>{t.description}</span>
+              <div className="text-sm italic">
+                <span>{headline.tags.join(" / ").replace(/,/g, "/,")}</span>
               </div>
             </div>
-            <div id="readmore" className="flex flex-row-reverse">
-              <span>Read more</span>
+            <div className="mt-5">
+              <span className="line-clamp-6">{headline.description}</span>
             </div>
           </div>
         </div>
-      </Link>
+      </div>
     </div>
   ));
 }
