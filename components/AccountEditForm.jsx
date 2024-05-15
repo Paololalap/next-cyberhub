@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -28,6 +29,7 @@ export default function EditContentForm({
   username,
   profilePic,
 }) {
+  const [selectedImage, setSelectedImage] = useState(profilePic);
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -79,6 +81,7 @@ export default function EditContentForm({
     const file = e.target.files[0];
     if (file) {
       const image = await imageBase64(file);
+      setSelectedImage(image);
       form.setValue("newProfilePic", image);
     }
   };
@@ -101,7 +104,7 @@ export default function EditContentForm({
             fileInput.click();
           }}
         >
-          <AvatarImage src={profilePic} />
+          <AvatarImage src={selectedImage} />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
         <FormField
