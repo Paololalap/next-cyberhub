@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { Pencil } from "lucide-react";
 import {
   Form,
   FormControl,
@@ -15,6 +16,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import Image from "next/image";
 
 const formSchema = z.object({
   newFirstName: z.string(),
@@ -79,33 +81,44 @@ export default function EditContentForm({
 
   const handleUploadImage = async (e) => {
     const file = e.target.files[0];
-    if (file) {
+    if (file && file.type.startsWith("image/")) {
       const image = await imageBase64(file);
       setSelectedImage(image);
       form.setValue("newProfilePic", image);
+    } else {
+      alert("Please select an image file.");
     }
   };
 
   return (
     <Form {...form}>
       <form
-        className="w-96 rounded-lg border-t-[6px] border-[#8a1538] p-4 shadow-2xl sm:w-[30rem] md:w-auto"
+        className="rounded-lg border-t-[6px] border-[#8a1538] p-4 shadow-2xl sm:w-[30rem] md:w-auto max-w-[24rem] w-full mx-auto mt-5 space-y-2"
         onSubmit={form.handleSubmit(onSubmit)}
       >
-        <h1 className="mx-auto mt-3 w-full text-center text-3xl">
+        <h1 className="mx-auto mt-3 mb-5 w-full text-center text-3xl">
           Update User
         </h1>
         <Avatar
-          className="mx-auto size-[250px] cursor-pointer border-2 border-black"
+          className="group relative mx-auto size-[250px] cursor-pointer overflow-hidden border-2 border-black"
           onClick={() => {
             const fileInput = document.createElement("input");
             fileInput.type = "file";
+            fileInput.accept = "image/*";
             fileInput.addEventListener("change", handleUploadImage);
             fileInput.click();
           }}
         >
-          <AvatarImage src={selectedImage} />
+          <Image
+            src={selectedImage}
+            alt="Profile Picture"
+            fill
+            className="object-cover rounded-full"
+          />
           <AvatarFallback>CN</AvatarFallback>
+          <div className="invisible absolute size-full rounded-full bg-black/40 transition-all group-hover:visible">
+            <Pencil className="absolute left-1/2 top-1/2 z-50 size-10 -translate-x-1/2 -translate-y-1/2 text-white" />
+          </div>
         </Avatar>
         <FormField
           control={form.control}
@@ -146,7 +159,7 @@ export default function EditContentForm({
             </FormItem>
           )}
         />
-        <Button type="submit">Update</Button>
+        <Button type="submit" className=''>Update</Button>
       </form>
     </Form>
   );
