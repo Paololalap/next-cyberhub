@@ -9,7 +9,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import Image from "next/image";
-import RemoveBtn from "@/components/Removebtn";
+import Remove from "@/components/button/Remove";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { CalendarDays } from "lucide-react";
 import UpdateButton from "@/components/button/Update";
@@ -37,20 +37,20 @@ async function getData(perPage, pageNumber) {
 }
 
 export default async function GetData({ searchParams }) {
-  let page = parseInt(searchParams.page, 10);
-  page = !page || page < 1 ? 1 : page;
+  let pageNumber = parseInt(searchParams.pageNumber, 10);
+  pageNumber = !pageNumber || pageNumber < 1 ? 1 : pageNumber;
   const perPage = 8;
-  const data = await getData(perPage, page);
+  const data = await getData(perPage, pageNumber);
 
   const totalPages = Math.ceil(data.itemCount / perPage);
 
-  const prevPage = page - 1 > 0 ? page - 1 : 1;
-  const nextPage = page + 1;
-  const isPageOutOfRange = page > totalPages;
+  const prevPage = pageNumber - 1 > 0 ? pageNumber - 1 : 1;
+  const nextPage = pageNumber + 1;
+  const isPageOutOfRange = pageNumber > totalPages;
 
   const pageNumbers = [];
   const offsetNumber = 3;
-  for (let i = page - offsetNumber; i <= page + offsetNumber; i++) {
+  for (let i = pageNumber - offsetNumber; i <= pageNumber + offsetNumber; i++) {
     if (i >= 1 && i <= totalPages) {
       pageNumbers.push(i);
     }
@@ -86,8 +86,8 @@ export default async function GetData({ searchParams }) {
             </div>
             <div className="h-full">{item.description}</div>
             <div className="mt-5 flex gap-x-2 md:mt-0 md:self-end">
-              <UpdateButton id={item._id.buffer.toString()} />
-              <RemoveBtn
+              <UpdateButton id={item._id.buffer.toString("hex")} />
+              <Remove
                 id={item._id.buffer.toString("hex")}
                 className={"border-2 border-[#8a1438]"}
               />
@@ -102,15 +102,15 @@ export default async function GetData({ searchParams }) {
         <Pagination className={"mt-3"}>
           <PaginationContent>
             <PaginationItem>
-              {page === 1 ? (
+              {pageNumber === 1 ? (
                 <PaginationPrevious className="pointer-events-none opacity-70" />
               ) : (
-                <PaginationPrevious href={`?page=${prevPage}`} />
+                <PaginationPrevious href={`?pageNumber=${prevPage}`} />
               )}
             </PaginationItem>
             <PaginationItem>
               {pageNumbers.map((pageNumber, index) => (
-                <PaginationLink key={index} href={`?page=${pageNumber}`}>
+                <PaginationLink key={index} href={`?pageNumber=${pageNumber}`}>
                   {pageNumber}
                 </PaginationLink>
               ))}
@@ -119,14 +119,14 @@ export default async function GetData({ searchParams }) {
               <PaginationEllipsis />
             </PaginationItem>
             <PaginationItem>
-              {page === totalPages ? (
+              {pageNumber === totalPages ? (
                 <PaginationNext
                   className="pointer-events-none opacity-70"
                   aria-disabled="true"
                 />
               ) : (
                 <PaginationNext
-                  href={`?page=${nextPage}`}
+                  href={`?pageNumber=${nextPage}`}
                   aria-label="Next Page"
                 />
               )}
