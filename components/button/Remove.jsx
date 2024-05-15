@@ -1,6 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,7 +13,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-export default function RemoveBtn({ id, className }) {
+export default function Remove({ id, className }) {
   const router = useRouter();
 
   const removeContent = async () => {
@@ -44,7 +44,7 @@ export default function RemoveBtn({ id, className }) {
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
             onClick={removeContent}
-            className='bg-[#8a1438] hover:bg-[#8a1438]/90"'
+            className='hover:bg-[#8a1438]/90" bg-[#8a1438]'
           >
             Continue
           </AlertDialogAction>

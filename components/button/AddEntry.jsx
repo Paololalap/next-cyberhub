@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Button } from "../ui/button";
 import { Loader2 } from "lucide-react";
 
-export default function AddNewsEntry() {
+export default function AddEntry({children}) {
   const [isLoading, setIsLoading] = useState(false);
   return (
     <Link href={"/add-content"} tabIndex={-1} className="mx-auto mt-5">
@@ -14,7 +14,7 @@ export default function AddNewsEntry() {
         onClick={() => setIsLoading((prev) => !prev)}
       >
         {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-        Add News Entry
+        {children}
       </Button>
     </Link>
   );
