@@ -16,6 +16,7 @@ const commentSchema = new Schema(
     content: String,
     postId: { type: Schema.Types.String, ref: "Post" },
     pinStatus: String,
+    userID: String,
   },
   {
     timestamps: true,
