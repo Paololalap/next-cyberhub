@@ -4,8 +4,8 @@ const announceSchema = new Schema(
   {
     title: String,
     content: String,
-    startDate: Date,
-    endDate: Date,
+    startDate: String,
+    endDate: String,
   },
   {
     timestamps: true,

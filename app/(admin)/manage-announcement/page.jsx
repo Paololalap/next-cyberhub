@@ -2,6 +2,7 @@ import React from "react";
 import { connectToDatabase } from "@/lib/connectMongo";
 import Link from "next/link";
 import RemoveAnn from "@/components/RemoveAnn";
+import formatDateToWords from "@/constants/DATE_TO_WORDS";
 
 async function getData(perPage, pageNumber) {
   try {
@@ -75,7 +76,8 @@ export default async function AnnouncementsPage({ searchParams }) {
                   <div className="mb-5">
                     <div className="mb-1 mr-10 text-xs sm:text-sm">
                       <span>
-                        {item.startDate} to {item.endDate}
+                        {formatDateToWords(item.startDate)} to{" "}
+                        {formatDateToWords(item.endDate)}
                       </span>
                     </div>
                     {/* Tags can be displayed here */}
@@ -91,7 +93,7 @@ export default async function AnnouncementsPage({ searchParams }) {
                   >
                     Update
                   </Link>
-                  
+
                   <RemoveAnn id={item._id.buffer.toString("hex")} />
                 </div>
               </div>

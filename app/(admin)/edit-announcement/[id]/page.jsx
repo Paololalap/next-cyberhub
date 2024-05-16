@@ -13,14 +13,19 @@ const getAnnouncementById = async (id) => {
     return res.json();
   } catch (error) {
     console.error(error);
+    return null;
   }
 };
 
 export default async function EditAnnouncement({ params }) {
   const { id } = params;
 
-  const { announces } = await getAnnouncementById(id);
-  const { title, content, startDate, endDate } = announces;
+  const announce = await getAnnouncementById(id);
+  if (!announce) {
+    return <div>Error loading announcement</div>;
+  }
+
+  const { title, content, startDate, endDate } = announce;
 
   return (
     <EditAnnounceForm

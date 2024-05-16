@@ -1,36 +1,34 @@
 'use client'
-import React, { useState } from "react";
-import { useRouter } from "next/router";
+import React, { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 
-function EditAnnounceForm({
-  id,
-  title,
-  content,
-  startDate,
-  endDate,
-  type,
-}) {
-  const { register, handleSubmit } = useForm();
-  const [newTitle, setNewTitle] = useState(title);
-  const [newContent, setNewContent] = useState(content);
-  const [newStartDate, setNewStartDate] = useState(startDate);
-  const [newEndDate, setNewEndDate] = useState(endDate);
+function EditAnnounceForm({ id, title, content, startDate, endDate }) {
+  const { register, handleSubmit, setValue } = useForm();
+
+  useEffect(() => {
+    setValue("title", title);
+    setValue("content", content);
+    setValue("startDate", startDate.split("T")[0]);
+    setValue("endDate", endDate.split("T")[0]);
+  }, [title, content, startDate, endDate, setValue]);
+
   const router = useRouter();
 
-  const onSubmit = async () => {
+  const onSubmit = async (data) => {
+    const formattedData = {
+      ...data,
+      startDate: data.startDate.split("T")[0], // Ensure date is in YYYY-MM-DD format
+      endDate: data.endDate.split("T")[0], // Ensure date is in YYYY-MM-DD format
+    };
+
     try {
       const res = await fetch(`http://localhost:3000/api/announces/${id}`, {
         method: "PUT",
         headers: {
-          "Content-type": "application/json",
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          newTitle,
-          newContent,
-          newStartDate,
-          newEndDate,
-        }),
+        body: JSON.stringify(formattedData),
       });
 
       if (!res.ok) {
@@ -59,8 +57,6 @@ function EditAnnounceForm({
             id="title"
             type="text"
             className="peer h-10 w-full cursor-text border-b-2 border-gray-200 text-gray-900 placeholder-transparent placeholder:select-none focus:border-[#8a1538] focus:outline-none"
-            onChange={(e) => setNewTitle(e.target.value)}
-            value={newTitle}
           />
           <label
             htmlFor="title"
@@ -72,9 +68,7 @@ function EditAnnounceForm({
         <textarea
           {...register("content")}
           placeholder="Content"
-          className="mt-6 h-24 w-full cursor-text resize-none rounded-lg border-2 border-gray-200 p-2 text-gray-900 focus:border-[#8a1538]  focus:outline-none"
-          onChange={(e) => setNewContent(e.target.value)}
-          value={newContent}
+          className="mt-6 h-24 w-full cursor-text resize-none rounded-lg border-2 border-gray-200 p-2 text-gray-900 focus:border-[#8a1538] focus:outline-none"
         />
         <div className="relative mt-6">
           <label
@@ -88,8 +82,6 @@ function EditAnnounceForm({
             id="startDate"
             type="date"
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#8a1538] focus:ring-[#8a1538] sm:text-sm"
-            onChange={(e) => setNewStartDate(e.target.value)}
-            value={newStartDate}
           />
         </div>
         <div className="relative mt-6">
@@ -104,8 +96,6 @@ function EditAnnounceForm({
             id="endDate"
             type="date"
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#8a1538] focus:ring-[#8a1538] sm:text-sm"
-            onChange={(e) => setNewEndDate(e.target.value)}
-            value={newEndDate}
           />
         </div>
         <button
