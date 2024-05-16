@@ -28,9 +28,9 @@ const links = [
   { id: "manage-news", href: "/manage-news", text: "Manage News" },
   { id: "manage-tips", href: "/manage-tips", text: "Manage Tips & Guides" },
   {
-    id: "edit-announcement",
-    href: "/edit-announcement",
-    text: "Edit Announcement",
+    id: "manage-announcement",
+    href: "/manage-announcement",
+    text: "Manage Announcement",
   },
 ];
 
