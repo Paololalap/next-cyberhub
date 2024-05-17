@@ -70,7 +70,7 @@ export default async function GetData({ searchParams }) {
   }
   return (
     <>
-      <div className="mx-auto mb-2 w-full max-w-[75rem]">
+      <div className="mx-auto mb-2 w-full max-w-[75rem] px-3">
         {pageNumber === 1 && data.latestNews && (
           <div
             key={data.latestNews._id}
