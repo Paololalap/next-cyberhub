@@ -27,7 +27,7 @@ export async function POST(request, { params }) {
     return NextResponse.error("Internal server error", { status: 500 });
   }
 }
-export async function DELETE(request, { params }) {
+export async function DELETE({ params }) {
   const { id } = params;
   try {
     await connectMongoDB();
@@ -44,6 +44,7 @@ export async function DELETE(request, { params }) {
     return NextResponse.error("Internal server error", { status: 500 });
   }
 }
+
 export async function PATCH(request, { params }) {
   const { id } = params;
   const { pinStatus } = await request.json();
@@ -63,4 +64,3 @@ export async function PATCH(request, { params }) {
     return NextResponse.error("Internal server error", { status: 500 });
   }
 }
-
