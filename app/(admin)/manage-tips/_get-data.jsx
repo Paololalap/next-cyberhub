@@ -28,7 +28,9 @@ async function getData(perPage, pageNumber) {
       .limit(perPage)
       .toArray();
 
-    const itemCount = await db.collection("contents").countDocuments({});
+    const itemCount = await db
+      .collection("contents")
+      .countDocuments({ type: "Tips" });
 
     const response = { items, itemCount };
     return response;
