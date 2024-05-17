@@ -5,10 +5,11 @@ const postSchema = new Schema(
     content: String,
     imglink: String,
     comments: [{ type: Schema.Types.String, ref: "Comment" }],
+    userID: String,
   },
   {
     timestamps: true,
-  }
+  },
 );
 const commentSchema = new Schema(
   {

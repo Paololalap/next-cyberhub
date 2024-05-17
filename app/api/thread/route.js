@@ -26,9 +26,16 @@ export async function GET() {
 }
 
 export async function POST(request) {
-  const { author, content, imglink } = await request.json({ limit: "2mb" });
+  const { author, content, imglink, userID } = await request.json({
+    limit: "2mb",
+  });
   await connectMongoDB();
-  const post = new Post({ author, content, imglink });
+  const post = new Post({
+    author,
+    content,
+    imglink,
+    userID,
+  });
   await post.save();
   return NextResponse.json({ message: "Post Created" }, { status: 201 });
 }
