@@ -6,6 +6,15 @@ import React from "react";
 import { connectToDatabase } from "@/lib/connectMongo";
 import formatDateToWords from "@/constants/DATE_TO_WORDS";
 import ReadMore from "@/components/button/ReadMore";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 async function getData(perPage, pageNumber) {
   try {
@@ -97,7 +106,7 @@ export default async function GetData({ searchParams }) {
               </div>
               <div className="h-full">{data.latestNews.description}</div>
               <div className="mt-5 flex gap-x-2 md:mt-0 md:self-end">
-                <ReadMore id={data.latestNews._id} />
+                <ReadMore id={data.latestNews._id.buffer.toString("hex")} />
               </div>
             </div>
           </div>
@@ -137,7 +146,7 @@ export default async function GetData({ searchParams }) {
               </div>
               <div className="h-full">{item.description}</div>
               <div className="mt-5 flex gap-x-2 md:mt-0 md:self-end">
-                <ReadMore id={item._id} />
+                <ReadMore id={item._id.buffer.toString("hex")} />
               </div>
             </div>
           </div>
@@ -146,49 +155,43 @@ export default async function GetData({ searchParams }) {
         {isPageOutOfRange ? (
           <div className="h-screen">No more pages...</div>
         ) : (
-          <div className="mt-16 flex items-center justify-center">
-            <div className="border-light-green flex gap-4 rounded-[10px] border-[1px] p-4">
-              {pageNumber === 1 ? (
-                <div className="opacity-60" aria-disabled="true">
-                  Previous
-                </div>
-              ) : (
-                <Link
-                  href={`?pageNumber=${prevPage}`}
-                  aria-label="Previous PageNumber"
-                >
-                  Previous
-                </Link>
-              )}
-
-              {pageNumbers.map((pageNumber, index) => (
-                <Link
-                  key={index}
-                  className={
-                    pageNumber === pageNumber
-                      ? "fw-bold rounded-md bg-[#00563f] px-2 text-[#FFB61B]"
-                      : "rounded-md px-1 hover:bg-[#00563f]"
-                  }
-                  href={`?pageNumber=${pageNumber}`}
-                >
-                  {pageNumber}
-                </Link>
-              ))}
-
-              {pageNumber === totalPages ? (
-                <div className="opacity-60" aria-disabled="true">
-                  Next
-                </div>
-              ) : (
-                <Link
-                  href={`?pageNumber=${nextPage}`}
-                  aria-label="Next PageNumber"
-                >
-                  Next
-                </Link>
-              )}
-            </div>
-          </div>
+          <Pagination className={"mt-3"}>
+            <PaginationContent>
+              <PaginationItem>
+                {pageNumber === 1 ? (
+                  <PaginationPrevious className="pointer-events-none opacity-70" />
+                ) : (
+                  <PaginationPrevious href={`?pageNumber=${prevPage}`} />
+                )}
+              </PaginationItem>
+              <PaginationItem>
+                {pageNumbers.map((pageNumber, index) => (
+                  <PaginationLink
+                    key={index}
+                    href={`?pageNumber=${pageNumber}`}
+                  >
+                    {pageNumber}
+                  </PaginationLink>
+                ))}
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationEllipsis />
+              </PaginationItem>
+              <PaginationItem>
+                {pageNumber === totalPages ? (
+                  <PaginationNext
+                    className="pointer-events-none opacity-70"
+                    aria-disabled="true"
+                  />
+                ) : (
+                  <PaginationNext
+                    href={`?pageNumber=${nextPage}`}
+                    aria-label="Next PageNumber"
+                  />
+                )}
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
         )}
       </div>
     </>
