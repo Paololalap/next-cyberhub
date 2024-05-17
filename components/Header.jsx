@@ -20,14 +20,11 @@ const links = [
   { id: "about", href: "/about", text: "About" },
 ];
 
-const Navbar = () => {
+export default function Navbar() {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [mainMenuOpen, setMainMenuOpen] = useState(false);
   const pathname = usePathname()
 
-  const toggleUserMenu = () => {
-    setUserMenuOpen(!userMenuOpen);
-  };
 
   const toggleMainMenu = () => {
     setMainMenuOpen(!mainMenuOpen);
@@ -42,6 +39,7 @@ const Navbar = () => {
               src={Logo}
               alt='UPOU Logo'
               className='w-full h-auto'
+              priority
               width={465}
               height={122}
               sizes='(min-width: 540px) 465px, 89.55vw'
@@ -101,4 +99,3 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
