@@ -3,14 +3,14 @@ import { connectToDatabase } from "@/lib/connectMongo";
 import Link from "next/link";
 import Image from "next/image";
 import formatDateToWords from "@/constants/DATE_TO_WORDS";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { CalendarDays } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 async function getData(perPage, pageNumber) {
   try {
-    // DB Connect
     const client = await connectToDatabase();
     const db = client.db("CyberDB");
-
-    // DB Query
 
     const latestNews = await db
       .collection("contents")
@@ -20,7 +20,7 @@ async function getData(perPage, pageNumber) {
       .collection("contents")
       .find({
         type: "News",
-        _id: { $ne: latestNews._id }, // Exclude the latest news item by its _id
+        _id: { $ne: latestNews._id },
         createdAt: { $ne: latestNews.createdAt },
       })
       .sort({ createdAt: -1 })
@@ -39,157 +39,119 @@ async function getData(perPage, pageNumber) {
   }
 }
 
-export default async function Newspage({ searchParams }) {
-  let page = parseInt(searchParams.page, 10);
-  page = !page || page < 1 ? 1 : page;
+export default async function NewsPage({ searchParams }) {
+  let pageNumber = parseInt(searchParams.pageNumber, 10);
+  pageNumber = !pageNumber || pageNumber < 1 ? 1 : pageNumber;
   const perPage = 10;
 
-  let data;
-  if (page === 2) {
-    data = await getData(perPage, page);
-  } else {
-    data = await getData(perPage, page);
-  }
+  let data = await getData(perPage, pageNumber);
 
   const totalPages = Math.ceil(data.itemCount / perPage);
 
-  const prevPage = page - 1 > 0 ? page - 1 : 1;
-  const nextPage = page + 1;
-  const isPageOutOfRange = page > totalPages;
+  const prevPage = pageNumber - 1 > 0 ? pageNumber - 1 : 1;
+  const nextPage = pageNumber + 1;
+  const isPageOutOfRange = pageNumber > totalPages;
 
   const pageNumbers = [];
   const offsetNumber = 3;
-  for (let i = page - offsetNumber; i <= page + offsetNumber; i++) {
+  for (let i = pageNumber - offsetNumber; i <= pageNumber + offsetNumber; i++) {
     if (i >= 1 && i <= totalPages) {
       pageNumbers.push(i);
     }
   }
   return (
-    <div id="page" className="h-max items-center bg-[#f7f7e3]">
-      <div
-        id="news-container"
-        className="flex-col items-center justify-center bg-transparent"
-      >
-        <div
-          id="news-container-title"
-          className="flex-col items-center justify-center p-5 text-center text-2xl font-semibold text-[#6e102c]"
-        >
-          <span>News and Updates</span>
-          <hr className="mx-auto w-64 border-2  border-solid border-[#FFB61B]" />
-        </div>
-        {page === 1 && data.latestNews && (
-          <div key={data.latestNews._id} className="sm:mx-60">
-            <Link href={`/article/${data.latestNews._id}`}>
-              <div
-                id="headline-container"
-                className="group overflow-hidden rounded-md border-2 border-solid border-[#00563F] bg-white p-1 sm:flex sm:flex-row"
-              >
-                <div
-                  id="headline-image"
-                  className="transition-all hover:scale-[1.03] sm:w-3/5"
-                >
-                  <Image
-                    className="rounded-md"
-                    src={data.latestNews.imageL}
-                    alt="/"
-                    width={640}
-                    height={334}
-                    sizes="(min-width: 680px) 640px, calc(94.44vw + 17px)"
-                  />
+    <div className="flex min-h-screen w-screen flex-col bg-[#f7f7e3] px-3">
+      <div className="mt-5 text-center text-3xl font-black">
+        News and Updates
+      </div>
+      <hr className="mx-auto mb-5 mt-3 w-64 border-2 border-solid border-[#FFB61B]" />
+      <div className="mx-auto my-5 w-full max-w-[75rem]">
+        {pageNumber === 1 && data.latestNews && (
+          <div
+            key={data.latestNews._id}
+            className="group mt-2 grid grid-cols-1 rounded-md border-2 border-solid border-[#00563F] bg-white first:mt-0 md:grid-cols-12"
+          >
+            <Link
+              href={`/article/${data.latestNews._id}`}
+              className="relative col-span-5 overflow-hidden bg-white"
+            >
+              <AspectRatio ratio={16 / 9}>
+                <Image
+                  className="object-contain transition-all"
+                  src={data.latestNews.imageL}
+                  alt={data.latestNews.title}
+                  fill
+                  sizes="(min-width: 680px) 640px, calc(94.44vw + 17px)"
+                />
+              </AspectRatio>
+            </Link>
+            <div className="flex flex-col justify-between p-5 sm:w-2/5 sm:p-5">
+              <div className="flex flex-col">
+                <div className="font-bold text-gray-500 group-hover:underline">
+                  {data.latestNews.title}
                 </div>
-                <div
-                  id="headline-content"
-                  className="flex flex-col justify-between p-5 sm:w-2/5 sm:p-5"
-                >
-                  <div className="flex flex-col">
-                    <div
-                      id="headline-title"
-                      className="font-bold text-gray-500 group-hover:underline"
-                    >
-                      {data.latestNews.title}
-                    </div>
-                    <div className="mb-5 flex flex-row">
-                      <div id="headline-date" className="mr-10 text-sm">
-                        <span>{formatDateToWords(data.latestNews.date)}</span>
-                      </div>
-                      <div id="headline-tags" className="text-sm">
-                        <span>
-                          {data.latestNews.tags.join(" / ").replace(/,/g, "/,")}
-                        </span>
-                      </div>
-                    </div>
-                    <div id="headline-description">
-                      <span>{data.latestNews.description}</span>
-                    </div>
+                <div className="mb-5 flex flex-row">
+                  <div className="mr-10 text-sm">
+                    <span>{formatDateToWords(data.latestNews.date)}</span>
                   </div>
-                  <div id="readmore" className="flex flex-row-reverse">
-                    <span>Read more</span>
+                  <div className="text-sm">
+                    <span>
+                      {data.latestNews.tags.join(" / ").replace(/,/g, "/,")}
+                    </span>
                   </div>
+                </div>
+                <div>
+                  <span>{data.latestNews.description}</span>
                 </div>
               </div>
-            </Link>
+              <div className="flex flex-row-reverse">
+                <span>Read more</span>
+              </div>
+            </div>
           </div>
         )}
       </div>
-      <div
-        id="pagination-wrapper"
-        className=" mt-5 flex flex-col items-center justify-center sm:mx-60"
-      >
+      <div className="mx-auto my-5 w-full max-w-[75rem]">
         {data.items.map((item) => (
-          <div key={item._id} className="mb-1">
-            <Link href={`/article/${item._id}`}>
-              <div
-                id="feed-container"
-                className="group flex max-h-56 flex-row overflow-hidden rounded-md border-2 border-solid border-[#00563F] bg-white sm:flex sm:max-h-56 sm:flex-row"
-              >
-                <div
-                  id="feed-image"
-                  className="w-2/5 py-10 transition-all hover:scale-[1.03] sm:py-0"
-                >
-                  <Image
-                    className="rounded-md"
-                    src={item.imageL}
-                    alt="/"
-                    width={640}
-                    height={334}
-                    sizes="(min-width: 680px) 640px, calc(94.44vw + 17px)"
-                  />
+          <div
+            key={item._id}
+            className="group mt-2 grid grid-cols-1 rounded-md border-2 border-solid border-[#00563F] bg-white first:mt-0 md:grid-cols-12"
+          >
+            <Link
+              href={`/article/${item._id}`}
+              className="relative col-span-5 overflow-hidden bg-white"
+            >
+              <AspectRatio ratio={16 / 9}>
+                <Image
+                  className="object-contain transition-all md:hover:scale-110"
+                  src={item.imageL}
+                  alt={item.title}
+                  fill
+                  sizes="(min-width: 680px) 640px, calc(94.44vw + 17px)"
+                />
+              </AspectRatio>
+            </Link>
+
+            <div className="col-span-7 flex flex-col p-5">
+              <div className="text-lg font-black">{item.title}</div>
+              <div className="mb-5 flex">
+                <div className="mb-1 mr-10 flex items-center gap-x-1 text-xs sm:text-sm">
+                  <CalendarDays className="size-5" />
+                  <span>{formatDateToWords(item.date)}</span>
                 </div>
-                <div
-                  id="feed-content"
-                  className="flex w-3/5 flex-col justify-between p-5 sm:flex sm:flex-col sm:p-5"
-                >
-                  <div className="sm:flex sm:flex-col">
-                    <div
-                      id="feed-title"
-                      className="text-sm font-bold text-gray-500 group-hover:underline sm:text-sm"
-                    >
-                      {item.title}
-                    </div>
-                    <div className="mb-5">
-                      <div
-                        id="feed-date"
-                        className="mb-1 mr-10 text-xs sm:text-sm"
-                      >
-                        <span>{formatDateToWords(item.date)}</span>
-                      </div>
-                      <div id="feed-tags" className="text-xs sm:text-sm">
-                        <span>{item.tags.join(" / ").replace(/,/g, "/,")}</span>
-                      </div>
-                    </div>
-                    <div id="feed-description" className="text-xs sm:text-sm">
-                      <span>{item.description}</span>
-                    </div>
-                  </div>
-                  <div
-                    id="feed-readmore"
-                    className="flex flex-row-reverse text-xs sm:text-sm"
-                  >
-                    <span>Read more</span>
-                  </div>
+                <div className="text-xs italic sm:text-sm">
+                  <span>{item.tags.join(" / ").replace(/,/g, "/,")}</span>
                 </div>
               </div>
-            </Link>
+              <div className="h-full">{item.description}</div>
+              <div className="mt-5 flex gap-x-2 md:mt-0 md:self-end">
+                <Link href={`/article/${item._id}`} tabIndex={-1}>
+                  <Button className="bg-[#8a1438] hover:bg-[#8a1438]/90">
+                    Read more
+                  </Button>
+                </Link>
+              </div>
+            </div>
           </div>
         ))}
 
@@ -198,12 +160,15 @@ export default async function Newspage({ searchParams }) {
         ) : (
           <div className="mt-16 flex items-center justify-center">
             <div className="border-light-green flex gap-4 rounded-[10px] border-[1px] p-4">
-              {page === 1 ? (
+              {pageNumber === 1 ? (
                 <div className="opacity-60" aria-disabled="true">
                   Previous
                 </div>
               ) : (
-                <Link href={`?page=${prevPage}`} aria-label="Previous Page">
+                <Link
+                  href={`?pageNumber=${prevPage}`}
+                  aria-label="Previous PageNumber"
+                >
                   Previous
                 </Link>
               )}
@@ -212,22 +177,25 @@ export default async function Newspage({ searchParams }) {
                 <Link
                   key={index}
                   className={
-                    page === pageNumber
+                    pageNumber === pageNumber
                       ? "fw-bold rounded-md bg-[#00563f] px-2 text-[#FFB61B]"
                       : "rounded-md px-1 hover:bg-[#00563f]"
                   }
-                  href={`?page=${pageNumber}`}
+                  href={`?pageNumber=${pageNumber}`}
                 >
                   {pageNumber}
                 </Link>
               ))}
 
-              {page === totalPages ? (
+              {pageNumber === totalPages ? (
                 <div className="opacity-60" aria-disabled="true">
                   Next
                 </div>
               ) : (
-                <Link href={`?page=${nextPage}`} aria-label="Next Page">
+                <Link
+                  href={`?pageNumber=${nextPage}`}
+                  aria-label="Next PageNumber"
+                >
                   Next
                 </Link>
               )}
