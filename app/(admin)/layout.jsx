@@ -1,6 +1,6 @@
 import { AuthProvider } from "@/app/Providers";
-import Footer from "@/components/Footer";
-import AdminHeader from "@/components/AdminHeader";
+import Footer from "@/components/footer/Footer";
+import AdminHeader from "@/components/header/AdminHeader";
 import { Toaster } from "@/components/ui/toaster";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";

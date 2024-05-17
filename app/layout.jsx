@@ -1,6 +1,7 @@
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { openSans } from "@/fonts/fonts";
+import { cn } from "@/lib/utils";
 
 export const metadata = {
   title: "Cyberhub",
@@ -10,7 +11,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={openSans.className}>
+      <body className={cn("w-screen min-h-screen", openSans.className)}>
         {children}
         <Toaster />
       </body>
