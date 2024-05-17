@@ -2,8 +2,6 @@ import connectMongoDB from "@/lib/db";
 import Content from "@/models/content";
 import { NextResponse } from "next/server";
 
-
-
 export async function POST(request) {
   const { title, tags, author, date, link, description, body, imageL, type } =
     await request.json({ limit: "2mb" });
