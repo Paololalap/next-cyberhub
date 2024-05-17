@@ -3,7 +3,7 @@ import Image from "next/image";
 import formatDateToWords from "@/constants/DATE_TO_WORDS";
 import ReadMore from "@/components/button/ReadMore";
 import { CalendarDays } from "lucide-react";
-import { AspectRatio } from "@radix-ui/react-aspect-ratio";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 import {
   Pagination,
   PaginationContent,
@@ -41,28 +41,28 @@ async function getData(perPage, pageNumber) {
   }
 }
 
-export default async function GetData() {
-  let page = parseInt(searchParams.page, 10);
-  page = !page || page < 1 ? 1 : page;
+export default async function GetData({ searchParams }) {
+  let pageNumber = parseInt(searchParams.pageNumber, 10);
+  pageNumber = !pageNumber || pageNumber < 1 ? 1 : pageNumber;
   const perPage = 10;
-  const data = await getData(perPage, page);
+  const data = await getData(perPage, pageNumber);
 
   const totalPages = Math.ceil(data.itemCount / perPage);
 
-  const prevPage = page - 1 > 0 ? page - 1 : 1;
-  const nextPage = page + 1;
-  const isPageOutOfRange = page > totalPages;
+  const prevPage = pageNumber - 1 > 0 ? pageNumber - 1 : 1;
+  const nextPage = pageNumber + 1;
+  const isPageOutOfRange = pageNumber > totalPages;
 
   const pageNumbers = [];
   const offsetNumber = 3;
-  for (let i = page - offsetNumber; i <= page + offsetNumber; i++) {
+  for (let i = pageNumber - offsetNumber; i <= pageNumber + offsetNumber; i++) {
     if (i >= 1 && i <= totalPages) {
       pageNumbers.push(i);
     }
   }
 
   return (
-    <div className="mx-auto w-full max-w-[75rem]">
+    <div className="mx-auto w-screen max-w-[75rem]">
       {data.items.map((item) => (
         <div
           key={item._id}
