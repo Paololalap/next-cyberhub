@@ -15,7 +15,9 @@ export const Communityposts = ({ author }) => {
   const [posts, setPosts] = useState([]);
   const [commentTexts, setCommentTexts] = useState({});
   const [editingComment, setEditingComment] = useState(null);
-const [dropdownVisible, setDropdownVisible] = useState(null);
+  const [dropdownVisible, setDropdownVisible] = useState(null);
+  const [visiblePostsCount, setVisiblePostsCount] = useState(5);
+
   useEffect(() => {
     fetchPosts();
   }, []);
@@ -262,32 +264,42 @@ const [dropdownVisible, setDropdownVisible] = useState(null);
   const cancelCommentEdit = () => {
     setEditingComment(null);
   };
-const toggleDropdown = (postId) => {
-  setDropdownVisible(dropdownVisible === postId ? null : postId);
-  };
- const handleDeletePost = async (postId) => {
-   try {
-     const response = await fetch("/api/thread", {
-       method: "DELETE",
-       headers: {
-         "Content-Type": "application/json",
-       },
-       body: JSON.stringify({ postId }),
-     });
 
-     if (response.ok) {
-       setPosts((prevPosts) => prevPosts.filter((post) => post._id !== postId));
-     } else {
-       console.error("Failed to delete post:", response.statusText);
-     }
-   } catch (error) {
-     console.error("Error deleting post:", error);
-   }
- };
+  const toggleDropdown = (postId) => {
+    setDropdownVisible(dropdownVisible === postId ? null : postId);
+  };
+
+  const handleDeletePost = async (postId) => {
+    try {
+      const response = await fetch("/api/thread", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ postId }),
+      });
+
+      if (response.ok) {
+        setPosts((prevPosts) =>
+          prevPosts.filter((post) => post._id !== postId),
+        );
+      } else {
+        console.error("Failed to delete post:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error deleting post:", error);
+    }
+  };
+
+  // Function to load more posts
+  const loadMorePosts = () => {
+    setVisiblePostsCount((prevCount) => prevCount + 5);
+  };
+
   // Render UI
   return (
     <div className="flex flex-col items-center justify-center gap-y-4 py-2">
-      {posts.map((post) => (
+      {posts.slice(0, visiblePostsCount).map((post) => (
         <div
           key={post._id}
           className="w-screen bg-white p-6 shadow-md sm:max-w-2xl sm:rounded-lg"
@@ -473,6 +485,14 @@ const toggleDropdown = (postId) => {
           )}
         </div>
       ))}
+      {visiblePostsCount < posts.length && (
+        <button
+          onClick={loadMorePosts}
+          className="mt-4 rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none"
+        >
+          Load More
+        </button>
+      )}
     </div>
   );
 };
