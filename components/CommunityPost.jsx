@@ -264,7 +264,26 @@ const [dropdownVisible, setDropdownVisible] = useState(null);
   };
 const toggleDropdown = (postId) => {
   setDropdownVisible(dropdownVisible === postId ? null : postId);
-};
+  };
+ const handleDeletePost = async (postId) => {
+   try {
+     const response = await fetch("/api/thread", {
+       method: "DELETE",
+       headers: {
+         "Content-Type": "application/json",
+       },
+       body: JSON.stringify({ postId }),
+     });
+
+     if (response.ok) {
+       setPosts((prevPosts) => prevPosts.filter((post) => post._id !== postId));
+     } else {
+       console.error("Failed to delete post:", response.statusText);
+     }
+   } catch (error) {
+     console.error("Error deleting post:", error);
+   }
+ };
   // Render UI
   return (
     <div className="flex flex-col items-center justify-center gap-y-4 py-2">
@@ -294,7 +313,7 @@ const toggleDropdown = (postId) => {
                   {(session?.user?.role === "admin" ||
                     session?.user?._id === post.userID) && (
                     <div
-                      onClick={() => handlePostDelete(post._id)}
+                      onClick={() => handleDeletePost(post._id)}
                       className="block cursor-pointer px-4 py-2 text-sm text-red-700 hover:bg-red-100"
                     >
                       Delete Post

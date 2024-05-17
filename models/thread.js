@@ -1,16 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-const postSchema = new Schema(
-  {
-    author: String,
-    content: String,
-    imglink: String,
-    comments: [{ type: Schema.Types.String, ref: "Comment" }],
-    userID: String,
-  },
-  {
-    timestamps: true,
-  },
-);
+
 const commentSchema = new Schema(
   {
     author: String,
@@ -23,6 +12,27 @@ const commentSchema = new Schema(
     timestamps: true,
   },
 );
+
+const postSchema = new Schema(
+  {
+    author: String,
+    content: String,
+    imglink: String,
+    comments: [{ type: Schema.Types.String, ref: "Comment" }],
+    userID: String,
+  },
+  {
+    timestamps: true,
+  },
+);
+
+// Middleware to delete associated comments before a post is deleted
+postSchema.pre("findOneAndDelete", async function (next) {
+  const postId = this.getQuery()["_id"];
+  await mongoose.model("Comment").deleteMany({ postId });
+  next();
+});
+
 const Post = mongoose.models.Post || mongoose.model("Post", postSchema);
 const Comment =
   mongoose.models.Comment || mongoose.model("Comment", commentSchema);
