@@ -1,6 +1,13 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { CheckCheck, Trash2, Pin, PinOff, SquarePen } from "lucide-react"; // Import the icons
+import {
+  CheckCheck,
+  Trash2,
+  Pin,
+  PinOff,
+  SquarePen,
+  Ellipsis,
+} from "lucide-react"; // Import the icons
 import { useSession } from "next-auth/react";
 
 export const Communityposts = ({ author }) => {
@@ -8,7 +15,7 @@ export const Communityposts = ({ author }) => {
   const [posts, setPosts] = useState([]);
   const [commentTexts, setCommentTexts] = useState({});
   const [editingComment, setEditingComment] = useState(null);
-
+const [dropdownVisible, setDropdownVisible] = useState(null);
   useEffect(() => {
     fetchPosts();
   }, []);
@@ -255,7 +262,28 @@ export const Communityposts = ({ author }) => {
   const cancelCommentEdit = () => {
     setEditingComment(null);
   };
+const toggleDropdown = (postId) => {
+  setDropdownVisible(dropdownVisible === postId ? null : postId);
+  };
+ const handleDeletePost = async (postId) => {
+   try {
+     const response = await fetch("/api/thread", {
+       method: "DELETE",
+       headers: {
+         "Content-Type": "application/json",
+       },
+       body: JSON.stringify({ postId }),
+     });
 
+     if (response.ok) {
+       setPosts((prevPosts) => prevPosts.filter((post) => post._id !== postId));
+     } else {
+       console.error("Failed to delete post:", response.statusText);
+     }
+   } catch (error) {
+     console.error("Error deleting post:", error);
+   }
+ };
   // Render UI
   return (
     <div className="flex flex-col items-center justify-center gap-y-4 py-2">
@@ -269,6 +297,31 @@ export const Communityposts = ({ author }) => {
               {post.author[0]}
             </div>
             <div className="ml-2 w-full px-2 py-2">{post.author}</div>
+            <div className="relative inline-block text-left">
+              <Ellipsis
+                onClick={() => toggleDropdown(post._id)}
+                className="cursor-pointer"
+              />
+              {dropdownVisible === post._id && (
+                <div className="absolute right-0 z-10 mt-2 w-48 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
+                  <div
+                    onClick={() => handlePostReport(post._id)}
+                    className="block cursor-pointer px-4 py-2 text-sm text-yellow-700 hover:bg-yellow-100"
+                  >
+                    Report Post
+                  </div>
+                  {(session?.user?.role === "admin" ||
+                    session?.user?._id === post.userID) && (
+                    <div
+                      onClick={() => handleDeletePost(post._id)}
+                      className="block cursor-pointer px-4 py-2 text-sm text-red-700 hover:bg-red-100"
+                    >
+                      Delete Post
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
           <div className="ml-2 w-full px-2 py-2">
             {post.expanded ? post.content : `${post.content.slice(0, 150)}...`}

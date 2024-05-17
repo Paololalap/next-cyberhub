@@ -13,12 +13,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useToast } from "@/components/ui/use-toast"
- 
-export const CreatePost = ({author}) => {
+import { useToast } from "@/components/ui/use-toast";
+import { useSession } from "next-auth/react";
+export const CreatePost = ({ author }) => {
   const { toast } = useToast();
-  
 
+  const { data: session } = useSession();
   const [content, setContent] = useState("");
   const [imglink, setImglink] = useState("");
 
@@ -33,7 +33,7 @@ export const CreatePost = ({author}) => {
     if (!content || !author || !imglink) {
       toast({ variant: "Warning", description: "All fields are required" });
       return;
-    } 
+    }
 
     try {
       const res = await fetch("/api/thread", {
@@ -41,7 +41,12 @@ export const CreatePost = ({author}) => {
         headers: {
           "Content-type": "application/json",
         },
-        body: JSON.stringify({ author, content, imglink }),
+        body: JSON.stringify({
+          author,
+          content,
+          imglink,
+          userID: session?.user?._id,
+        }),
       });
       const data = await res.json();
       console.log(data);
@@ -53,8 +58,8 @@ export const CreatePost = ({author}) => {
         throw toast({ variant: "Error", description: "Failed to Post" });
       }
     } catch (error) {
-       toast({ variant: "Error", description: "Failed to Post" });
-       console.error(error);
+      toast({ variant: "Error", description: "Failed to Post" });
+      console.error(error);
     }
   };
 
@@ -75,12 +80,11 @@ export const CreatePost = ({author}) => {
   };
 
   return (
-    <div className='flex justify-center items-center'>
-      <div className='w-full sm:max-w-2xl p-6 bg-white sm:rounded-lg shadow-md'>
-        
+    <div className="flex items-center justify-center">
+      <div className="w-full bg-white p-6 shadow-md sm:max-w-2xl sm:rounded-lg">
         {/* Clickable div triggering the "Ask / Share" button click */}
         <div
-          className='w-full px-2 py-2 text-gray-400 text-left border rounded-md focus:outline-none focus:border-black cursor-text'
+          className="w-full cursor-text rounded-md border px-2 py-2 text-left text-gray-400 focus:border-black focus:outline-none"
           onClick={handleAskShareClick} // Add onClick event to trigger "Ask / Share" button click
         >
           What do you want to ask or share?
@@ -89,35 +93,35 @@ export const CreatePost = ({author}) => {
         <Dialog>
           <DialogTrigger asChild>
             <Button
-              variant='primary'
-              className='w-full px-4 mt-4 py-2 bg-blue-500 text-white rounded-md '
-              id='askShareButton' // Add id to the "Ask / Share" button
+              variant="primary"
+              className="mt-4 w-full rounded-md bg-blue-500 px-4 py-2 text-white "
+              id="askShareButton" // Add id to the "Ask / Share" button
             >
               Ask / Share
             </Button>
           </DialogTrigger>
-          <DialogContent className='sm:max-w-[425px]'>
+          <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
-              <DialogTitle className='text-center font-bold'>
+              <DialogTitle className="text-center font-bold">
                 Create Post
               </DialogTitle>
             </DialogHeader>
             <Textarea
-              placeholder='What do you want to ask or share?'
-              className='placeholder:text-lg text-lg mt-2'
-              rows='6'
+              placeholder="What do you want to ask or share?"
+              className="mt-2 text-lg placeholder:text-lg"
+              rows="6"
               onChange={(e) => setContent(e.target.value)}
               value={content}
             />
-            <Label htmlFor='picture' className='cursor-pointer w-max'>
+            <Label htmlFor="picture" className="w-max cursor-pointer">
               Attach Image
             </Label>
             <Input
-              id='picture'
-              type='file'
+              id="picture"
+              type="file"
               onChange={handleUploadImage}
-              accept='image/jpeg, image/jpg, image/png'
-              className='-mt-2 cursor-pointer file:cursor-pointer'
+              accept="image/jpeg, image/jpg, image/png"
+              className="-mt-2 cursor-pointer file:cursor-pointer"
             />
             <DialogFooter>
               <Button onClick={onSubmit}>Post</Button>
