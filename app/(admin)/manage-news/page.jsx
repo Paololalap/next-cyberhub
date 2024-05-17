@@ -1,9 +1,9 @@
 import React, { Suspense } from "react";
-import GetDataManageNews from "./_get-data";
+import GetData from "./_get-data";
 import LoadingSkeleton from "@/components/LoadingSkeleton";
 import AddEntry from "@/components/button/AddEntry";
 
-export default function NewsPage({ searchParams }) {
+export default function ManageNewsPage({ searchParams }) {
   return (
     <div className="flex min-h-screen w-screen flex-col bg-[#f7f7e3] px-3">
       <div className="mt-5 text-center text-3xl font-black">Manage News</div>
@@ -11,7 +11,7 @@ export default function NewsPage({ searchParams }) {
       <AddEntry>Add News Entry</AddEntry>
 
       <Suspense fallback={<LoadingSkeleton />}>
-        <GetDataManageNews searchParams={searchParams} />
+        <GetData searchParams={searchParams} />
       </Suspense>
     </div>
   );

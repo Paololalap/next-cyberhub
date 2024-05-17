@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import AddEntry from "@/components/button/AddEntry";
-import GetDataTips from "./_get-data";
+import GetData from "./_get-data";
 import LoadingSkeleton from "@/components/LoadingSkeleton";
 
 export default function TipsPage({ searchParams }) {
@@ -10,7 +10,7 @@ export default function TipsPage({ searchParams }) {
       <hr className="mx-auto mt-3 w-64 border-2 border-solid border-[#FFB61B]" />
       <AddEntry>Add Tips Entry</AddEntry>
       <Suspense fallback={<LoadingSkeleton />}>
-        <GetDataTips searchParams={searchParams} />
+        <GetData searchParams={searchParams} />
       </Suspense>
     </div>
   );

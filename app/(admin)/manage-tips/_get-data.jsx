@@ -2,11 +2,18 @@ import React from "react";
 import { connectToDatabase } from "@/lib/connectMongo";
 import Image from "next/image";
 import Remove from "@/components/button/Remove";
-import Link from "next/link";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { CalendarDays } from "lucide-react";
 import UpdateButton from "@/components/button/Update";
-import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 async function getData(perPage, pageNumber) {
   try {
@@ -30,7 +37,7 @@ async function getData(perPage, pageNumber) {
   }
 }
 
-export default async function GetDataTips({ searchParams }) {
+export default async function GetData({ searchParams }) {
   let pageNumber = parseInt(searchParams.pageNumber, 10);
   pageNumber = !pageNumber || pageNumber < 1 ? 1 : pageNumber;
   const perPage = 8;
