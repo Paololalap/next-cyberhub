@@ -1,4 +1,4 @@
-import MoreInfo from "@/components/MoreInfo";
+import Article from "@/components/Article";
 
 const getContentById = async (id) => {
   try {
@@ -16,21 +16,21 @@ const getContentById = async (id) => {
   }
 };
 
-export default async function ViewMore({ params }) {
+export default async function ArticlePage({ params }) {
   const { id } = params;
   const { content } = await getContentById(id);
-  const { title, tags, author, date, description, body, imageL } = content;
+  const { title, tags, author, date, body, imageL, link } = content;
 
   return (
     <div className="h-max bg-[#f7f7e3]">
-      <MoreInfo
+      <Article
         id={id}
         title={title}
         tags={tags}
         author={author}
         date={date}
-        description={description}
         body={body}
+        link={link}
         imageL={imageL}
       />
     </div>

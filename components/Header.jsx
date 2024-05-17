@@ -16,8 +16,7 @@ const links = [
   { id: "news", href: "/news", text: "News" },
   { id: "tips", href: "/tips", text: "Tips & Guides" },
   { id: "tools", href: "/tools", text: "Tools" },
-  { id: "ask", href: "/ask", text: "Ask a Question" },
-  { id: "learn", href: "/learn", text: "Learn Cybersecurity" },
+  { id: "community", href: "/community", text: "Community" },
   { id: "about", href: "/about", text: "About" },
 ];
 

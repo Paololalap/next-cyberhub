@@ -7,6 +7,17 @@ import Cross from "@/public/cross.svg";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
+import { Settings, LogOut } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuShortcut,
+  DropdownMenuSeparator,
+  DropdownMenuGroup,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const linkStyles =
   "block py-2 px-3 text-white rounded hover:bg-[#FFB61B] md:hover:bg-[#6e102c]";
@@ -16,54 +27,87 @@ const activeStyle =
 const links = [
   { id: "manage-news", href: "/manage-news", text: "Manage News" },
   { id: "manage-tips", href: "/manage-tips", text: "Manage Tips & Guides" },
+  {
+    id: "manage-announcement",
+    href: "/manage-announcement",
+    text: "Manage Announcement",
+  },
 ];
 
 const Navbar = () => {
-  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [mainMenuOpen, setMainMenuOpen] = useState(false);
   const pathname = usePathname();
-
-  const toggleUserMenu = () => {
-    setUserMenuOpen(!userMenuOpen);
-  };
 
   const toggleMainMenu = () => {
     setMainMenuOpen(!mainMenuOpen);
   };
 
   return (
-    <header className=" h-auto max-w-full bg-[#8A1538]">
+    <header className=" h-auto w-fit sm:w-screen bg-[#8A1538]">
       <section className="mx-auto flex max-w-screen-xl flex-wrap items-center justify-between p-4 sm:flex-col">
-        <div className="flex w-[600px] justify-between md:w-auto">
-          <Link href="/" className="mx-auto">
-            <Image
-              src={Logo}
-              alt="UPOU Logo"
-              className="h-auto w-full"
-              width={465}
-              height={122}
-              sizes="(min-width: 540px) 465px, 89.55vw"
-            />
+        <div className="flex w-full flex-col md:flex-row">
+          <div className="hidden w-full md:block flex-1"></div>
+          
+          <Link href="/" className="w-auto flex-1">
+            <div className="flex relative w-[512px] h-[134px] items-center justify-between ">
+              <Image
+                src={Logo}
+                alt="UPOU Logo"
+                className="object-cover"
+                fill
+                sizes="100vw"
+              />
+            </div>
           </Link>
 
-          <div className="flex items-center space-x-3  ">
-            <button
-              type="button"
-              className="inline-flex size-10 items-center justify-center  rounded-lg bg-[#00563F] p-2 text-sm  text-[#FFB61B] outline-none ring-2 ring-[#FFB61B] transition-all hover:scale-110 md:hidden"
-              onClick={toggleMainMenu}
-            >
-              {mainMenuOpen ? (
-                <Image
-                  src={Cross}
-                  alt=""
-                  width={24}
-                  height={24}
-                  className="h-12 w-full"
-                />
-              ) : (
-                <Image src={Burger} alt="" width={24} height={20} />
-              )}
-            </button>
+            
+          
+          <div className="w-full relative flex-1">
+            <div className="flex items-center space-x-3  ">
+              <button
+                type="button"
+                className="inline-flex size-10 items-center justify-center rounded-lg bg-[#00563F] p-2 text-sm text-[#FFB61B] outline-none ring-2 ring-[#FFB61B] transition-all hover:scale-110 md:hidden"
+                onClick={toggleMainMenu}
+              >
+                {mainMenuOpen ? (
+                  <Image
+                    src={Cross}
+                    alt=""
+                    width={24}
+                    height={24}
+                    className="h-12 w-full"
+                  />
+                ) : (
+                  <Image src={Burger} alt="" width={24} height={20} />
+                )}
+              </button>
+            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Avatar className='absolute border-4 border-[#FFB61B] right-0 sm:right-[] md:right-[-75px] top-1/2 -translate-y-1/2 md:size-12'>
+                  <AvatarImage
+                    src="https://github.com/shadcn.png"
+                    alt="Profile"
+                  />
+                  <AvatarFallback>A</AvatarFallback>
+                </Avatar>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56">
+                <DropdownMenuGroup>
+                  <DropdownMenuItem>
+                    <Settings className="mr-2 h-4 w-4" />
+                    <Link href={"/account-settings"}>Account Settings</Link>
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                  <DropdownMenuItem onClick={() => signOut()}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
         <Link
@@ -72,6 +116,7 @@ const Navbar = () => {
         >
           Cyberhub
         </Link>
+
         <div className="flex w-full justify-center">
           <nav
             className={`w-full items-center justify-between md:flex md:w-auto ${
@@ -91,12 +136,6 @@ const Navbar = () => {
                   </Link>
                 </li>
               ))}
-              <button
-                onClick={() => signOut()}
-                className="block rounded bg-[#00563F] px-3 py-2 text-white hover:text-[#FFB61B]"
-              >
-                Log Out
-              </button>
             </ul>
           </nav>
         </div>

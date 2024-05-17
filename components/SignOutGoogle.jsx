@@ -9,11 +9,6 @@ export default function SignOutGoogle() {
   };
   return (
     <>
-      <>
-        {session?.user?.email ||
-          session?.user?.username ||
-          session?.user?.name}
-      </>
       <button
         className="absolute right-4 top-4 rounded bg-gray-800 px-4 py-2 text-white"
         onClick={handleSignOut}

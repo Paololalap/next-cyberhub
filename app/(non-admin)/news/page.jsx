@@ -79,7 +79,7 @@ export default async function Newspage({ searchParams }) {
         </div>
         {page === 1 && data.latestNews && (
           <div key={data.latestNews._id} className="sm:mx-60">
-            <Link href={`/more-info/${data.latestNews._id}`}>
+            <Link href={`/article/${data.latestNews._id}`}>
               <div
                 id="headline-container"
                 className="group overflow-hidden rounded-md border-2 border-solid border-[#00563F] bg-white p-1 sm:flex sm:flex-row"
@@ -137,7 +137,7 @@ export default async function Newspage({ searchParams }) {
       >
         {data.items.map((item) => (
           <div key={item._id} className="mb-1">
-            <Link href={`/more-info/${item._id}`}>
+            <Link href={`/article/${item._id}`}>
               <div
                 id="feed-container"
                 className="group flex max-h-56 flex-row overflow-hidden rounded-md border-2 border-solid border-[#00563F] bg-white sm:flex sm:max-h-56 sm:flex-row"

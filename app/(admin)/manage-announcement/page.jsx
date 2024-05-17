@@ -1,7 +1,7 @@
 import React from "react";
 import { connectToDatabase } from "@/lib/connectMongo";
 import Link from "next/link";
-import Image from "next/image";
+import RemoveAnn from "@/components/RemoveAnn";
 import formatDateToWords from "@/constants/DATE_TO_WORDS";
 
 async function getData(perPage, pageNumber) {
@@ -11,20 +11,15 @@ async function getData(perPage, pageNumber) {
     const db = client.db("CyberDB");
 
     // DB Query
-
     const items = await db
-      .collection("contents")
-      .find({
-        type: "Tips",
-      })
-      .sort({ createdAt: -1 })
+      .collection("announces")
+      .find({})
+      .sort({ startDate: -1 })
       .skip(perPage * (pageNumber - 1))
       .limit(perPage)
       .toArray();
 
-    const itemCount = await db
-      .collection("contents")
-      .countDocuments({ type: "Tips" });
+    const itemCount = await db.collection("announces").countDocuments({});
 
     const response = { items, itemCount };
     return response;
@@ -33,10 +28,10 @@ async function getData(perPage, pageNumber) {
   }
 }
 
-export default async function TipsPage({ searchParams }) {
+export default async function AnnouncementsPage({ searchParams }) {
   let page = parseInt(searchParams.page, 10);
   page = !page || page < 1 ? 1 : page;
-  const perPage = 10;
+  const perPage = 8;
   const data = await getData(perPage, page);
 
   const totalPages = Math.ceil(data.itemCount / perPage);
@@ -52,55 +47,57 @@ export default async function TipsPage({ searchParams }) {
       pageNumbers.push(i);
     }
   }
+
   return (
     <div className="h-max items-center bg-[#f7f7e3]">
       <div className="flex-col items-center justify-center bg-transparent">
         <div className="flex-col items-center justify-center p-5 text-center text-2xl font-semibold text-[#6e102c]">
-          <span>Tips</span>
+          <span>Manage Announcements</span>
           <hr className="mx-auto w-64 border-2  border-solid border-[#FFB61B]" />
         </div>
       </div>
-      <div className="my-5 flex flex-col items-center justify-center sm:mx-52">
+      <div className="flex flex-col items-center justify-center">
+        <Link
+          href={"/add-announcement"}
+          className="rounded-md border-2 border-solid border-[#00563F] p-2"
+        >
+          Add Announcement
+        </Link>
+      </div>
+      <div className="my-5 flex flex-col items-center justify-center sm:mx-80">
         {data.items.map((item) => (
           <div key={item._id} className="mb-1">
-            <Link href={`/article/${item._id}`}>
-              <div className="group flex max-h-56 flex-row overflow-hidden rounded-md border-2 border-solid border-[#00563F] bg-white sm:flex sm:max-h-56 sm:flex-row">
-                <div
-                  id="feed-image"
-                  className="w-2/5 py-10 transition-all hover:scale-[1.03] sm:py-0"
-                >
-                  <Image
-                    className="rounded-md"
-                    src={item.imageL}
-                    alt="/"
-                    width={640}
-                    height={334}
-                    sizes="(min-width: 680px) 640px, calc(94.44vw + 17px)"
-                  />
+            <div className="group flex max-h-56 flex-row overflow-hidden rounded-md border-2 border-solid border-[#00563F] bg-white sm:flex sm:max-h-56 sm:flex-row">
+              <div className="flex w-3/5 flex-col justify-between p-5 sm:flex sm:flex-col sm:p-5">
+                <div className="sm:flex sm:flex-col">
+                  <div className="text-sm font-bold text-gray-500 group-hover:underline sm:text-sm">
+                    {item.title}
+                  </div>
+                  <div className="mb-5">
+                    <div className="mb-1 mr-10 text-xs sm:text-sm">
+                      <span>
+                        {formatDateToWords(item.startDate)} to{" "}
+                        {formatDateToWords(item.endDate)}
+                      </span>
+                    </div>
+                    {/* Tags can be displayed here */}
+                  </div>
+                  <div className="text-xs sm:text-sm">
+                    <span>{item.content}</span>
+                  </div>
                 </div>
-                <div className="flex w-3/5 flex-col justify-between p-5 sm:flex sm:flex-col sm:p-5">
-                  <div className="sm:flex sm:flex-col">
-                    <div className="text-sm font-bold text-gray-500 group-hover:underline sm:text-sm">
-                      {item.title}
-                    </div>
-                    <div className="mb-5">
-                      <div className="mb-1 mr-10 text-xs sm:text-sm">
-                        <span>{formatDateToWords(item.date)}</span>
-                      </div>
-                      <div className="text-xs sm:text-sm">
-                        <span>{item.tags.join(" / ").replace(/,/g, "/,")}</span>
-                      </div>
-                    </div>
-                    <div className="text-xs sm:text-sm">
-                      <span>{item.description}</span>
-                    </div>
-                  </div>
-                  <div className="flex flex-row-reverse text-xs sm:text-sm">
-                    <span>Read more</span>
-                  </div>
+                <div className="flex flex-row-reverse text-xs sm:text-sm">
+                  <Link
+                    href={`/edit-announcement/${item._id}`}
+                    className="mx-1 rounded-md border-2 border-solid border-[#00563F] p-2"
+                  >
+                    Update
+                  </Link>
+
+                  <RemoveAnn id={item._id.buffer.toString("hex")} />
                 </div>
               </div>
-            </Link>
+            </div>
           </div>
         ))}
 
@@ -124,7 +121,7 @@ export default async function TipsPage({ searchParams }) {
                   key={index}
                   className={
                     page === pageNumber
-                      ? "fw-bold rounded-md bg-[#00563f] px-2 text-[#FFB61B]"
+                      ? "rounded-md bg-[#00563f] px-2 text-[#FFB61B]"
                       : "rounded-md px-1 hover:bg-[#00563f]"
                   }
                   href={`?page=${pageNumber}`}

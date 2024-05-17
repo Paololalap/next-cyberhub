@@ -8,12 +8,27 @@ import GoogleProvider from "next-auth/providers/google";
 export const authOptions = {
   providers: [
     GoogleProvider({
-      profile(profile) {
-        return {
-          ...profile,
-          id: profile.sub,
-          role: "user",
-        };
+      async profile(profile) {
+       await connectMongoDB();
+        const user = await User.findOne({ email: profile.email });
+        try {
+         if (!user) {
+           await User.create({
+             username: profile.name,
+             email: profile.email,
+             role: "user",
+           });
+         }
+       } catch (error) {
+         console.log("Error: ", error);
+        }
+        
+       return {
+         _id: user._id.toString(),
+         ...profile,
+         id: profile.sub,
+         role: user ? user.role : "user",
+       };
       },
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -51,15 +66,16 @@ export const authOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
-      if (user?._id) token._id = user._id;
-      if (user?.role) token.role = user.role;
-      return token;
-    },
     async session({ session, token }) {
       if (token?._id) session.user._id = token._id;
       if (token?.role) session.user.role = token.role;
       return session;
+    },
+   
+    async jwt({ token, user }) {
+      if (user?._id) token._id = user._id;
+      if (user?.role) token.role = user.role;
+      return token;
     },
   },
 
