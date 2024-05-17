@@ -59,7 +59,7 @@ export default async function GetData({ searchParams }) {
     }
   }
   return (
-    <div className="mx-auto my-5 w-full max-w-[75rem]">
+    <div className="mx-auto my-5 w-full max-w-[75rem] px-3">
       {data.items.map((item) => (
         <div
           key={item._id}
