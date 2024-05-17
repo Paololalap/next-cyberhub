@@ -64,7 +64,7 @@ export default function PasswordChecker() {
   };
 
   return (
-    <div className="flex w-screen items-center justify-center ">
+    <div className="flex w-screen items-center justify-center px-5 md:px-0">
       <div className="w-full max-w-md rounded-lg border-2 border-solid border-black bg-white p-6 shadow-md">
         <h2 className="mb-4 text-center text-xl font-semibold">
           Password Checker
