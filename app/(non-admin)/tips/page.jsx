@@ -4,7 +4,7 @@ import LoadingSkeleton from "@/components/LoadingSkeleton";
 
 export default async function TipsPage({ searchParams }) {
   return (
-    <div className="mx-auto flex min-h-screen w-fit flex-col px-3">
+    <div className="mx-auto flex min-h-screen w-fit flex-col">
       <div className="mt-5 text-center text-3xl font-black">
         Tips and Guides
       </div>
