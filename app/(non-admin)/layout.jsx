@@ -6,7 +6,7 @@ export default function ContentsLayout({ children }) {
   return (
     <>
       <Header />
-      <main>{children}</main>
+      <main className="bg-[#f7f7e3]">{children}</main>
       <Footer className={openSans.className} />
     </>
   );
