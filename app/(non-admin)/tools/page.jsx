@@ -1,10 +1,10 @@
 import PasswordChecker from "@/components/PasswordChecker";
-import Urlchecker from "@/components/Urlchecker";
+import UrlChecker from "@/components/UrlChecker";
 export default function ToolsPage() {
   return (
-    <div className="h-max  items-center bg-[#f7f7e3]">
+    <div className="min-h-max w-fit items-center py-5">
       <PasswordChecker />
-      <Urlchecker></Urlchecker>
+      <UrlChecker />
     </div>
   );
 }
