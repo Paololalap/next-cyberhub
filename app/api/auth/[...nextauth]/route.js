@@ -21,10 +21,12 @@ export const authOptions = {
          }
        } catch (error) {
          console.log("Error: ", error);
-       }
+        }
+        
        return {
+         _id: user._id.toString(),
          ...profile,
-         id: user ? user._id : profile.sub,
+         id: profile.sub,
          role: user ? user.role : "user",
        };
       },

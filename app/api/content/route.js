@@ -28,3 +28,11 @@ export async function DELETE(request) {
   await Content.findByIdAndDelete(id);
   return NextResponse.json({ message: "Content deleted" }, { status: 200 });
 }
+
+export async function GET() {
+  await connectMongoDB();
+  const content = await Content.find({ type: "News" })
+    .sort({ createdAt: -1 })
+    .limit(1);
+  return NextResponse.json({ content });
+}

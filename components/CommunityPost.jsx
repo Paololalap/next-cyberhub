@@ -1,11 +1,23 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { CheckCheck, Trash2, Pin, PinOff } from "lucide-react"; // Import the icons
+import {
+  CheckCheck,
+  Trash2,
+  Pin,
+  PinOff,
+  SquarePen,
+  Ellipsis,
+} from "lucide-react"; // Import the icons
 import { useSession } from "next-auth/react";
+
 export const Communityposts = ({ author }) => {
   const { data: session } = useSession();
   const [posts, setPosts] = useState([]);
   const [commentTexts, setCommentTexts] = useState({});
+  const [editingComment, setEditingComment] = useState(null);
+  const [dropdownVisible, setDropdownVisible] = useState(null);
+  const [visiblePostsCount, setVisiblePostsCount] = useState(5);
+
   useEffect(() => {
     fetchPosts();
   }, []);
@@ -66,6 +78,7 @@ export const Communityposts = ({ author }) => {
           author: author,
           content: commentText,
           pinStatus: pinStatus,
+          userID: session?.user?._id,
         }),
       });
 
@@ -197,10 +210,96 @@ export const Communityposts = ({ author }) => {
     }
   };
 
+  // Function to handle initiating comment edit
+  const initiateCommentEdit = (postId, commentId, currentContent) => {
+    setEditingComment({ postId, commentId, content: currentContent });
+  };
+
+  // Function to handle saving edited comment
+  const handleSaveCommentEdit = async () => {
+    const { postId, commentId, content } = editingComment;
+    try {
+      const response = await fetch(`/api/comments/${commentId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          content: content,
+        }),
+      });
+
+      if (response.ok) {
+        // Update the state with the edited comment content
+        setPosts((prevPosts) => {
+          return prevPosts.map((post) => {
+            if (post._id === postId) {
+              return {
+                ...post,
+                comments: post.comments.map((comment) => {
+                  if (comment._id === commentId) {
+                    return {
+                      ...comment,
+                      content: content,
+                    };
+                  }
+                  return comment;
+                }),
+              };
+            }
+            return post;
+          });
+        });
+        // Clear editing state
+        setEditingComment(null);
+      } else {
+        console.error("Failed to update comment:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error updating comment:", error);
+    }
+  };
+
+  // Function to handle canceling comment edit
+  const cancelCommentEdit = () => {
+    setEditingComment(null);
+  };
+
+  const toggleDropdown = (postId) => {
+    setDropdownVisible(dropdownVisible === postId ? null : postId);
+  };
+
+  const handleDeletePost = async (postId) => {
+    try {
+      const response = await fetch("/api/thread", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ postId }),
+      });
+
+      if (response.ok) {
+        setPosts((prevPosts) =>
+          prevPosts.filter((post) => post._id !== postId),
+        );
+      } else {
+        console.error("Failed to delete post:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error deleting post:", error);
+    }
+  };
+
+  // Function to load more posts
+  const loadMorePosts = () => {
+    setVisiblePostsCount((prevCount) => prevCount + 5);
+  };
+
   // Render UI
   return (
     <div className="flex flex-col items-center justify-center gap-y-4 py-2">
-      {posts.map((post) => (
+      {posts.slice(0, visiblePostsCount).map((post) => (
         <div
           key={post._id}
           className="w-screen bg-white p-6 shadow-md sm:max-w-2xl sm:rounded-lg"
@@ -210,6 +309,31 @@ export const Communityposts = ({ author }) => {
               {post.author[0]}
             </div>
             <div className="ml-2 w-full px-2 py-2">{post.author}</div>
+            <div className="relative inline-block text-left">
+              <Ellipsis
+                onClick={() => toggleDropdown(post._id)}
+                className="cursor-pointer"
+              />
+              {dropdownVisible === post._id && (
+                <div className="absolute right-0 z-10 mt-2 w-48 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
+                  <div
+                    onClick={() => handlePostReport(post._id)}
+                    className="block cursor-pointer px-4 py-2 text-sm text-yellow-700 hover:bg-yellow-100"
+                  >
+                    Report Post
+                  </div>
+                  {(session?.user?.role === "admin" ||
+                    session?.user?._id === post.userID) && (
+                    <div
+                      onClick={() => handleDeletePost(post._id)}
+                      className="block cursor-pointer px-4 py-2 text-sm text-red-700 hover:bg-red-100"
+                    >
+                      Delete Post
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
           <div className="ml-2 w-full px-2 py-2">
             {post.expanded ? post.content : `${post.content.slice(0, 150)}...`}
@@ -238,55 +362,106 @@ export const Communityposts = ({ author }) => {
                 <p>No comments yet, you are the first one to comment.</p>
               ) : (
                 post.comments.map((comment) => (
-                  <div key={comment._id} className="mb-2 border-2 border-black">
-                    {/* Render icon based on pinStatus */}
-                    {session?.user?.role === "admin" ? (
-                      comment.pinStatus === "pinned" ? (
-                        <Pin
-                          className="mr-2 cursor-pointer text-green-500"
-                          onClick={() =>
-                            handlePinComment(
-                              post._id,
-                              comment._id,
-                              comment.pinStatus,
-                            )
-                          }
-                        />
+                  <div
+                    key={comment._id}
+                    className="mb-2 border-2 border-black p-2"
+                  >
+                    <div className="flex items-center">
+                      {/* Render icon based on pinStatus */}
+                      {session?.user?.role === "admin" ? (
+                        comment.pinStatus === "pinned" ? (
+                          <Pin
+                            className="mr-2 cursor-pointer text-green-500"
+                            onClick={() =>
+                              handlePinComment(
+                                post._id,
+                                comment._id,
+                                comment.pinStatus,
+                              )
+                            }
+                          />
+                        ) : (
+                          <PinOff
+                            className="mr-2 cursor-pointer text-red-500"
+                            onClick={() =>
+                              handlePinComment(
+                                post._id,
+                                comment._id,
+                                comment.pinStatus,
+                              )
+                            }
+                          />
+                        )
                       ) : (
-                        <PinOff
-                          className="mr-2 cursor-pointer text-red-500"
+                        comment.pinStatus === "pinned" && (
+                          <CheckCheck className="mr-2 text-green-500" />
+                        )
+                      )}
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-300 text-2xl font-bold text-gray-700">
+                        {comment.author[0]}
+                      </div>
+                      <div className="ml-2 w-full px-2 py-2">
+                        {editingComment &&
+                        editingComment.commentId === comment._id ? (
+                          <input
+                            type="text"
+                            value={editingComment.content}
+                            onChange={(e) =>
+                              setEditingComment({
+                                ...editingComment,
+                                content: e.target.value,
+                              })
+                            }
+                            className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none"
+                          />
+                        ) : (
+                          comment.content
+                        )}
+                      </div>
+                      {/* Render edit icon if the session.user._id is the same as the comment userId */}
+                      {session?.user?._id === comment.userID && (
+                        <SquarePen
+                          className="ml-auto cursor-pointer text-blue-500"
                           onClick={() =>
-                            handlePinComment(
+                            initiateCommentEdit(
                               post._id,
                               comment._id,
-                              comment.pinStatus,
+                              comment.content,
                             )
                           }
                         />
-                      )
-                    ) : (
-                      comment.pinStatus === "pinned" && (
-                        <CheckCheck className="mr-2 text-green-500" />
-                      )
-                    )}
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-300 text-2xl font-bold text-gray-700">
-                      {comment.author[0]}
+                      )}
+                      {/* Render delete button for comments if the user is an admin */}
+                      {session?.user?.role === "admin" && (
+                        <button
+                          onClick={() =>
+                            handleCommentDelete(post._id, comment._id)
+                          }
+                          className="ml-auto text-red-500 hover:text-red-700 focus:outline-none"
+                        >
+                          <Trash2 className="mr-1 inline-block h-6 w-6" />
+                          Delete
+                        </button>
+                      )}
                     </div>
-                    <div className="ml-2 w-full px-2 py-2">
-                      {comment.content}
-                    </div>
-                    {/* Render delete button for comments if the user is an admin */}
-                    {session?.user?.role === "admin" && (
-                      <button
-                        onClick={() =>
-                          handleCommentDelete(post._id, comment._id)
-                        }
-                        className="ml-auto text-red-500 hover:text-red-700 focus:outline-none"
-                      >
-                        <Trash2 className="mr-1 inline-block h-6 w-6" />
-                        Delete
-                      </button>
-                    )}
+                    {/* Render save and cancel buttons when editing a comment */}
+                    {editingComment &&
+                      editingComment.commentId === comment._id && (
+                        <div className="mt-2 flex">
+                          <button
+                            onClick={handleSaveCommentEdit}
+                            className="mr-2 rounded-md bg-green-500 px-4 py-2 text-white hover:bg-green-600 focus:outline-none"
+                          >
+                            Save
+                          </button>
+                          <button
+                            onClick={cancelCommentEdit}
+                            className="rounded-md bg-red-500 px-4 py-2 text-white hover:bg-red-600 focus:outline-none"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      )}
                   </div>
                 ))
               )}
@@ -310,6 +485,14 @@ export const Communityposts = ({ author }) => {
           )}
         </div>
       ))}
+      {visiblePostsCount < posts.length && (
+        <button
+          onClick={loadMorePosts}
+          className="mt-4 rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none"
+        >
+          Load More
+        </button>
+      )}
     </div>
   );
 };
