@@ -93,10 +93,10 @@ export default function EditContentForm({
   return (
     <Form {...form}>
       <form
-        className="rounded-lg border-t-[6px] border-[#8a1538] p-4 shadow-2xl sm:w-[30rem] md:w-auto max-w-[24rem] w-full mx-auto mt-5 space-y-2"
+        className="mx-auto mt-5 w-full max-w-[24rem] space-y-2 rounded-lg border-t-[6px] border-[#8a1538] p-4 shadow-2xl sm:w-[30rem] md:w-auto"
         onSubmit={form.handleSubmit(onSubmit)}
       >
-        <h1 className="mx-auto mt-3 mb-5 w-full text-center text-3xl">
+        <h1 className="mx-auto mb-5 mt-3 w-full text-center text-3xl">
           Update User
         </h1>
         <Avatar
@@ -113,10 +113,10 @@ export default function EditContentForm({
             src={selectedImage}
             alt="Profile Picture"
             fill
-            className="object-cover rounded-full"
+            className="rounded-full object-cover"
             priority
           />
-          <AvatarFallback>CN</AvatarFallback>
+          <AvatarFallback>A</AvatarFallback>
           <div className="invisible absolute size-full rounded-full bg-black/40 transition-all group-hover:visible">
             <Pencil className="absolute left-1/2 top-1/2 z-50 size-10 -translate-x-1/2 -translate-y-1/2 text-white" />
           </div>
@@ -160,7 +160,9 @@ export default function EditContentForm({
             </FormItem>
           )}
         />
-        <Button type="submit" className=''>Update</Button>
+        <Button type="submit" className="bg-[#8a1538] hover:bg-[#8a1538]/90">
+          Update
+        </Button>
       </form>
     </Form>
   );
