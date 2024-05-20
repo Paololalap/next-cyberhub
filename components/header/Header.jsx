@@ -66,7 +66,7 @@ export default function Header() {
               mainMenuOpen ? "block" : "hidden"
             }`}
           >
-            <ul className="mx-auto mt-4 flex  max-w-[300px] flex-col whitespace-nowrap rounded-lg bg-[#8A1538] pt-4 text-center font-medium md:max-w-[800px] md:flex-row md:justify-evenly md:p-0">
+            <ul className="mx-auto mt-4 flex max-w-[300px] flex-col whitespace-nowrap rounded-lg bg-[#8A1538] pt-4 text-center font-medium md:max-w-[800px] md:flex-row md:justify-evenly md:p-0">
               {LINKS.map((link) => (
                 <li key={link.id}>
                   <Link
