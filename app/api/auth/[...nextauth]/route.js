@@ -9,26 +9,35 @@ export const authOptions = {
   providers: [
     GoogleProvider({
       async profile(profile) {
-       await connectMongoDB();
-        const user = await User.findOne({ email: profile.email });
-        try {
-         if (!user) {
-           await User.create({
-             username: profile.name,
-             email: profile.email,
-             role: "user",
-           });
-         }
-       } catch (error) {
-         console.log("Error: ", error);
+        const allowedDomain = "@upou.edu.ph";
+
+        // Check if the email ends with the allowed domain
+        if (!profile.email.endsWith(allowedDomain)) {
+          throw new Error("Unauthorized email domain");
+          return null;
         }
-        
-       return {
-         _id: user._id.toString(),
-         ...profile,
-         id: profile.sub,
-         role: user ? user.role : "user",
-       };
+
+        await connectMongoDB();
+        let user = await User.findOne({ email: profile.email });
+
+        try {
+          if (!user) {
+            user = await User.create({
+              username: profile.name,
+              email: profile.email,
+              role: "user",
+            });
+          }
+        } catch (error) {
+          console.log("Error: ", error);
+        }
+
+        return {
+          _id: user._id.toString(),
+          ...profile,
+          id: profile.sub,
+          role: user ? user.role : "user",
+        };
       },
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -71,12 +80,14 @@ export const authOptions = {
       if (token?.role) session.user.role = token.role;
       return session;
     },
-   
+
     async jwt({ token, user }) {
       if (user?._id) token._id = user._id;
       if (user?.role) token.role = user.role;
       return token;
     },
+
+   
   },
 
   session: {
@@ -84,7 +95,13 @@ export const authOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
-    signIn: "/login",
+    signIn: ({ provider }) => {
+      if (provider === "credentials") {
+        return "/login";
+      } else if (provider === "google") {
+        return "/community";
+      }
+    },
   },
 };
 
