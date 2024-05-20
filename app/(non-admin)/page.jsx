@@ -1,5 +1,4 @@
 import Image from "next/image";
-import GError from "@/app/(non-admin)/news/error";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { CalendarDays } from "lucide-react";
 import LatestAnnouncement from "@/components/LatestAnnouncement";
