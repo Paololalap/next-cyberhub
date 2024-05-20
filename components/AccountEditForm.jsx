@@ -4,7 +4,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
 import {
@@ -114,6 +114,7 @@ export default function EditContentForm({
             alt="Profile Picture"
             fill
             className="object-cover rounded-full"
+            priority
           />
           <AvatarFallback>CN</AvatarFallback>
           <div className="invisible absolute size-full rounded-full bg-black/40 transition-all group-hover:visible">
