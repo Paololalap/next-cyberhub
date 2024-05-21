@@ -1,4 +1,4 @@
-import LoadingSkeleton from "@/components/loading-skeleton/LoadingSkeleton";
+import LoadingSkeleton from "@/components/loading/LoadingSkeleton";
 import { Suspense } from "react";
 import GetData from "./_get-data";
 

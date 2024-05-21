@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import GetData from "./_get-data";
-import LoadingSkeleton from "@/components/loading-skeleton/LoadingSkeleton";
+import LoadingSkeleton from "@/components/loading/LoadingSkeleton";
 import AddEntry from "@/components/button/AddEntry";
 
 export default function ManageNewsPage({ searchParams }) {
