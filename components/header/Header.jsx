@@ -9,8 +9,11 @@ import { usePathname } from "next/navigation";
 import { LINK_STYLES } from "@/constants/LINK_STYLES";
 import { ACTIVE_STYLE } from "@/constants/ACTIVE_STYLE";
 import { LINKS } from "@/constants/LINKS";
+import SignOutGoogle from "../SignOutGoogle";
+import { useSession } from "next-auth/react";
 
 export default function Header() {
+  const { data: session } = useSession();
   const [mainMenuOpen, setMainMenuOpen] = useState(false);
   const pathname = usePathname();
 
@@ -21,7 +24,7 @@ export default function Header() {
   return (
     <header className="bg-[#8A1538]">
       <section className="mx-auto flex w-fit flex-wrap items-center justify-between p-4 sm:flex-col">
-        <div className="flex flex-nowrap mx-auto">
+        <div className="mx-auto flex flex-nowrap">
           <Link href="/" className="mx-auto">
             <Image
               src={Logo}
@@ -79,6 +82,9 @@ export default function Header() {
                   </Link>
                 </li>
               ))}
+              {pathname === "/community" && session && (
+                <SignOutGoogle className="bg-[#FFB61B] text-black hover:bg-[#FFB61B]/80" />
+              )}
             </ul>
           </nav>
         </div>
