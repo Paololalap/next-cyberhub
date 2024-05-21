@@ -79,7 +79,7 @@ export const authOptions = {
       return token;
     },
     async signIn({ account, profile }) {
-      if (account.provider === "google" && !profile.email.endsWith("@gmail.com")) {
+      if (account.provider === "google" && !profile.email.endsWith("@upou.edu.ph")) {
         return false;
       }
       return true; // Allow sign in for other providers or if email ends with "@upou.edu.ph"
