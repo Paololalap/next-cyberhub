@@ -29,21 +29,24 @@ export async function POST(request, { params }) {
     return NextResponse.error("Internal server error", { status: 500 });
   }
 }
-export async function DELETE({ params }) {
+export async function DELETE(req, { params }) {
   const { id } = params;
+
   try {
     await connectMongoDB();
+
     const comment = await Comment.findByIdAndDelete(id);
     if (!comment) {
-      return NextResponse.error("Comment not found", { status: 404 });
+      return NextResponse.json({ message: "Comment not found" }, { status: 404 });
     }
+
     const postId = comment.postId;
-    // Remove comment from its associated post's comments array
     await Post.findByIdAndUpdate(postId, { $pull: { comments: id } });
+
     return NextResponse.json({ message: "Comment deleted successfully" });
   } catch (error) {
     console.error("Error deleting comment:", error);
-    return NextResponse.error("Internal server error", { status: 500 });
+    return NextResponse.json({ message: "Internal server error" }, { status: 500 });
   }
 }
 
