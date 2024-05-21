@@ -1,20 +1,17 @@
 "use client";
 import React from "react";
-import { signOut, useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
+import { Button } from "./ui/button";
 
-export default function SignOutGoogle() {
-  const { data: session } = useSession();
+export default function SignOutGoogle({ className }) {
   const handleSignOut = async () => {
     await signOut();
   };
   return (
     <>
-      <button
-        className="absolute right-4 top-4 rounded bg-gray-800 px-4 py-2 text-white"
-        onClick={handleSignOut}
-      >
+      <Button onClick={handleSignOut} className={className}>
         Sign Out
-      </button>
+      </Button>
     </>
   );
 }
