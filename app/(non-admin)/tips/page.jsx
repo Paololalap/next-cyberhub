@@ -1,6 +1,6 @@
 import GetData from "./_get-data";
 import { Suspense } from "react";
-import LoadingSkeleton from "@/components/LoadingSkeleton";
+import LoadingSkeleton from "@/components/loading-skeleton/LoadingSkeleton";
 
 export default async function TipsPage({ searchParams }) {
   return (
