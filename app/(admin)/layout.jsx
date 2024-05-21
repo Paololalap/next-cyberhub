@@ -1,4 +1,4 @@
-import { AuthProvider } from "@/app/Providers";
+import { AuthProvider } from "@/providers/Providers";
 import Footer from "@/components/footer/Footer";
 import AdminHeader from "@/components/header/AdminHeader";
 import { Toaster } from "@/components/ui/toaster";
