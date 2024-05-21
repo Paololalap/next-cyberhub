@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
@@ -18,6 +17,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
+import { Loader2 } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 
 const formSchema = z.object({
   newFirstName: z.string(),
@@ -52,8 +53,10 @@ async function getUserData() {
 }
 
 export default function AccountSettingsPage() {
+  const { toast } = useToast();
   const [user, setUser] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -65,10 +68,9 @@ export default function AccountSettingsPage() {
     },
   });
 
-  const router = useRouter();
-
   const onSubmit = async () => {
     try {
+      setIsLoading(true);
       const { newFirstName, newLastName, newUsername, newProfilePic } =
         form.getValues();
       const res = await fetch("http://localhost:3000/api/admin-user", {
@@ -86,8 +88,11 @@ export default function AccountSettingsPage() {
       if (!res.ok) {
         throw new Error("Failed to update user");
       }
-      router.refresh();
-      router.push("/");
+      setIsLoading(false);
+      toast({
+        variant: "Success",
+        title: "Update profile success!",
+      });
     } catch (error) {
       console.log(error);
     }
@@ -210,6 +215,7 @@ export default function AccountSettingsPage() {
         />
 
         <Button type="submit" className="bg-[#8a1538] hover:bg-[#8a1538]/90">
+          {isLoading && <Loader2 className="mr-2 size-5 animate-spin" />}
           Update
         </Button>
       </form>
