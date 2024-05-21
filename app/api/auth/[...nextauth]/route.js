@@ -9,14 +9,6 @@ export const authOptions = {
   providers: [
     GoogleProvider({
       async profile(profile) {
-        const allowedDomain = "@upou.edu.ph";
-
-        // Check if the email ends with the allowed domain
-        if (!profile.email.endsWith(allowedDomain)) {
-          throw new Error("Unauthorized email domain");
-          return null;
-        }
-
         await connectMongoDB();
         let user = await User.findOne({ email: profile.email });
 
@@ -86,8 +78,12 @@ export const authOptions = {
       if (user?.role) token.role = user.role;
       return token;
     },
-
-   
+    async signIn({ account, profile }) {
+      if (account.provider === "google" && !profile.email.endsWith("@gmail.com")) {
+        return false;
+      }
+      return true; // Allow sign in for other providers or if email ends with "@upou.edu.ph"
+    },
   },
 
   session: {
@@ -95,13 +91,8 @@ export const authOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
-    signIn: ({ provider }) => {
-      if (provider === "credentials") {
-        return "/login";
-      } else if (provider === "google") {
-        return "/community";
-      }
-    },
+    signIn: "/login",
+    error: "/community",
   },
 };
 
