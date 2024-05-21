@@ -1,26 +1,28 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import {
-  CheckCheck,
-  Trash2,
-  Pin,
-  PinOff,
-  SquarePen,
-  Ellipsis,
-} from "lucide-react"; // Import the icons
+import { CheckCheck, Pin, PinOff, Ellipsis, MessageCircle } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { Avatar } from "./ui/avatar";
+import Image from "next/image";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Button } from "./ui/button";
+import { Textarea } from "./ui/textarea";
+import { cn } from "@/lib/utils";
+import { Loader2 } from "lucide-react";
 
-export const Communityposts = ({ author }) => {
+export default function CommunityPosts({ author }) {
   const { data: session } = useSession();
   const [posts, setPosts] = useState([]);
   const [commentTexts, setCommentTexts] = useState({});
   const [editingComment, setEditingComment] = useState(null);
-  const [dropdownVisible, setDropdownVisible] = useState(null);
   const [visiblePostsCount, setVisiblePostsCount] = useState(5);
-
-  useEffect(() => {
-    fetchPosts();
-  }, []);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingLoadMorePost, setIsLoadingLoadMorePost] = useState(false);
 
   // Function to fetch posts from the API
   const fetchPosts = async () => {
@@ -32,7 +34,9 @@ export const Communityposts = ({ author }) => {
       console.error("Error fetching posts:", error);
     }
   };
-
+  useEffect(() => {
+    fetchPosts();
+  }, []);
   // Function to toggle post expansion
   const toggleExpanded = (postId) => {
     setPosts((prevPosts) =>
@@ -52,6 +56,7 @@ export const Communityposts = ({ author }) => {
 
   // Function to handle comment submission
   const handleCommentSubmit = async (postId) => {
+    setIsLoading(true);
     const commentText = commentTexts[postId] || "";
 
     // Check if the comment text is empty
@@ -93,6 +98,7 @@ export const Communityposts = ({ author }) => {
                 comments: [...post.comments, newComment.comment],
               };
             }
+            setIsLoading(false);
             return post;
           });
         });
@@ -260,15 +266,6 @@ export const Communityposts = ({ author }) => {
     }
   };
 
-  // Function to handle canceling comment edit
-  const cancelCommentEdit = () => {
-    setEditingComment(null);
-  };
-
-  const toggleDropdown = (postId) => {
-    setDropdownVisible(dropdownVisible === postId ? null : postId);
-  };
-
   const handleDeletePost = async (postId) => {
     try {
       const response = await fetch("/api/thread", {
@@ -293,7 +290,26 @@ export const Communityposts = ({ author }) => {
 
   // Function to load more posts
   const loadMorePosts = () => {
+    setIsLoadingLoadMorePost(true);
     setVisiblePostsCount((prevCount) => prevCount + 5);
+    setIsLoadingLoadMorePost(false);
+  };
+
+  function simulateEscKeyPress() {
+    const event = new KeyboardEvent("keydown", {
+      key: "Escape",
+      keyCode: 27,
+      code: "Escape",
+      which: 27,
+      bubbles: true,
+    });
+    document.dispatchEvent(event);
+  }
+
+  const handleKeyDown = (postId, event) => {
+    if (event.key === "Enter") {
+      handleCommentSubmit(postId);
+    }
   };
 
   // Render UI
@@ -305,163 +321,218 @@ export const Communityposts = ({ author }) => {
           className="w-screen bg-white p-6 shadow-md sm:max-w-2xl sm:rounded-lg"
         >
           <div className="mb-2 flex items-center">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-300 text-2xl font-bold text-gray-700">
+            <Avatar className="grid place-items-center bg-gray-300 text-2xl font-bold text-gray-700">
               {post.author[0]}
-            </div>
-            <div className="ml-2 w-full px-2 py-2">{post.author}</div>
+            </Avatar>
+            <div className="flex-1 px-2 py-2 font-bold">{post.author}</div>
             <div className="relative inline-block text-left">
-              <Ellipsis
-                onClick={() => toggleDropdown(post._id)}
-                className="cursor-pointer"
-              />
-              {dropdownVisible === post._id && (
-                <div className="absolute right-0 z-10 mt-2 w-48 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
-                  <div
-                    onClick={() => handlePostReport(post._id)}
-                    className="block cursor-pointer px-4 py-2 text-sm text-yellow-700 hover:bg-yellow-100"
-                  >
-                    Report Post
-                  </div>
-                  {(session?.user?.role === "admin" ||
-                    session?.user?._id === post.userID) && (
-                    <div
-                      onClick={() => handleDeletePost(post._id)}
-                      className="block cursor-pointer px-4 py-2 text-sm text-red-700 hover:bg-red-100"
-                    >
-                      Delete Post
-                    </div>
+              <Popover>
+                <PopoverTrigger>
+                  <Ellipsis />
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  {post._id && (
+                    <>
+                      <button
+                        onClick={() => handlePostReport(post._id)}
+                        className="block cursor-pointer px-4 py-2 text-sm text-yellow-700 hover:bg-yellow-100"
+                      >
+                        Report Post
+                      </button>
+                      {(session?.user?.role === "admin" ||
+                        session?.user?._id === post.userID) && (
+                        <button
+                          onClick={() => handleDeletePost(post._id)}
+                          className="block cursor-pointer px-4 py-2 text-sm text-red-700 hover:bg-red-100"
+                        >
+                          Delete Post
+                        </button>
+                      )}
+                    </>
                   )}
-                </div>
-              )}
+                </PopoverContent>
+              </Popover>
             </div>
           </div>
-          <div className="ml-2 w-full px-2 py-2">
-            {post.expanded ? post.content : `${post.content.slice(0, 150)}...`}
-            <button
-              onClick={() => toggleExpanded(post._id)}
-              className="text-blue-500 hover:underline focus:outline-none"
-            >
-              {post.expanded ? "See less" : "See more"}
-            </button>
+          <div className="py-2 capitalize">
+            {post.content.length > 250 ? (
+              <>
+                {post.expanded ? (
+                  <span>{post.content}</span>
+                ) : (
+                  `${post.content.slice(0, 250)}...`
+                )}
+                &nbsp;
+                <button
+                  onClick={() => toggleExpanded(post._id)}
+                  className="text-blue-500 hover:underline focus:outline-none"
+                >
+                  {post.expanded ? "See less" : "See more"}
+                </button>
+              </>
+            ) : (
+              post.content
+            )}
           </div>
-          <div className="border-2 border-solid border-black">
-            <img src={post.imglink} alt="Post Image" />
+          <div className="relative w-full">
+            <AspectRatio ratio={1 / 1}>
+              <Image
+                src={post.imglink}
+                fill
+                alt="Post Image"
+                className="rounded-md border border-black object-contain"
+              />
+            </AspectRatio>
           </div>
-          <div className="my-4 flex justify-center border-b-2 border-t-2 border-black">
+          <div className="mb-2 flex justify-center border-b border-black">
             <button
-              className="px-4 py-4 font-bold"
+              className="my-1 flex gap-x-1 rounded-md p-3 font-bold transition-all hover:bg-gray-300"
               onClick={() => handleCommentsClick(post._id)}
             >
+              <MessageCircle />
               {post.showComments ? "Hide Comments" : "Show Comments"} (
               {post.comments ? post.comments.length : 0})
             </button>
           </div>
           {post.showComments && (
-            <div className="p-4">
+            <div className="py-2">
               {post.comments.length === 0 ? (
                 <p>No comments yet, you are the first one to comment.</p>
               ) : (
                 post.comments.map((comment) => (
-                  <div
-                    key={comment._id}
-                    className="mb-2 border-2 border-black p-2"
-                  >
-                    <div className="flex items-center">
-                      {/* Render icon based on pinStatus */}
-                      {session?.user?.role === "admin" ? (
-                        comment.pinStatus === "pinned" ? (
-                          <Pin
-                            className="mr-2 cursor-pointer text-green-500"
-                            onClick={() =>
-                              handlePinComment(
-                                post._id,
-                                comment._id,
-                                comment.pinStatus,
-                              )
-                            }
-                          />
-                        ) : (
-                          <PinOff
-                            className="mr-2 cursor-pointer text-red-500"
-                            onClick={() =>
-                              handlePinComment(
-                                post._id,
-                                comment._id,
-                                comment.pinStatus,
-                              )
-                            }
-                          />
-                        )
-                      ) : (
-                        comment.pinStatus === "pinned" && (
-                          <CheckCheck className="mr-2 text-green-500" />
-                        )
-                      )}
-                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-300 text-2xl font-bold text-gray-700">
-                        {comment.author[0]}
+                  <div key={comment._id} className="group mt-2 first:mt-0">
+                    <div className="flex items-center justify-between">
+                      <div className="flex flex-1 items-center">
+                        <div
+                          className={cn("flex", { "flex-1": editingComment })}
+                        >
+                          <Avatar className="grid place-items-center bg-gray-300 text-2xl font-bold text-gray-700">
+                            {comment.author[0]}
+                          </Avatar>
+                          <div
+                            className={cn(
+                              "mx-2 rounded-lg bg-gray-300 px-2 py-2",
+                              { "flex-1 bg-transparent p-0": editingComment },
+                            )}
+                          >
+                            {editingComment &&
+                            editingComment.commentId === comment._id ? (
+                              <Textarea
+                                value={editingComment.content}
+                                onChange={(e) =>
+                                  setEditingComment({
+                                    ...editingComment,
+                                    content: e.target.value,
+                                  })
+                                }
+                                className="w-full text-base focus:outline-none"
+                              />
+                            ) : (
+                              <>
+                                <span className="font-bold">
+                                  {comment.author}
+                                </span>
+                                <br />
+                                <p>{comment.content}</p>
+                              </>
+                            )}
+                          </div>
+                        </div>
+                        <Popover>
+                          <PopoverTrigger>
+                            <div
+                              className={cn(
+                                "mr-2 grid size-8 place-items-center rounded-full transition-all hover:bg-black/50 hover:text-white",
+                                editingComment && "hidden",
+                              )}
+                            >
+                              <Ellipsis className="invisible group-hover:visible" />
+                            </div>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-min p-0">
+                            {session?.user?._id === comment.userID && (
+                              <button
+                                className="cursor-pointer whitespace-nowrap px-3 py-2 hover:rounded-t-md hover:bg-gray-300"
+                                onClick={() => {
+                                  initiateCommentEdit(
+                                    post._id,
+                                    comment._id,
+                                    comment.content,
+                                  );
+                                  simulateEscKeyPress();
+                                }}
+                              >
+                                Edit Comment
+                              </button>
+                            )}
+                            {session?.user?.role === "admin" && (
+                              <button
+                                onClick={() => {
+                                  handleCommentDelete(post._id, comment._id);
+                                  simulateEscKeyPress;
+                                }}
+                                className="w-full whitespace-nowrap px-3 py-2 text-red-500 hover:rounded-b-md hover:bg-gray-300 hover:text-red-700 focus:outline-none"
+                              >
+                                Delete
+                              </button>
+                            )}
+                          </PopoverContent>
+                        </Popover>
                       </div>
-                      <div className="ml-2 w-full px-2 py-2">
-                        {editingComment &&
-                        editingComment.commentId === comment._id ? (
-                          <input
-                            type="text"
-                            value={editingComment.content}
-                            onChange={(e) =>
-                              setEditingComment({
-                                ...editingComment,
-                                content: e.target.value,
-                              })
-                            }
-                            className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none"
-                          />
+                      {editingComment &&
+                        editingComment.commentId === comment._id && (
+                          <div className="flex gap-x-2">
+                            <Button
+                              onClick={handleSaveCommentEdit}
+                              className="bg-[#8a1438] hover:bg-[#8a1438]"
+                            >
+                              Save
+                            </Button>
+                            <Button
+                              onClick={() => setEditingComment(null)}
+                              variant="secondary"
+                            >
+                              Cancel
+                            </Button>
+                          </div>
+                        )}
+                      {/* Render icon based on pinStatus */}
+                      <div className="self-start">
+                        {session?.user?.role === "admin" ? (
+                          comment.pinStatus === "pinned" ? (
+                            <div className="grid size-10 cursor-pointer place-items-center rounded-full hover:bg-black/20">
+                              <Pin
+                                className="size-6 text-green-500"
+                                onClick={() =>
+                                  handlePinComment(
+                                    post._id,
+                                    comment._id,
+                                    comment.pinStatus,
+                                  )
+                                }
+                              />
+                            </div>
+                          ) : (
+                            <div className="grid size-10 cursor-pointer place-items-center rounded-full hover:bg-black/20">
+                              <PinOff
+                                className="size-6 text-red-500"
+                                onClick={() =>
+                                  handlePinComment(
+                                    post._id,
+                                    comment._id,
+                                    comment.pinStatus,
+                                  )
+                                }
+                              />
+                            </div>
+                          )
                         ) : (
-                          comment.content
+                          comment.pinStatus === "pinned" && (
+                            <CheckCheck className="mr-2 text-green-500" />
+                          )
                         )}
                       </div>
-                      {/* Render edit icon if the session.user._id is the same as the comment userId */}
-                      {session?.user?._id === comment.userID && (
-                        <SquarePen
-                          className="ml-auto cursor-pointer text-blue-500"
-                          onClick={() =>
-                            initiateCommentEdit(
-                              post._id,
-                              comment._id,
-                              comment.content,
-                            )
-                          }
-                        />
-                      )}
-                      {/* Render delete button for comments if the user is an admin */}
-                      {session?.user?.role === "admin" && (
-                        <button
-                          onClick={() =>
-                            handleCommentDelete(post._id, comment._id)
-                          }
-                          className="ml-auto text-red-500 hover:text-red-700 focus:outline-none"
-                        >
-                          <Trash2 className="mr-1 inline-block h-6 w-6" />
-                          Delete
-                        </button>
-                      )}
                     </div>
-                    {/* Render save and cancel buttons when editing a comment */}
-                    {editingComment &&
-                      editingComment.commentId === comment._id && (
-                        <div className="mt-2 flex">
-                          <button
-                            onClick={handleSaveCommentEdit}
-                            className="mr-2 rounded-md bg-green-500 px-4 py-2 text-white hover:bg-green-600 focus:outline-none"
-                          >
-                            Save
-                          </button>
-                          <button
-                            onClick={cancelCommentEdit}
-                            className="rounded-md bg-red-500 px-4 py-2 text-white hover:bg-red-600 focus:outline-none"
-                          >
-                            Cancel
-                          </button>
-                        </div>
-                      )}
                   </div>
                 ))
               )}
@@ -472,27 +543,34 @@ export const Communityposts = ({ author }) => {
                   value={commentTexts[post._id] || ""}
                   onChange={(event) => handleCommentChange(post._id, event)}
                   placeholder="Write a comment..."
+                  onKeyDown={(event) => handleKeyDown(post._id, event)}
                   className="mr-2 w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none"
                 />
-                <button
+                <Button
                   onClick={() => handleCommentSubmit(post._id)}
-                  className="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none"
+                  className="bg-[#8a1438] hover:bg-[#8a1438]/90"
                 >
+                  {isLoading && (
+                    <Loader2 className="mr-2 size-4 animate-spin" />
+                  )}
                   Comment
-                </button>
+                </Button>
               </div>
             </div>
           )}
         </div>
       ))}
       {visiblePostsCount < posts.length && (
-        <button
+        <Button
           onClick={loadMorePosts}
-          className="mt-4 rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none"
+          className="bg-[#8a1438] hover:bg-[#8a1438]/90"
         >
+          {isLoadingLoadMorePost && (
+            <Loader2 className="mr-2 size-4 animate-spin" />
+          )}
           Load More
-        </button>
+        </Button>
       )}
     </div>
   );
-};
+}

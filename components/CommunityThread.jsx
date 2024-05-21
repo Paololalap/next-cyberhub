@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { CreatePost } from "@/components/CreatePost";
-import { Communityposts } from "@/components/CommunityPost";
+import CommunityPosts from "@/components/CommunityPost";
 import { Input } from "@/components/ui/input";
 import { useSession } from "next-auth/react";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -12,6 +12,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Avatar } from "@/components/ui/avatar";
 
 export default function CommunityPage() {
   const { data: session } = useSession();
@@ -38,9 +39,10 @@ export default function CommunityPage() {
       <div className="flex items-center justify-center py-2">
         <div className="w-full bg-white p-6 shadow-md sm:max-w-2xl sm:rounded-lg">
           <div className="mb-4 flex items-center">
-            <div className="flex h-10 w-14 items-center justify-center rounded-full bg-gray-300 text-2xl font-bold text-gray-700">
-              {author ? author[0].toUpperCase() : ""}
-            </div>
+            <Avatar className="grid place-items-center bg-gray-300 text-2xl font-bold text-gray-700">
+              <p>{author ? author[0].toUpperCase() : ""}</p>
+            </Avatar>
+
             <Input
               type="text"
               value={author}
@@ -61,7 +63,7 @@ export default function CommunityPage() {
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger>
-                    <CircleHelp className="size-5"/>
+                    <CircleHelp className="size-5" />
                   </TooltipTrigger>
                   <TooltipContent>
                     <p>When checked, your posts will be anonymous.</p>
@@ -74,7 +76,7 @@ export default function CommunityPage() {
       </div>
       <div></div>
       <CreatePost author={author} />
-      <Communityposts author={author} />
+      <CommunityPosts author={author} />
     </>
   );
 }
