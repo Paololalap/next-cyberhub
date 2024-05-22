@@ -12,15 +12,17 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-
+import { useToast } from "@/components/ui/use-toast";
 export default function CommunityPage() {
   const { data: session } = useSession();
   const [author, setAuthor] = useState();
   const [authorEnabled, setAuthorEnabled] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     if (session) {
       setAuthor(session?.user?.name);
+       toast({ variant: "Success", description: "Welcome to Community!" });
     }
   }, [session]);
 

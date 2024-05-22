@@ -79,8 +79,8 @@ export const authOptions = {
       return token;
     },
     async signIn({ account, profile }) {
-      if (account.provider === "google" && !profile.email.endsWith("@upou.edu.ph")) {
-        return false;
+      if (account.provider === "google" && !profile.email.endsWith("@gmail.com")) {
+        return "/community?error=EmailDenied";
       }
       return true; // Allow sign in for other providers or if email ends with "@upou.edu.ph"
     },
