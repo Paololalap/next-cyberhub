@@ -3,7 +3,6 @@ export const LINKS = [
   { id: "tips", href: "/tips", text: "Tips" },
   { id: "tools", href: "/tools", text: "Tools" },
   { id: "community", href: "/community", text: "Community" },
-  { id: "about", href: "/about", text: "About" },
 ];
 
 export const LINKS_ADMIN = [
