@@ -63,7 +63,7 @@ export default async function GetData({ searchParams }) {
         {data.items.map((item) => (
           <div
             key={item._id}
-            className="col-span-4 rounded-md border-2 border-solid border-[#00563F] bg-white"
+            className="lg:col-span-4 md:col-span-6 rounded-md border-2 border-solid border-[#00563F] bg-white"
           >
             <div className="flex h-full flex-col justify-between p-5">
               <div className="text-lg font-black">{item.title}</div>
