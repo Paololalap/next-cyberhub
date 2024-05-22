@@ -18,7 +18,7 @@ export async function PUT(request, { params }) {
   );
 }
 
-export async function GET({ params }) {
+export async function GET(request, { params }) {
   const { id } = params;
   await connectMongoDB();
   const announce = await Announcement.findById(id);
