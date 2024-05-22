@@ -62,7 +62,7 @@ export default async function GetData({ searchParams }) {
       {data.items.map((item) => (
         <div
           key={item._id}
-          className="group mt-2 grid grid-cols-1 rounded-md border-2 border-solid border-[#00563F] bg-white first:mt-0 md:grid-cols-12"
+          className="group mt-2 grid grid-cols-1 rounded-md border-2 border-solid border-[#00563F] bg-white first:mt-0 md:grid-cols-12 overflow-hidden"
         >
           <div className="relative col-span-5 overflow-hidden">
             <AspectRatio ratio={16 / 9}>
