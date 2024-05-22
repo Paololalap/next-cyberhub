@@ -8,7 +8,7 @@ export const LINKS = [
 
 export const LINKS_ADMIN = [
   { id: "manage-news", href: "/manage-news", text: "Manage News" },
-  { id: "manage-tips", href: "/manage-tips", text: "Manage Tips & Guides" },
+  { id: "manage-tips", href: "/manage-tips", text: "Manage Tips" },
   {
     id: "manage-announcement",
     href: "/manage-announcement",
