@@ -29,7 +29,7 @@ export default function LoginForm() {
         return;
       }
       toast({ variant: "Success", description: "Welcome Admin" });
-      router.replace("/");  
+      router.replace("/manage-news");  
     } catch (error) {
       toast({ variant: "Error", description: "Failed to Login" });
       console.log(error);       
