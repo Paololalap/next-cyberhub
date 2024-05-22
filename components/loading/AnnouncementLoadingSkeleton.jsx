@@ -23,8 +23,8 @@ export default function AnnouncementLoadingSkeleton() {
             <Skeleton className="mt-1 h-5 w-3/4" />
             <Skeleton className="mt-5 h-5 w-full" />
             <Skeleton className="mt-1 h-5 w-full" />
-            <Skeleton className="mt-1 h-5 w-4/5" />
-            <div className="mt-5 flex gap-x-2 md:mt-0 md:self-end">
+            <Skeleton className="mt-1 h-5 w-4/5 mb-5" />
+            <div className="flex gap-x-2 md:mt-0 md:self-end">
               <Skeleton className="h-10 w-[80px]" />
               <Skeleton className="h-10 w-[80px]" />
             </div>
