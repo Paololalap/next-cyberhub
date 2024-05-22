@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import Logo from "@/public/logo.png";
 import Burger from "@/public/burger.svg";
@@ -40,19 +40,19 @@ export default function Header() {
           <div className="flex items-center space-x-3 ">
             <button
               type="button"
-              className="inline-flex size-10 items-center justify-center  rounded-lg bg-[#00563F] p-2 text-sm  text-[#FFB61B] outline-none ring-2 ring-[#FFB61B] transition-all hover:scale-110 sm:hidden"
+              className="inline-flex size-10 items-center justify-center rounded-lg bg-[#00563F] p-2 text-sm text-[#FFB61B] outline-none ring-2 ring-[#FFB61B] transition-all hover:scale-110 sm:hidden"
               onClick={toggleMainMenu}
             >
               {mainMenuOpen ? (
                 <Image
                   src={Cross}
-                  alt=""
+                  alt="exit button"
                   width={24}
                   height={24}
                   className="h-12 w-full"
                 />
               ) : (
-                <Image src={Burger} alt="" width={24} height={20} />
+                <Image src={Burger} alt="burger menu button" width={24} height={20} />
               )}
             </button>
           </div>
@@ -69,7 +69,7 @@ export default function Header() {
               mainMenuOpen ? "block" : "hidden"
             }`}
           >
-            <ul className="mx-auto mt-4 flex max-w-[300px] flex-col whitespace-nowrap rounded-lg bg-[#8A1538] pt-4 text-center font-medium md:max-w-[800px] md:flex-row md:justify-evenly md:p-0">
+            <ul className="mx-auto mt-4 flex max-w-[300px] flex-col whitespace-nowrap rounded-lg bg-[#8A1538] pt-4 text-center font-medium md:max-w-[800px] md:flex-row md:justify-between md:p-0">
               {LINKS.map((link) => (
                 <li key={link.id}>
                   <Link
