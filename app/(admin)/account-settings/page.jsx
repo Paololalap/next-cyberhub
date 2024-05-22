@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import Loading from "./loading";
 
 const formSchema = z.object({
   newFirstName: z.string(),
@@ -137,7 +138,7 @@ export default function AccountSettingsPage() {
   }, []);
 
   if (!user) {
-    return null; // Return null or a loading indicator while data is being fetched
+    return <Loading />; // Return null or a loading indicator while data is being fetched
   }
 
   return (
