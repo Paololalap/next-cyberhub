@@ -8,31 +8,33 @@ import GoogleProvider from "next-auth/providers/google";
 export const authOptions = {
   providers: [
     GoogleProvider({
-      async profile(profile) {
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      profile: async (profile) => {
         await connectMongoDB();
+
         let user = await User.findOne({ email: profile.email });
 
-        try {
-          if (!user) {
+        if (!user) {
+          try {
             user = await User.create({
               username: profile.name,
               email: profile.email,
               role: "user",
             });
+          } catch (error) {
+            console.log("Error creating user: ", error);
+            throw new Error("Failed to create user");
           }
-        } catch (error) {
-          console.log("Error: ", error);
         }
 
         return {
           _id: user._id.toString(),
           ...profile,
           id: profile.sub,
-          role: user ? user.role : "user",
+          role: user.role,
         };
       },
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
     CredentialsProvider({
       name: "credentials",
@@ -79,7 +81,10 @@ export const authOptions = {
       return token;
     },
     async signIn({ account, profile }) {
-      if (account.provider === "google" && !profile.email.endsWith("@gmail.com")) {
+      if (
+        account.provider === "google" &&
+        !profile.email.endsWith("@upou.edu.ph")
+      ) {
         return "/community?error=EmailDenied";
       }
       return true; // Allow sign in for other providers or if email ends with "@upou.edu.ph"
