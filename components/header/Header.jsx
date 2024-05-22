@@ -9,7 +9,7 @@ import { usePathname } from "next/navigation";
 import { LINK_STYLES } from "@/constants/LINK_STYLES";
 import { ACTIVE_STYLE } from "@/constants/ACTIVE_STYLE";
 import { LINKS } from "@/constants/LINKS";
-import SignOutGoogle from "../SignOutGoogle";
+import SignOutGoogle from "@/components/button/SignOutGoogle";
 import { useSession } from "next-auth/react";
 
 export default function Header() {
@@ -52,7 +52,12 @@ export default function Header() {
                   className="h-12 w-full"
                 />
               ) : (
-                <Image src={Burger} alt="burger menu button" width={24} height={20} />
+                <Image
+                  src={Burger}
+                  alt="burger menu button"
+                  width={24}
+                  height={20}
+                />
               )}
             </button>
           </div>

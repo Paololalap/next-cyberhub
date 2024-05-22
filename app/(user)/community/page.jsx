@@ -1,7 +1,7 @@
 import React from "react";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import SignInGoogle from "@/components/SignInGoogle";
+import SignInGoogle from "@/components/button/SignInGoogle";
 import CommunityThread from "@/components/CommunityThread";
 
 export default async function CommunityPage() {
