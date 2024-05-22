@@ -4,12 +4,11 @@ import Image from "next/image";
 import Logo from "@/public/logo.png";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "../ui/button";
 import { LINKS_ADMIN } from "@/constants/LINKS";
 import { usePathname } from "next/navigation";
 import { LINK_STYLES } from "@/constants/LINK_STYLES";
 import { ACTIVE_STYLE } from "@/constants/ACTIVE_STYLE";
-import { signOut } from "next-auth/react";
+import SignOutGoogle from "../button/SignOutGoogle";
 
 export default function AdminHeader() {
   const pathname = usePathname();
@@ -77,12 +76,7 @@ export default function AdminHeader() {
                   </Link>
                 </li>
               ))}
-              <Button
-                className="bg-[#FFB61B] text-[#8A1538] hover:bg-[#FFB61B]/90"
-                onClick={() => signOut()}
-              >
-                Log Out
-              </Button>
+              <SignOutGoogle className="bg-[#FFB61B] text-black hover:bg-[#FFB61B]/80" />
             </ul>
           </nav>
         </div>
