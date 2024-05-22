@@ -75,7 +75,7 @@ export default function UrlChecker() {
   };
 
   return (
-    <div className="mt-5 flex items-center justify-center px-5 md:px-0">
+    <div className="mt-5 flex w-screen items-center justify-center px-5 md:px-0">
       <div className="w-full max-w-md rounded-lg border-2 border-solid border-black bg-white p-6 shadow-md">
         <h2 className="mb-4 text-center text-xl font-semibold">URL Checker</h2>
         <div className="mb-4">

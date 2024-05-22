@@ -70,11 +70,11 @@ export default async function GetData({ searchParams }) {
   }
   return (
     <>
-      <div className="mx-auto mb-2 w-full max-w-[75rem] px-3">
+      <div className="mx-auto mb-2 w-screen max-w-[75rem] px-3">
         {pageNumber === 1 && data.latestNews && (
           <div
             key={data.latestNews._id}
-            className="group mt-2 grid grid-cols-1 rounded-md border-2 border-solid border-[#00563F] bg-white first:mt-0 md:grid-cols-12 overflow-hidden"
+            className="group mt-2 grid grid-cols-1 overflow-hidden rounded-md border-2 border-solid border-[#00563F] bg-white first:mt-0 md:grid-cols-12"
           >
             <Link
               href={`/article/${data.latestNews._id}`}
@@ -112,11 +112,11 @@ export default async function GetData({ searchParams }) {
           </div>
         )}
       </div>
-      <div className="mx-auto w-full max-w-[75rem] px-3">
+      <div className="mx-auto w-screen max-w-[75rem] px-3">
         {data.items.map((item) => (
           <div
             key={item._id}
-            className="group mt-2 grid grid-cols-1 rounded-md border-2 border-solid border-[#00563F] bg-white first:mt-0 md:grid-cols-12 overflow-hidden"
+            className="group mt-2 grid grid-cols-1 overflow-hidden rounded-md border-2 border-solid border-[#00563F] bg-white first:mt-0 md:grid-cols-12"
           >
             <Link
               href={`/article/${item._id}`}
@@ -155,8 +155,8 @@ export default async function GetData({ searchParams }) {
         {isPageOutOfRange ? (
           <div className="h-screen">No more pages...</div>
         ) : (
-          <Pagination className={"mt-3"}>
-            <PaginationContent>
+          <Pagination className={"my-3"}>
+            <PaginationContent className="flex-wrap">
               <PaginationItem>
                 {pageNumber === 1 ? (
                   <PaginationPrevious className="pointer-events-none opacity-70" />
