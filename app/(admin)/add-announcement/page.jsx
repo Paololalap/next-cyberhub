@@ -61,7 +61,7 @@ export default function AddAnnouncementPage() {
   };
 
   return (
-    <div className="mt-10 grid min-h-screen place-items-center">
+    <div className="mt-10 grid place-items-center">
       <form
         className="w-96 rounded-lg border-t-[6px] border-[#8a1538] p-4 shadow-2xl sm:w-[30rem] md:w-auto"
         onSubmit={handleSubmit(onSubmit)}
