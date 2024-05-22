@@ -1,62 +1,24 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import Logo from "@/public/logo.png";
 import Link from "next/link";
-import { signOut } from "next-auth/react";
-import { usePathname } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "../ui/button";
 import { LINKS_ADMIN } from "@/constants/LINKS";
+import { usePathname } from "next/navigation";
 import { LINK_STYLES } from "@/constants/LINK_STYLES";
 import { ACTIVE_STYLE } from "@/constants/ACTIVE_STYLE";
-import { Button } from "../ui/button";
-
-async function getUserData() {
-  try {
-    const response = await fetch("http://localhost:3000/api/admin-user", {
-      headers: {
-        "Cache-Control": "no-store",
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to fetch user data");
-    }
-
-    const responseData = await response.json();
-    if (!responseData || !responseData.user) {
-      throw new Error("User data is missing");
-    }
-
-    return responseData.user;
-  } catch (error) {
-    console.error(error);
-    return null;
-  }
-}
+import { signOut } from "next-auth/react";
 
 export default function AdminHeader() {
-  const [user, setUser] = useState(null); // Initialize user state to null
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const userData = await getUserData();
-      setUser(userData);
-    };
-
-    fetchData();
-  }, []);
-
-  const [mainMenuOpen, setMainMenuOpen] = useState(false);
   const pathname = usePathname();
+  const [mainMenuOpen, setMainMenuOpen] = useState(false);
 
   const toggleMainMenu = () => {
     setMainMenuOpen(!mainMenuOpen);
   };
 
-  if (!user) {
-    return null; // Return null or a loading indicator while data is being fetched
-  }
   return (
     <header className="bg-[#8A1538]">
       <section className="mx-auto flex w-fit flex-wrap items-center justify-between p-4 sm:flex-col">
@@ -90,7 +52,7 @@ export default function AdminHeader() {
           </div>
         </div>
         <Link
-          href=""
+          href="/"
           className="mx-auto whitespace-nowrap text-3xl font-semibold text-white md:mb-4 md:text-4xl"
         >
           Cyberhub
