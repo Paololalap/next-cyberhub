@@ -1,7 +1,7 @@
 import React, { Suspense } from "react";
 import AddEntry from "@/components/button/AddEntry";
 import GetData from "./_get-data";
-import LoadingSkeleton from "@/components/loading/LoadingSkeleton";
+import LoadingSkeleton from "@/components/LoadingSkeleton";
 
 export default function TipsPage({ searchParams }) {
   return (
