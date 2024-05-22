@@ -66,7 +66,7 @@ export default async function GetData({ searchParams }) {
       {data.items.map((item) => (
         <div
           key={item._id}
-          className="group mt-2 grid grid-cols-1 rounded-md border-2 border-solid border-[#00563F] bg-white first:mt-0 md:grid-cols-12 overflow-hidden"
+          className="group mt-2 grid grid-cols-1 overflow-hidden rounded-md border-2 border-solid border-[#00563F] bg-white first:mt-0 md:grid-cols-12"
         >
           <Link
             href={`/article/${item._id}`}
@@ -74,11 +74,12 @@ export default async function GetData({ searchParams }) {
           >
             <AspectRatio ratio={16 / 9}>
               <Image
-                className="object-contain transition-all md:hover:scale-110"
+                className="object-cover object-top transition-all md:hover:object-contain"
                 src={item.imageL}
                 alt={item.title}
                 fill
                 sizes="(min-width: 680px) 640px, calc(94.44vw + 17px)"
+                blurDataURL={item.imageL}
               />
             </AspectRatio>
           </Link>

@@ -1,18 +1,15 @@
 import PasswordChecker from "@/components/PasswordChecker";
 import UrlChecker from "@/components/UrlChecker";
-import { Suspense } from "react";
-import { Loader2 } from "lucide-react";
 
 export default function ToolsPage() {
   return (
-    <div className="min-h-max w-screen grid place-items-center py-5">
-      <Suspense fallback={<Loader2 className="mx-auto size-14 animate-spin" />}>
-        <PasswordChecker />
-      </Suspense>
-
-      <Suspense fallback={<Loader2 className="mx-auto size-14 mt-20 animate-spin" />}>
-        <UrlChecker />
-      </Suspense>
+    <div className="grid w-screen place-items-center py-5">
+      <div className="text-center text-3xl font-black">
+        Tools
+      </div>
+      <hr className="mx-auto mb-5 mt-3 w-64 border-2 border-solid border-[#FFB61B]" />
+      <PasswordChecker />
+      <UrlChecker />
     </div>
   );
 }

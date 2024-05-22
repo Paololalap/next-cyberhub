@@ -82,11 +82,12 @@ export default async function GetData({ searchParams }) {
             >
               <AspectRatio ratio={16 / 9}>
                 <Image
-                  className="object-contain transition-all md:hover:scale-110"
+                  className="object-cover object-top transition-all md:hover:object-contain"
                   src={data.latestNews.imageL}
                   alt={data.latestNews.title}
                   fill
                   sizes="(min-width: 680px) 640px, calc(94.44vw + 17px)"
+                  blurDataURL={data.latestNews.imageL}
                 />
               </AspectRatio>
             </Link>
@@ -124,11 +125,12 @@ export default async function GetData({ searchParams }) {
             >
               <AspectRatio ratio={16 / 9}>
                 <Image
-                  className="object-contain transition-all md:hover:scale-110"
+                  className="object-cover object-top transition-all md:hover:object-contain"
                   src={item.imageL}
                   alt={item.title}
                   fill
                   sizes="(min-width: 680px) 640px, calc(94.44vw + 17px)"
+                  blurDataURL={item.imageL}
                 />
               </AspectRatio>
             </Link>
