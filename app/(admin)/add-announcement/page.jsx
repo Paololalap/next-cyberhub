@@ -3,6 +3,8 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
+import { Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function AddAnnouncementPage() {
   const {
@@ -19,10 +21,12 @@ export default function AddAnnouncementPage() {
   const [endDate, setEndDate] = useState(
     () => new Date().toISOString().split("T")[0],
   );
+  const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
 
   const onSubmit = async () => {
+    setIsLoading(true);
     if (!title || !content || !startDate || !endDate) {
       toast({ variant: "Warning", description: "All fields are required" });
       return;
@@ -58,12 +62,13 @@ export default function AddAnnouncementPage() {
       toast({ variant: "Error", description: "Failed to add announcement" });
       console.error(error);
     }
+    setIsLoading(false);
   };
 
   return (
-    <div className="mt-10 grid place-items-center">
+    <div className="mt-5 w-screen">
       <form
-        className="w-96 rounded-lg border-t-[6px] border-[#8a1538] p-4 shadow-2xl sm:w-[30rem] md:w-auto"
+        className="rounded-lg border-t-[6px] border-[#8a1538] p-4 shadow-2xl max-w-[35rem] mx-auto"
         onSubmit={handleSubmit(onSubmit)}
       >
         <h1 className="mx-auto mt-3 w-full text-center text-3xl">
@@ -86,19 +91,19 @@ export default function AddAnnouncementPage() {
             Title:
           </label>
         </div>
-        <div className="relative mt-6">
+        <div className="relative mt-2">
           <textarea
             {...register("content")}
             placeholder="Content"
             id="content"
-            className="peer mt-6 w-full cursor-text resize-none border-b-2 border-gray-200 text-gray-900 placeholder:select-none focus:border-[#8a1538] focus:outline-none"
+            className="peer mt-6 w-full cursor-text resize-none border-b-2 border-gray-200 text-gray-900 placeholder-transparent placeholder:select-none focus:border-[#8a1538] focus:outline-none"
             rows="4"
             onChange={(e) => setContent(e.target.value)}
             value={content}
           />
           <label
             htmlFor="content"
-            className="absolute -top-3.5 left-0 cursor-text text-sm text-gray-600 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-gray-600"
+            className="absolute -top-1 left-0 cursor-text text-sm text-gray-600 transition-all peer-placeholder-shown:top-5 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:-top-1 peer-focus:text-sm peer-focus:text-gray-600"
           >
             Content:
           </label>
@@ -135,12 +140,13 @@ export default function AddAnnouncementPage() {
             value={endDate}
           />
         </div>
-        <button
+        <Button
           type="submit"
           className="mt-5 h-9 w-full rounded-md border bg-[#8a1538] text-center text-sm text-[#FFB61B] transition-all hover:opacity-95"
         >
+          {isLoading && <Loader2 className="mr-1 size-4 animate-spin" />}
           Publish
-        </button>
+        </Button>
       </form>
     </div>
   );
