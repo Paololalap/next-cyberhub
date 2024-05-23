@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { connectToDatabase } from "@/lib/connectMongo";
 import formatDateToWords from "@/constants/DATE_TO_WORDS";
+import DefaultImage from "@/public/default-image-news.jpg";
 import ReadMore from "@/components/button/ReadMore";
 import {
   Pagination,
@@ -47,7 +48,8 @@ async function getData(perPage, pageNumber) {
   }
 }
 
-export default async function NewsPage({ searchParams }) {let page = parseInt(searchParams.page, 10);
+export default async function NewsPage({ searchParams }) {
+  let page = parseInt(searchParams.page, 10);
   page = !page || page < 1 ? 1 : page;
   const perPage = 10;
 
@@ -80,15 +82,20 @@ export default async function NewsPage({ searchParams }) {let page = parseInt(se
           >
             <Link
               href={`/article/${data.latestNews._id}`}
-              className="relative col-span-5 overflow-hidden bg-white"
+              className="relative col-span-5 overflow-hidden"
             >
               <AspectRatio ratio={16 / 9}>
                 <Image
-                  className="object-cover object-top transition-all md:hover:object-contain"
-                  src={data.latestNews.imageL}
+                  className="object-cover object-top md:hover:object-contain md:hover:object-center"
+                  src={
+                    data.latestNews.imageL
+                      ? data.latestNews.imageL
+                      : DefaultImage
+                  }
                   alt={data.latestNews.title}
                   fill
                   sizes="(min-width: 680px) 640px, calc(94.44vw + 17px)"
+                  placeholder="blur"
                   blurDataURL={data.latestNews.imageL}
                 />
               </AspectRatio>
@@ -127,12 +134,13 @@ export default async function NewsPage({ searchParams }) {let page = parseInt(se
             >
               <AspectRatio ratio={16 / 9}>
                 <Image
-                  className="object-cover object-top transition-all md:hover:object-contain"
-                  src={item.imageL}
+                  className="object-cover object-top md:hover:object-contain md:hover:object-center"
+                  src={item.imageL ? item.imageL : DefaultImage}
                   alt={item.title}
                   fill
                   sizes="(min-width: 680px) 640px, calc(94.44vw + 17px)"
                   blurDataURL={item.imageL}
+                  placeholder="blur"
                 />
               </AspectRatio>
             </Link>
