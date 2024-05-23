@@ -14,6 +14,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import DefaultImage from "@/public/default-image-tips.jpg";
 
 async function getData(perPage, pageNumber) {
   try {
@@ -75,7 +76,7 @@ export default async function TipsPage({ searchParams }) {
               <AspectRatio ratio={16 / 9}>
                 <Image
                   className="object-cover object-top transition-all md:hover:object-contain"
-                  src={item.imageL}
+                  src={item.imageL ? item.imageL : DefaultImage}
                   alt={item.title}
                   sizes="(min-width: 680px) 640px, calc(94.44vw + 17px)"
                   fill

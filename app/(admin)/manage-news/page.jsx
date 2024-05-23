@@ -14,6 +14,7 @@ import Remove from "@/components/button/Remove";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { CalendarDays } from "lucide-react";
 import UpdateButton from "@/components/button/Update";
+import DefaultImage from '@/public/default-image-news.jpg'
 
 async function getData(perPage, pageNumber) {
   try {
@@ -74,7 +75,7 @@ export default async function ManageNewsPage({ searchParams }) {
             <AspectRatio ratio={16 / 9}>
               <Image
                 className="object-cover transition-all md:hover:object-contain object-top"
-                src={item.imageL}
+                src={item.imageL ? item.imageL : DefaultImage}
                 alt={item.title}
                 sizes="(min-width: 680px) 640px, calc(94.44vw + 17px)"
                 fill
