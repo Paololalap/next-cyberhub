@@ -8,9 +8,18 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LINK_STYLES } from "@/constants/LINK_STYLES";
 import { ACTIVE_STYLE } from "@/constants/ACTIVE_STYLE";
-import { LINKS } from "@/constants/LINKS";
+import { LINKS, LINKS_ADMIN } from "@/constants/LINKS";
 import SignOutGoogle from "@/components/button/SignOutGoogle";
 import { useSession } from "next-auth/react";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
+import { cn } from "@/lib/utils";
 
 export default function Header() {
   const { data: session } = useSession();
@@ -87,8 +96,39 @@ export default function Header() {
                   </Link>
                 </li>
               ))}
-              {pathname === "/community" && session && (
+              {pathname === "/community" && session?.user?.role === "user" && (
                 <SignOutGoogle className="bg-[#FFB61B] text-black hover:bg-[#FFB61B]/80" />
+              )}
+              {session?.user?.role === "admin" && (
+                <NavigationMenu className="md:ml-3">
+                  <NavigationMenuList>
+                    <NavigationMenuItem>
+                      <NavigationMenuTrigger className="mx-auto w-screen max-w-[300px] md:w-auto">
+                        Admin
+                      </NavigationMenuTrigger>
+                      <NavigationMenuContent className="p-0 w-screen max-w-[300px]">
+                        {LINKS_ADMIN.map((link) => (
+                          <li key={link.id}>
+                            <NavigationMenuLink>
+                              <Link
+                                href={link.href}
+                                className={cn(
+                                  LINK_STYLES,
+                                  "rounded-none text-black hover:text-white md:hover:bg-[#00563F]",
+                                )}
+                              >
+                                {link.text}
+                              </Link>
+                            </NavigationMenuLink>
+                          </li>
+                        ))}
+                        <NavigationMenuLink className="p-0">
+                          <SignOutGoogle className="md:ml-0 w-full rounded-none bg-[#FFB61B] text-black hover:bg-[#FFB61B]/80" />
+                        </NavigationMenuLink>
+                      </NavigationMenuContent>
+                    </NavigationMenuItem>
+                  </NavigationMenuList>
+                </NavigationMenu>
               )}
             </ul>
           </nav>
