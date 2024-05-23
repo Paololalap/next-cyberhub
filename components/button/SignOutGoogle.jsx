@@ -10,9 +10,9 @@ export default function SignOutGoogle({ className }) {
   };
   return (
     <>
-      <Button onClick={handleSignOut} className={cn(className, "ml-3")}>
+      <Button onClick={handleSignOut} className={cn("md:ml-3 rounded", className)}>
         Sign Out
       </Button>
-    </>
+    </> 
   );
 }
