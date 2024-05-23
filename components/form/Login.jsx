@@ -55,8 +55,8 @@ export default function LoginForm() {
   return (
     <div className="absolute left-1/2 flex min-h-[80vh] -translate-x-1/2 flex-col justify-center bg-white md:left-auto md:right-0 md:min-h-screen md:-translate-x-0 gap-y-10">
       <div className="mx-auto flex items-center gap-x-2">
-        <Image src={LogoCircle} alt="UPOU Logo" className="w-full" />
-        <span className="font-semibold text-3xl md:text-4xl">Cyberhub</span>
+        <Image src={LogoCircle} alt="UPOU Logo" className="size-[8rem]" />
+        <span className="font-bold text-3xl md:text-4xl">Cyberhub</span>
       </div>
       <Form {...form}>
         <form
