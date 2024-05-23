@@ -3,16 +3,28 @@ import { useState } from "react";
 import Image from "next/image";
 import Logo from "@/public/logo.png";
 import Link from "next/link";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { LINKS_ADMIN } from "@/constants/LINKS";
+import { Avatar } from "@/components/ui/avatar";
+import { LINKS, LINKS_ADMIN } from "@/constants/LINKS";
 import { usePathname } from "next/navigation";
 import { LINK_STYLES } from "@/constants/LINK_STYLES";
 import { ACTIVE_STYLE } from "@/constants/ACTIVE_STYLE";
 import SignOutGoogle from "../button/SignOutGoogle";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "../ui/navigation-menu";
+import { cn } from "@/lib/utils";
+import { X, Menu } from "lucide-react";
+import useMediaQuery from "@/hooks/useMediaQuery";
 
 export default function AdminHeader() {
   const pathname = usePathname();
   const [mainMenuOpen, setMainMenuOpen] = useState(false);
+  const smallScreen = useMediaQuery("(max-width: 767px)");
 
   const toggleMainMenu = () => {
     setMainMenuOpen(!mainMenuOpen);
@@ -37,16 +49,14 @@ export default function AdminHeader() {
           <div className="flex items-center space-x-3">
             <button
               type="button"
-              className="md:hidden"
+              className="inline-flex size-10 items-center justify-center rounded-lg bg-[#00563F] p-2 text-sm text-[#FFB61B] outline-none ring-2 ring-[#FFB61B] transition-all md:hidden"
               onClick={toggleMainMenu}
             >
-              <Avatar>
-                <AvatarImage
-                  src="https://github.com/shadcn.png"
-                  alt="Profile"
-                />
-                <AvatarFallback>A</AvatarFallback>
-              </Avatar>
+              {mainMenuOpen ? (
+                <X className="size-12" />
+              ) : (
+                <Menu className="size-12" />
+              )}
             </button>
           </div>
         </div>
@@ -76,10 +86,53 @@ export default function AdminHeader() {
                   </Link>
                 </li>
               ))}
-              <SignOutGoogle className="bg-[#FFB61B] text-black hover:bg-[#FFB61B]/80" />
+              {smallScreen &&
+                LINKS.map((link) => (
+                  <li key={link.id}>
+                    <Link
+                      href={link.href}
+                      className={`${LINK_STYLES} ${
+                        pathname === link.href ? ACTIVE_STYLE : ""
+                      }`}
+                    >
+                      {link.text}
+                    </Link>
+                  </li>
+                ))}
             </ul>
           </nav>
         </div>
+        <NavigationMenu className="absolute right-5 hidden md:ml-3 md:block">
+          <NavigationMenuList>
+            <NavigationMenuItem>
+              <NavigationMenuTrigger className="mx-auto size-12 rounded-full">
+                <Avatar className="grid place-items-center bg-gray-300 text-2xl font-bold text-gray-700">
+                  A
+                </Avatar>
+              </NavigationMenuTrigger>
+              <NavigationMenuContent className="w-screen max-w-[300px] p-0">
+                {LINKS.map((link) => (
+                  <li key={link.id} className="list-none">
+                    <NavigationMenuLink>
+                      <Link
+                        href={link.href}
+                        className={cn(
+                          LINK_STYLES,
+                          "rounded-none text-black hover:text-white md:hover:bg-[#00563F]"
+                        )}
+                      >
+                        {link.text}
+                      </Link>
+                    </NavigationMenuLink>
+                  </li>
+                ))}
+                <NavigationMenuLink className="p-0">
+                  <SignOutGoogle className="w-full rounded-none bg-[#FFB61B] text-black hover:bg-[#FFB61B]/80 md:ml-0" />
+                </NavigationMenuLink>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
       </section>
     </header>
   );
