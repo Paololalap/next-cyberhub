@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import { Eye, KeyRound, User } from "lucide-react";
+import { Eye, KeyRound, Loader2, User } from "lucide-react";
 import LogoCircle from "@/public/logo-circle.png";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -22,6 +22,7 @@ export default function LoginForm() {
   const { toast } = useToast();
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -32,6 +33,7 @@ export default function LoginForm() {
   });
 
   const onSubmit = async () => {
+    setIsLoading(true);
     const { username, password } = form.getValues();
     try {
       const res = await signIn("credentials", {
@@ -50,13 +52,14 @@ export default function LoginForm() {
       toast({ variant: "Error", description: "Failed to Login" });
       console.log(error);
     }
+    setIsLoading(false);
   };
 
   return (
-    <div className="absolute left-1/2 flex min-h-[80vh] -translate-x-1/2 flex-col justify-center bg-white md:left-auto md:right-0 md:min-h-screen md:-translate-x-0 gap-y-10">
+    <div className="absolute left-1/2 flex min-h-[80vh] -translate-x-1/2 flex-col justify-center gap-y-10 bg-white md:left-auto md:right-0 md:min-h-screen md:-translate-x-0">
       <div className="mx-auto flex items-center gap-x-2">
         <Image src={LogoCircle} alt="UPOU Logo" className="size-[8rem]" />
-        <span className="font-bold text-3xl md:text-4xl">Cyberhub</span>
+        <span className="text-3xl font-bold md:text-4xl">Cyberhub</span>
       </div>
       <Form {...form}>
         <form
@@ -108,8 +111,10 @@ export default function LoginForm() {
           />
           <Button
             type="submit"
+            disabled={isLoading}
             className="h-[57.6px] w-full rounded-[5px] border-[0.8px] bg-[#BA4064] text-[16px] font-medium text-[#E7C6CF] hover:bg-[#70263c]"
           >
+            {isLoading && <Loader2 className="mr-2 size-5 animate-spin" />}
             Log in
           </Button>
         </form>
