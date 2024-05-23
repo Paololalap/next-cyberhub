@@ -6,8 +6,6 @@ export async function POST(request) {
   const { title, tags, author, date, link, description, body, imageL, type } =
     await request.json({ limit: "2mb" });
   await connectMongoDB();
-  const content = new Content({ imageL: request.body.imageL });
-  await content.save();
   await Content.create({
     title,
     tags,
