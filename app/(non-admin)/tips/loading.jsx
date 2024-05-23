@@ -20,8 +20,7 @@ export default function Loading() {
             <Skeleton className="h-5 w-full" />
             <Skeleton className="h-5 w-10/12" />
             <div className="mt-5 flex gap-x-2 md:mt-0 md:self-end">
-              <Skeleton className="h-[40px] w-[80px]"></Skeleton>
-              <Skeleton className="h-[40px] w-[80px]"></Skeleton>
+              <Skeleton className="h-[40px] w-[80px]"/>
             </div>
           </div>
         </div>
@@ -37,8 +36,7 @@ export default function Loading() {
             <Skeleton className="h-5 w-full" />
             <Skeleton className="h-5 w-10/12" />
             <div className="mt-5 flex gap-x-2 md:mt-0 md:self-end">
-              <Skeleton className="h-[40px] w-[80px]"></Skeleton>
-              <Skeleton className="h-[40px] w-[80px]"></Skeleton>
+              <Skeleton className="h-[40px] w-[80px]"/>
             </div>
           </div>
         </div>
@@ -54,8 +52,7 @@ export default function Loading() {
             <Skeleton className="h-5 w-full" />
             <Skeleton className="h-5 w-10/12" />
             <div className="mt-5 flex gap-x-2 md:mt-0 md:self-end">
-              <Skeleton className="h-[40px] w-[80px]"></Skeleton>
-              <Skeleton className="h-[40px] w-[80px]"></Skeleton>
+              <Skeleton className="h-[40px] w-[80px]"/>
             </div>
           </div>
         </div>
