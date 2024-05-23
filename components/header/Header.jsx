@@ -20,10 +20,14 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
+import { Avatar } from "../ui/avatar";
+import useMediaQuery from "@/hooks/useMediaQuery";
 
 export default function Header() {
   const { data: session } = useSession();
   const [mainMenuOpen, setMainMenuOpen] = useState(false);
+  const smallScreen = useMediaQuery("(max-width: 767px)");
+
   const pathname = usePathname();
 
   const toggleMainMenu = () => {
@@ -49,7 +53,7 @@ export default function Header() {
           <div className="flex items-center space-x-3 ">
             <button
               type="button"
-              className="inline-flex size-10 items-center justify-center rounded-lg bg-[#00563F] p-2 text-sm text-[#FFB61B] outline-none ring-2 ring-[#FFB61B] transition-all hover:scale-110 sm:hidden"
+              className="inline-flex size-10 items-center justify-center rounded-lg bg-[#00563F] p-2 text-sm text-[#FFB61B] outline-none ring-2 ring-[#FFB61B] transition-all hover:scale-110 md:hidden"
               onClick={toggleMainMenu}
             >
               {mainMenuOpen ? (
@@ -96,43 +100,59 @@ export default function Header() {
                   </Link>
                 </li>
               ))}
-              {pathname === "/community" && session?.user?.role === "user" && (
+              {smallScreen &&
+                session?.user?.role === "admin" &&
+                LINKS_ADMIN.map((link) => (
+                  <li key={link.id}>
+                    <Link
+                      href={link.href}
+                      className={`${LINK_STYLES} ${
+                        pathname === link.href ? ACTIVE_STYLE : ""
+                      }`}
+                    >
+                      {link.text}
+                    </Link>
+                  </li>
+                ))}
+              {pathname === "/community" && session && (
                 <SignOutGoogle className="bg-[#FFB61B] text-black hover:bg-[#FFB61B]/80" />
-              )}
-              {session?.user?.role === "admin" && (
-                <NavigationMenu className="md:ml-3">
-                  <NavigationMenuList>
-                    <NavigationMenuItem>
-                      <NavigationMenuTrigger className="mx-auto w-screen max-w-[300px] md:w-auto">
-                        Admin
-                      </NavigationMenuTrigger>
-                      <NavigationMenuContent className="p-0 w-screen max-w-[300px]">
-                        {LINKS_ADMIN.map((link) => (
-                          <li key={link.id}>
-                            <NavigationMenuLink>
-                              <Link
-                                href={link.href}
-                                className={cn(
-                                  LINK_STYLES,
-                                  "rounded-none text-black hover:text-white md:hover:bg-[#00563F]",
-                                )}
-                              >
-                                {link.text}
-                              </Link>
-                            </NavigationMenuLink>
-                          </li>
-                        ))}
-                        <NavigationMenuLink className="p-0">
-                          <SignOutGoogle className="md:ml-0 w-full rounded-none bg-[#FFB61B] text-black hover:bg-[#FFB61B]/80" />
-                        </NavigationMenuLink>
-                      </NavigationMenuContent>
-                    </NavigationMenuItem>
-                  </NavigationMenuList>
-                </NavigationMenu>
               )}
             </ul>
           </nav>
         </div>
+        {session?.user?.role === "admin" && (
+          <NavigationMenu className="absolute right-5 hidden md:ml-3 md:block">
+            <NavigationMenuList>
+              <NavigationMenuItem>
+                <NavigationMenuTrigger className="mx-auto size-12 rounded-full">
+                  <Avatar className="grid place-items-center bg-gray-300 text-2xl font-bold text-gray-700">
+                    A
+                  </Avatar>
+                </NavigationMenuTrigger>
+                <NavigationMenuContent className="w-screen max-w-[300px] p-0">
+                  {LINKS_ADMIN.map((link) => (
+                    <li key={link.id} className="list-none">
+                      <NavigationMenuLink>
+                        <Link
+                          href={link.href}
+                          className={cn(
+                            LINK_STYLES,
+                            "whitespace-nowrap rounded-none text-black hover:text-white md:hover:bg-[#00563F]",
+                          )}
+                        >
+                          {link.text}
+                        </Link>
+                      </NavigationMenuLink>
+                    </li>
+                  ))}
+                  <NavigationMenuLink className="p-0">
+                    <SignOutGoogle className="w-full rounded-none bg-[#FFB61B] text-black hover:bg-[#FFB61B]/80 md:ml-0" />
+                  </NavigationMenuLink>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
+        )}
       </section>
     </header>
   );
