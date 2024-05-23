@@ -63,7 +63,7 @@ export default function Header() {
           </div>
         </div>
         <Link
-          href=""
+          href="/"
           className="mx-auto whitespace-nowrap text-3xl font-semibold text-white md:mb-4 md:text-4xl"
         >
           Cyberhub
