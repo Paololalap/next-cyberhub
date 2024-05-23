@@ -1,21 +1,38 @@
 "use client";
-import { signIn, } from "next-auth/react";
-import Image from "next/image";
-import Link from "next/link";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import { Eye, KeyRound, User } from "lucide-react";
+import LogoCircle from "@/public/logo-circle.png";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { useState } from "react";
+import Image from "next/image";
+
+const formSchema = z.object({
+  username: z.string(),
+  password: z.string(),
+});
 
 export default function LoginForm() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const { toast } = useToast();
-  
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      username: "",
+      password: "",
+    },
+  });
 
+  const onSubmit = async () => {
+    const { username, password } = form.getValues();
     try {
       const res = await signIn("credentials", {
         username,
@@ -24,68 +41,79 @@ export default function LoginForm() {
       });
 
       if (res.error) {
-    
         toast({ variant: "Error", description: "Wrong Credentials" });
         return;
       }
       toast({ variant: "Success", description: "Welcome Admin" });
-      router.replace("/manage-news");  
+      router.replace("/manage-news");
     } catch (error) {
       toast({ variant: "Error", description: "Failed to Login" });
-      console.log(error);       
+      console.log(error);
     }
   };
 
   return (
-    <main className="flex h-screen justify-center bg-[#f8f9fa] bg-gradient-to-r from-[#f8f9fa] to-[#dee2e6] px-[15px]">
-      <div className=" w-full min-[576px]:flex min-[576px]:w-full min-[576px]:flex-col min-[576px]:justify-center min-[768px]:max-w-[600px] ">
-        <div className="min-h-2/3 w-full bg-[#ffffff] p-12 shadow-[0_0.5rem_1rem_rgba(0,0,0,0.15)] min-[768px]:h-[62%] min-[768px]:rounded-[8px] ">
-          <div className="mb-[16px] w-full">
-            <Image
-              src="/New UPOU Seal Banner Black (MyPortal).png"
-              alt="UPOU Seal Banner Black (MyPortal)"
-              width={384}
-              height={100}
-              sizes="(min-width: 460px) 381px, calc(82.86vw + 16px)"
-              className="min-[576px]:h-auto min-[576px]:w-full"
-            />
-          </div>
-
-          <form className="flex flex-col" onSubmit={handleSubmit}>
-            <input
-              type="text"
-              className="m-[0.8px] mb-[16px] w-full rounded-[9.6px] border border-[#8f959e] px-[16px] py-[8px] text-[#495057] placeholder:text-[13px] placeholder:text-[#6a737b] focus:border-transparent focus:outline focus:outline-[#e33c6e] focus:transition-all min-[768px]:py-[10px]"
-              placeholder="Username"
-              onChange={(e) => setUsername(e.target.value)}
-            />
-
-            <input
-              type="password"
-              className=" m-[0.8px] mb-[16px] w-full rounded-[9.6px] border border-[#8f959e] px-[16px] py-[8px] text-[#495057] placeholder:text-[13px] placeholder:text-[#6a737b] focus:border-transparent focus:outline focus:outline-[#e33c6e] focus:transition-all min-[768px]:py-[10px]"
-              placeholder="Password"
-              onChange={(e) => setPassword(e.target.value)}
-            />
-
-            <div className="mb-[16px]">
-              <button
-                type="submit"
-                className="flex rounded-lg border border-[#5e0e26] bg-[#8B1438] px-4 py-2 font-bold text-white hover:bg-[rgb(106,15,43)] min-[768px]:ml-1 min-[768px]:scale-110"
-              >
-                Log in
-              </button>
-            </div>
-           
-          </form>
-          <div className="flex text-center">
-            <Link
-              href="#"
-              className="text-sm font-[400] text-[#8B1438] hover:text-[#480a1d] hover:underline"
-            >
-              Forgot your username or password?
-            </Link>
-          </div>
-        </div>
+    <div className="absolute left-1/2 flex min-h-[80vh] -translate-x-1/2 flex-col justify-center bg-white md:left-auto md:right-0 md:min-h-screen md:-translate-x-0 gap-y-10">
+      <div className="mx-auto flex items-center gap-x-2">
+        <Image src={LogoCircle} alt="UPOU Logo" className="w-full" />
+        <span className="font-semibold text-3xl md:text-4xl">Cyberhub</span>
       </div>
-    </main>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="w-screen max-w-[420px] space-y-2 px-10"
+        >
+          <FormField
+            control={form.control}
+            name="username"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <div className="group relative">
+                    <User className="absolute left-2 top-1/2 size-5 -translate-y-1/2 text-zinc-500 group-focus-within:text-black" />
+                    <Input
+                      className="pl-9 shadow-inner"
+                      placeholder="Username or email"
+                      {...field}
+                    />
+                  </div>
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <div className="group relative">
+                    <KeyRound className="absolute left-2 top-1/2 size-5 -translate-y-1/2 text-zinc-500 group-focus-within:text-black" />
+                    <Input
+                      className="px-9 shadow-inner"
+                      placeholder="Password"
+                      type={showPassword ? "text" : "password"}
+                      {...field}
+                    />
+                    <div className="absolute right-2 top-1/2 grid size-7 -translate-y-1/2 cursor-pointer place-items-center rounded-full group-hover:bg-zinc-200">
+                      <Eye
+                        className="z-10 size-5 text-zinc-500 group-focus-within:text-black"
+                        onClick={() => setShowPassword((prev) => !prev)}
+                      />
+                    </div>
+                  </div>
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <Button
+            type="submit"
+            className="h-[57.6px] w-full rounded-[5px] border-[0.8px] bg-[#BA4064] text-[16px] font-medium text-[#E7C6CF] hover:bg-[#70263c]"
+          >
+            Log in
+          </Button>
+        </form>
+      </Form>
+    </div>
   );
 }
