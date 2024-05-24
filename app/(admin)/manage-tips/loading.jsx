@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 export default function Loading() {
   return (
     <div className="flex min-h-screen w-screen flex-col bg-[#f7f7e3]">
-      <div className="mt-5 text-center text-3xl font-black">Manage News</div>
+      <div className="mt-5 text-center text-3xl font-black">Manage Tips and Guides</div>
       <hr className="mx-auto mt-3 w-64 border-2 border-solid border-[#FFB61B]" />
       <div className="mx-auto mt-5">
         <Button className="bg-[#8a1438] hover:bg-[#8a1438]/90">
