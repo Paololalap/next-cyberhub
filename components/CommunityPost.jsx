@@ -1,6 +1,13 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { CheckCheck, Pin, PinOff, Ellipsis, MessageCircle } from "lucide-react";
+import {
+  CheckCheck,
+  Pin,
+  PinOff,
+  Ellipsis,
+  MessageCircle,
+  Search,
+} from "lucide-react";
 import { useSession } from "next-auth/react";
 import { Avatar } from "./ui/avatar";
 import Image from "next/image";
@@ -18,11 +25,13 @@ import { Loader2 } from "lucide-react";
 export default function CommunityPosts({ author }) {
   const { data: session } = useSession();
   const [posts, setPosts] = useState([]);
+  const [filteredPosts, setFilteredPosts] = useState([]);
   const [commentTexts, setCommentTexts] = useState({});
   const [editingComment, setEditingComment] = useState(null);
   const [visiblePostsCount, setVisiblePostsCount] = useState(5);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingLoadMorePost, setIsLoadingLoadMorePost] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Function to fetch posts from the API
   const fetchPosts = async () => {
@@ -30,6 +39,7 @@ export default function CommunityPosts({ author }) {
       const response = await fetch("/api/thread");
       const data = await response.json();
       setPosts(data.posts);
+      setFilteredPosts(data.posts);
     } catch (error) {
       console.error("Error fetching posts:", error);
     }
@@ -37,9 +47,25 @@ export default function CommunityPosts({ author }) {
   useEffect(() => {
     fetchPosts();
   }, []);
+ useEffect(() => {
+   filterPosts();
+ }, [posts, searchQuery]);
+  const filterPosts = () => {
+    if (!searchQuery.trim()) {
+      setFilteredPosts(posts);
+    } else {
+      const filtered = posts.filter((post) => {
+        return (
+          post.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          post.content.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+      });
+      setFilteredPosts(filtered);
+    }
+  };
   // Function to toggle post expansion
   const toggleExpanded = (postId) => {
-    setPosts((prevPosts) =>
+    setFilteredPosts((prevPosts) =>
       prevPosts.map((post) =>
         post._id === postId ? { ...post, expanded: !post.expanded } : post,
       ),
@@ -90,7 +116,7 @@ export default function CommunityPosts({ author }) {
       // If the request is successful, update the state with the new comment
       if (response.ok) {
         const newComment = await response.json();
-        setPosts((prevPosts) => {
+        setFilteredPosts((prevPosts) => {
           return prevPosts.map((post) => {
             if (post._id === postId) {
               return {
@@ -129,7 +155,7 @@ export default function CommunityPosts({ author }) {
 
   // Function to handle click on "Show Comments" button
   const handleCommentsClick = async (postId) => {
-    const updatedPosts = [...posts];
+    const updatedPosts = [...filteredPosts];
     const postIndex = updatedPosts.findIndex((post) => post._id === postId);
     if (postIndex !== -1) {
       if (
@@ -141,7 +167,7 @@ export default function CommunityPosts({ author }) {
       }
       updatedPosts[postIndex].showComments =
         !updatedPosts[postIndex].showComments;
-      setPosts(updatedPosts);
+      setFilteredPosts(updatedPosts);
     }
   };
 
@@ -153,7 +179,7 @@ export default function CommunityPosts({ author }) {
       });
 
       if (response.ok) {
-        setPosts((prevPosts) => {
+        setFilteredPosts((prevPosts) => {
           return prevPosts.map((post) => {
             if (post._id === postId) {
               return {
@@ -188,7 +214,7 @@ export default function CommunityPosts({ author }) {
       });
 
       if (response.ok) {
-        setPosts((prevPosts) => {
+        setFilteredPosts((prevPosts) => {
           return prevPosts.map((post) => {
             if (post._id === postId) {
               return {
@@ -237,7 +263,7 @@ export default function CommunityPosts({ author }) {
 
       if (response.ok) {
         // Update the state with the edited comment content
-        setPosts((prevPosts) => {
+        setFilteredPosts((prevPosts) => {
           return prevPosts.map((post) => {
             if (post._id === postId) {
               return {
@@ -277,7 +303,7 @@ export default function CommunityPosts({ author }) {
       });
 
       if (response.ok) {
-        setPosts((prevPosts) =>
+        setFilteredPosts((prevPosts) =>
           prevPosts.filter((post) => post._id !== postId),
         );
       } else {
@@ -288,34 +314,33 @@ export default function CommunityPosts({ author }) {
     }
   };
 
-  // Function to load more posts
-  const loadMorePosts = () => {
+  const handleLoadMorePosts = () => {
     setIsLoadingLoadMorePost(true);
+    setTimeout(() => {
+      setVisiblePostsCount((prevCount) => prevCount + 5);
+      setIsLoadingLoadMorePost(false);
+    }, 1000);
+  };
+
+ const handleSearchChange = (event) => {
+   setSearchQuery(event.target.value);
+  };
+  const loadMorePosts = () => {
     setVisiblePostsCount((prevCount) => prevCount + 5);
-    setIsLoadingLoadMorePost(false);
   };
-
-  function simulateEscKeyPress() {
-    const event = new KeyboardEvent("keydown", {
-      key: "Escape",
-      keyCode: 27,
-      code: "Escape",
-      which: 27,
-      bubbles: true,
-    });
-    document.dispatchEvent(event);
-  }
-
-  const handleKeyDown = (postId, event) => {
-    if (event.key === "Enter") {
-      handleCommentSubmit(postId);
-    }
-  };
-
   // Render UI
   return (
     <div className="flex flex-col items-center justify-center gap-y-4 py-2">
-      {posts.slice(0, visiblePostsCount).map((post) => (
+      <div className="flex w-full flex-col items-center justify-center bg-white p-6 shadow-md sm:max-w-2xl sm:rounded-lg">
+        <input
+          type="text"
+          placeholder="Search..."
+          value={searchQuery}
+          onChange={handleSearchChange}
+          className="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none"
+        />
+      </div>
+      {filteredPosts.slice(0, visiblePostsCount).map((post) => (
         <div
           key={post._id}
           className="w-screen bg-white p-6 shadow-md sm:max-w-2xl sm:rounded-lg"
