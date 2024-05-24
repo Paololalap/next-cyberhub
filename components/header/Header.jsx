@@ -100,21 +100,24 @@ export default function Header() {
                   </Link>
                 </li>
               ))}
-              {smallScreen &&
-                session?.user?.role === "admin" &&
-                LINKS_ADMIN.map((link) => (
-                  <li key={link.id}>
-                    <Link
-                      href={link.href}
-                      className={`${LINK_STYLES} ${
-                        pathname === link.href ? ACTIVE_STYLE : ""
-                      }`}
-                    >
-                      {link.text}
-                    </Link>
-                  </li>
-                ))}
-              {pathname === "/community" && session && (
+              {smallScreen && session?.user?.role === "admin" && (
+                <>
+                  {LINKS_ADMIN.map((link) => (
+                    <li key={link.id}>
+                      <Link
+                        href={link.href}
+                        className={`${LINK_STYLES} ${
+                          pathname === link.href ? ACTIVE_STYLE : ""
+                        }`}
+                      >
+                        {link.text}
+                      </Link>
+                    </li>
+                  ))}
+                  <SignOutGoogle className="bg-[#FFB61B] text-black hover:bg-[#FFB61B]/80" />
+                </>
+              )}
+              {pathname === "/community" && session?.user?.role === "user" && (
                 <SignOutGoogle className="bg-[#FFB61B] text-black hover:bg-[#FFB61B]/80" />
               )}
             </ul>
