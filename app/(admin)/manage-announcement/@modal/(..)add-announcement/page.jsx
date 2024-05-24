@@ -69,10 +69,10 @@ export default function AddAnnouncementPage() {
   return (
     <Modal>
       <form
-        className="mx-auto max-w-[35rem] rounded-lg border-t-[6px] border-[#8a1538] p-4 shadow-xl"
+        className="mx-auto w-screen max-w-[35rem] rounded-lg border-t-[6px] border-[#8a1538] p-4 shadow-xl"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <h1 className="mx-auto mt-3 w-full text-center text-3xl">
+        <h1 className="mx-auto mt-3 w-full text-center text-3xl font-bold">
           New Announcement
         </h1>
         <div className="relative mt-6">
@@ -141,14 +141,16 @@ export default function AddAnnouncementPage() {
             value={endDate}
           />
         </div>
-        <Button
-          type="submit"
-          className="mt-5 h-9 w-full rounded-md border bg-[#8a1538] text-center text-sm text-[#FFB61B] transition-all hover:bg-[#8a1538]/90"
-        >
-          {isLoading && <Loader2 className="mr-1 size-4 animate-spin" />}
-          Publish
-        </Button>
+        <div className="flex justify-end">
+          <Button
+            type="submit"
+            className="mt-5 h-9 w-fit rounded-md border bg-[#8a1538] text-center text-sm text-[#FFB61B] transition-all hover:bg-[#8a1538]/90"
+          >
+            {isLoading && <Loader2 className="mr-1 size-4 animate-spin" />}
+            Publish
+          </Button>
+        </div>
       </form>
     </Modal>
-  );
+  );    
 }
