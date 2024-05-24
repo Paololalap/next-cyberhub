@@ -113,7 +113,7 @@ function EditContentForm({
   };
 
   return (
-    <div className="w-screen px-3 pt-10 md:px-0">
+    <div className="px-3 md:px-0">
       <form
         className="mx-auto rounded-lg border-t-[6px] border-[#8a1538] p-4 shadow-2xl sm:w-fit"
         onSubmit={handleSubmit(onSubmit)}
@@ -147,7 +147,7 @@ function EditContentForm({
               <Textarea
                 {...register("body")}
                 placeholder="Say something here..."
-                className="cursor-text resize-none rounded-lg p-2 text-gray-900 focus:outline-none focus-visible:ring-0 md:min-h-[10rem] md:min-w-[30rem] md:resize"
+                className="max-w-[760px] cursor-text resize-none rounded-lg p-2 text-gray-900 focus:outline-none focus-visible:ring-0 md:max-h-[250px] md:min-h-[10rem] md:min-w-[30rem] md:resize"
                 id="body"
                 onChange={(e) => setNewBody(e.target.value)}
                 value={newBody}

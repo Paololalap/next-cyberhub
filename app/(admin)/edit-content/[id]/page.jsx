@@ -23,17 +23,19 @@ export default async function EditContent({ params }) {
     content;
 
   return (
-    <EditContentForm
-      id={id}
-      title={title}
-      tags={tags}
-      author={author}
-      date={date}
-      link={link}
-      description={description}
-      body={body}
-      imageL={imageL}
-      type={type}
-    />
+    <div className="pt-10">
+      <EditContentForm
+        id={id}
+        title={title}
+        tags={tags}
+        author={author}
+        date={date}
+        link={link}
+        description={description}
+        body={body}
+        imageL={imageL}
+        type={type}
+      />
+    </div>
   );
 }
