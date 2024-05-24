@@ -72,7 +72,7 @@ function EditAnnounceForm({ id, title, content, startDate, endDate }) {
             </div>
             <div className="mt-2 w-full md:h-auto">
               <Label htmlFor="content" className="text-sm text-gray-600">
-                Content:
+                Body:
               </Label>
               <Textarea
                 {...register("content")}
