@@ -28,12 +28,14 @@ export default async function EditAnnouncement({ params }) {
   const { title, content, startDate, endDate } = announce;
 
   return (
-    <EditAnnounceForm
-      id={id}
-      title={title}
-      content={content}
-      startDate={startDate}
-      endDate={endDate}
-    />
+    <div className="pt-10">
+      <EditAnnounceForm
+        id={id}
+        title={title}
+        content={content}
+        startDate={startDate}
+        endDate={endDate}
+      />
+    </div>
   );
 }
