@@ -322,7 +322,8 @@ export default function CommunityPosts({ author }) {
         >
           <div className="mb-2 flex items-center">
             <Avatar className="grid place-items-center bg-gray-300 text-2xl font-bold text-gray-700">
-              {post.author[0]}
+              {/* {post.author[0]} */}
+              {post.image ? post.image : post.author[0]}
             </Avatar>
             <div className="flex-1 px-2 py-2 font-bold">{post.author}</div>
             <div className="relative inline-block text-left">
@@ -374,16 +375,18 @@ export default function CommunityPosts({ author }) {
               post.content
             )}
           </div>
-          <div className="relative w-full">
-            <AspectRatio ratio={1 / 1}>
-              <Image
-                src={post.imglink}
-                fill
-                alt="Post Image"
-                className="rounded-md border border-black object-contain"
-              />
-            </AspectRatio>
-          </div>
+          {post.imglink && (
+            <div className="relative w-full">
+              <AspectRatio ratio={1 / 1}>
+                <Image
+                  src={post.imglink}
+                  fill
+                  alt="Post Image"
+                  className="rounded-md border border-black object-contain"
+                />
+              </AspectRatio>
+            </div>
+          )}
           <div className="mb-2 flex justify-center border-b border-black">
             <button
               className="my-1 flex gap-x-1 rounded-md p-3 font-bold transition-all hover:bg-gray-300"

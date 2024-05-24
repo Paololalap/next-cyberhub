@@ -38,8 +38,8 @@ export const CreatePost = ({ author }) => {
   };
 
   const onSubmit = async () => {
-    if (!content || !author || !imglink) {
-      toast({ variant: "Warning", description: "All fields are required" });
+    if (!content || !author) {
+      toast({ variant: "Warning", description: "Content field is required" });
       return;
     }
 
