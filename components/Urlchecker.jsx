@@ -33,7 +33,7 @@ export default function UrlChecker() {
     try {
       setIsLoadingGSafeBrowsing(true); // Set loading state to true
       const { url } = form.getValues();
-      const response = await fetch("http://localhost:3000/api/google-api", {
+      const response = await fetch(`${process.env.NEXTAUTH_URL}/api/google-api`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url }),
@@ -52,11 +52,14 @@ export default function UrlChecker() {
     try {
       setIsLoadingIPQuality(true); // Set loading state to true
       const { url } = form.getValues();
-      const response = await fetch("http://localhost:3000/api/ipquality-api", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url }),
-      });
+      const response = await fetch(
+        `${process.env.NEXTAUTH_URL}/api/ipquality-api`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url }),
+        },
+      );
       const data = await response.json();
       const { risk_score } = data;
       setRiskScore(risk_score);

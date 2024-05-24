@@ -2,7 +2,7 @@ import Article from "@/components/Article";
 
 const getContentById = async (id) => {
   try {
-    const res = await fetch(`http://localhost:3000/api/content/${id}`, {
+    const res = await fetch(`${process.env.NEXTAUTH_URL}/api/content/${id}`, {
       cache: "no-store",
     });
 

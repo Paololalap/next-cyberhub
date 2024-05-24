@@ -6,7 +6,7 @@ import DefaultImage from '@/public/default-image-news.jpg'
 
 const getNewsHeadline = async () => {
   try {
-    const res = await fetch("http://localhost:3000/api/content", {
+    const res = await fetch(`${process.env.NEXTAUTH_URL}/api/content`, {
       cache: "no-store",
     });
     if (!res.ok) {

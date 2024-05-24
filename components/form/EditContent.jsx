@@ -2,14 +2,14 @@
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Textarea } from "../ui/textarea";
+import { Textarea } from "@/components/ui/textarea";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { CalendarIcon, Loader2 } from "lucide-react";
-import { Calendar } from "../ui/calendar";
+import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
-import { Input } from "../ui/input";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -66,7 +66,7 @@ function EditContentForm({
   const onSubmit = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch(`http://localhost:3000/api/content/${id}`, {
+      const res = await fetch(`${process.env.NEXTAUTH_URL}/api/content/${id}`, {
         method: "PUT",
         headers: {
           "Content-type": "application/json",
@@ -149,8 +149,8 @@ function EditContentForm({
                 placeholder="Say something here..."
                 className="cursor-text resize-none rounded-lg p-2 text-gray-900 focus:outline-none focus-visible:ring-0 md:min-h-[10rem] md:min-w-[30rem] md:resize"
                 id="body"
-                onChange={(e) => setBody(e.target.value)}
-                value={body}
+                onChange={(e) => setNewBody(e.target.value)}
+                value={newBody}
               />
             </div>
             <div className="relative mt-6">

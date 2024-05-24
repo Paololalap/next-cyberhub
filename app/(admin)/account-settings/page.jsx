@@ -74,7 +74,7 @@ export default function AccountSettingsPage() {
       setIsLoading(true);
       const { newFirstName, newLastName, newUsername, newProfilePic } =
         form.getValues();
-      const res = await fetch("http://localhost:3000/api/admin-user", {
+      const res = await fetch(`${process.env.NEXTAUTH_URL}/api/admin-user`, {
         method: "PUT",
         headers: {
           "Content-type": "application/json",
