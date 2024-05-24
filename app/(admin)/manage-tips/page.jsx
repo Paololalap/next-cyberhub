@@ -24,7 +24,7 @@ async function getData(searchQuery, perPage, pageNumber) {
 
     const query = {
       $and: [
-        { type: "News" },
+        { type: "Tips" },
         searchQuery
           ? {
               $or: [
