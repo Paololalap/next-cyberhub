@@ -1,4 +1,4 @@
-import EditAnnounceForm from "@/components/EditAnnounceForm";
+import EditAnnounceForm from "@/components/form/EditAnnouncement";
 
 const getAnnouncementById = async (id) => {
   try {

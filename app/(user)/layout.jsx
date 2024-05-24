@@ -1,6 +1,6 @@
-import { AuthProvider } from "@/app/Providers";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import { AuthProvider } from "@/providers/Providers";
+import Header from "@/components/header/Header";
+import Footer from "@/components/footer/Footer";
 
 export default function UserLayout({ children }) {
   return (
@@ -8,7 +8,7 @@ export default function UserLayout({ children }) {
       <AuthProvider>
         <Header />
         <main>{children}</main>
-        <Footer/>
+        <Footer />
       </AuthProvider>
     </>
   );

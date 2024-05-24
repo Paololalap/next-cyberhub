@@ -1,8 +1,19 @@
+import AddAnnouncementButton from "@/components/button/AddAnnouncement";
 import React from "react";
-import { connectToDatabase } from "@/lib/connectMongo";
-import Link from "next/link";
-import RemoveAnn from "@/components/RemoveAnn";
 import formatDateToWords from "@/constants/DATE_TO_WORDS";
+import { connectToDatabase } from "@/lib/connectMongo";
+import { CalendarDays } from "lucide-react";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import UpdateButton from "@/components/button/UpdateAnnouncement";
+import Remove from "@/components/button/RemoveAnnouncement";
 
 async function getData(perPage, pageNumber) {
   try {
@@ -31,7 +42,7 @@ async function getData(perPage, pageNumber) {
 export default async function AnnouncementsPage({ searchParams }) {
   let page = parseInt(searchParams.page, 10);
   page = !page || page < 1 ? 1 : page;
-  const perPage = 8;
+  const perPage = 9;
   const data = await getData(perPage, page);
 
   const totalPages = Math.ceil(data.itemCount / perPage);
@@ -47,100 +58,79 @@ export default async function AnnouncementsPage({ searchParams }) {
       pageNumbers.push(i);
     }
   }
-
   return (
-    <div className="h-max items-center bg-[#f7f7e3]">
-      <div className="flex-col items-center justify-center bg-transparent">
-        <div className="flex-col items-center justify-center p-5 text-center text-2xl font-semibold text-[#6e102c]">
-          <span>Manage Announcements</span>
-          <hr className="mx-auto w-64 border-2  border-solid border-[#FFB61B]" />
-        </div>
+    <div className="flex w-screen flex-col bg-[#f7f7e3]">
+      <div className="mt-5 text-center text-3xl font-black">
+        Manage Announcements
       </div>
-      <div className="flex flex-col items-center justify-center">
-        <Link
-          href={"/add-announcement"}
-          className="rounded-md border-2 border-solid border-[#00563F] p-2"
-        >
-          Add Announcement
-        </Link>
-      </div>
-      <div className="my-5 flex flex-col items-center justify-center sm:mx-80">
-        {data.items.map((item) => (
-          <div key={item._id} className="mb-1">
-            <div className="group flex max-h-56 flex-row overflow-hidden rounded-md border-2 border-solid border-[#00563F] bg-white sm:flex sm:max-h-56 sm:flex-row">
-              <div className="flex w-3/5 flex-col justify-between p-5 sm:flex sm:flex-col sm:p-5">
-                <div className="sm:flex sm:flex-col">
-                  <div className="text-sm font-bold text-gray-500 group-hover:underline sm:text-sm">
-                    {item.title}
-                  </div>
-                  <div className="mb-5">
-                    <div className="mb-1 mr-10 text-xs sm:text-sm">
-                      <span>
-                        {formatDateToWords(item.startDate)} to{" "}
-                        {formatDateToWords(item.endDate)}
-                      </span>
-                    </div>
-                    {/* Tags can be displayed here */}
-                  </div>
-                  <div className="text-xs sm:text-sm">
-                    <span>{item.content}</span>
+      <hr className="mx-auto mt-3 w-64 border-2 border-solid border-[#FFB61B]" />
+      <AddAnnouncementButton />
+
+      <div className="mx-auto my-5">
+        <div className="grid max-w-[75rem] grid-cols-1 gap-5 md:grid-cols-12">
+          {data.items.map((item) => (
+            <div
+              key={item._id}
+              className="rounded-md border-2 border-solid border-[#00563F] bg-white md:col-span-6 lg:col-span-4"
+            >
+              <div className="flex h-full flex-col justify-between p-5">
+                <div className="text-lg font-black">{item.title}</div>
+                <div className="mb-5 flex">
+                  <div className="mb-1 mr-10 flex items-center gap-x-1 text-xs sm:text-sm">
+                    <CalendarDays className="size-5" />
+                    <span>
+                      {formatDateToWords(item.startDate)} to{" "}
+                      {formatDateToWords(item.endDate)}
+                    </span>
                   </div>
                 </div>
-                <div className="flex flex-row-reverse text-xs sm:text-sm">
-                  <Link
-                    href={`/edit-announcement/${item._id}`}
-                    className="mx-1 rounded-md border-2 border-solid border-[#00563F] p-2"
-                  >
-                    Update
-                  </Link>
-
-                  <RemoveAnn id={item._id.buffer.toString("hex")} />
+                <div className="h-full text-xs sm:text-sm">{item.content}</div>
+                <div className="mt-5 flex gap-x-2 md:mt-0 md:self-end">
+                  <UpdateButton id={item._id.buffer.toString("hex")} />
+                  <Remove id={item._id.buffer.toString("hex")} />
                 </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
 
         {isPageOutOfRange ? (
           <div>No more pages...</div>
         ) : (
-          <div className="mt-16 flex items-center justify-center">
-            <div className="border-light-green flex gap-4 rounded-[10px] border-[1px] p-4">
-              {page === 1 ? (
-                <div className="opacity-60" aria-disabled="true">
-                  Previous
-                </div>
-              ) : (
-                <Link href={`?page=${prevPage}`} aria-label="Previous Page">
-                  Previous
-                </Link>
-              )}
-
-              {pageNumbers.map((pageNumber, index) => (
-                <Link
-                  key={index}
-                  className={
-                    page === pageNumber
-                      ? "rounded-md bg-[#00563f] px-2 text-[#FFB61B]"
-                      : "rounded-md px-1 hover:bg-[#00563f]"
-                  }
-                  href={`?page=${pageNumber}`}
-                >
-                  {pageNumber}
-                </Link>
-              ))}
-
-              {page === totalPages ? (
-                <div className="opacity-60" aria-disabled="true">
-                  Next
-                </div>
-              ) : (
-                <Link href={`?page=${nextPage}`} aria-label="Next Page">
-                  Next
-                </Link>
-              )}
-            </div>
-          </div>
+          <Pagination className={"mt-3"}>
+            <PaginationContent>
+              <PaginationItem>
+                {page === 1 ? (
+                  <PaginationPrevious className="pointer-events-none opacity-70" />
+                ) : (
+                  <PaginationPrevious href={`?page=${prevPage}`} />
+                )}
+              </PaginationItem>
+              <PaginationItem>
+                {pageNumbers.map((page, index) => (
+                  <PaginationLink key={index} href={`?page=${page}`}>
+                    {page}
+                  </PaginationLink>
+                ))}
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationEllipsis />
+              </PaginationItem>
+              <PaginationItem>
+                {page === totalPages ? (
+                  <PaginationNext
+                    className="pointer-events-none opacity-70"
+                    aria-disabled="true"
+                  />
+                ) : (
+                  <PaginationNext
+                    href={`?page=${nextPage}`}
+                    aria-label="Next Page"
+                  />
+                )}
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
         )}
       </div>
     </div>

@@ -15,6 +15,7 @@ import Instagram from "@/public/instagram.svg";
 import Twitter from "@/public/twitter.svg";
 import Youtube from "@/public/youtube.svg";
 import React, { useState } from "react";
+import { cn } from "@/lib/utils";
 
 const Footer = ({ className }) => {
   const currentYear = new Date().getFullYear();
@@ -25,7 +26,7 @@ const Footer = ({ className }) => {
   };
 
   return (
-    <footer className={className}>
+    <footer className={cn(className, "break-all md:break-keep")}>
       <section className="px-8 py-24 lg:grid lg:grid-cols-4 xl:grid-cols-5 xl:px-20 ">
         <section className="mb-[50px] flex max-w-[257px] flex-col gap-y-6 md:flex-1 lg:items-center">
           <Link href="https://www.upou.edu.ph/philippines-transparency-seal">
@@ -233,7 +234,7 @@ const Footer = ({ className }) => {
               <li
                 className={`text-[#6a6a6a] text-[${fontSize}px] flex items-center gap-3`}
               >
-                <Image src={Mail} alt="" className="] h-[13.6px] w-[14px]" />
+                <Image src={Mail} alt="" className="h-[13.6px] w-[14px]" />
                 <Link href="mailto:" className="text-[#8a1538]">
                   inquiries@upou.edu.ph
                 </Link>
@@ -252,7 +253,7 @@ const Footer = ({ className }) => {
               Change Text Size
             </h4>
 
-            <ul className="flex items-baseline gap-x-2">
+            <ul className="flex flex-wrap items-baseline gap-x-2 sm:flex-nowrap">
               <li>
                 <button
                   className="text-[13.5px] text-[#8a1538]"
@@ -293,7 +294,7 @@ const Footer = ({ className }) => {
 
       <section className="h-[150px] bg-[#484848] lg:h-[100px]">
         <div className="mx-auto flex h-[150px] w-[88vw] flex-col items-center justify-evenly whitespace-nowrap lg:h-[100px] lg:flex-row lg:justify-between">
-          <div className="flex justify-center gap-x-2 text-xs text-white ">
+          <div className="flex flex-wrap justify-center gap-x-2 text-xs text-white ">
             <span>&copy; All Rights Reserved {currentYear}</span> |
             <Link
               className="transition-all hover:opacity-80"

@@ -1,8 +1,8 @@
 import Image from "next/image";
-import GError from "@/app/(non-admin)/news/error";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { CalendarDays } from "lucide-react";
 import LatestAnnouncement from "@/components/LatestAnnouncement";
+import DefaultImage from '@/public/default-image-news.jpg'
 
 const getNewsHeadline = async () => {
   try {
@@ -32,7 +32,7 @@ export default async function HomePage() {
             <div className="relative w-full overflow-hidden transition-all md:hover:scale-110">
               <AspectRatio ratio={16 / 9}>
                 <Image
-                  src={headline.imageL}
+                  src={headline.imageL ? headline.imageL : DefaultImage}
                   alt={headline.title}
                   fill
                   sizes="(min-width: 580px) 465px, calc(91.15vw - 45px)"

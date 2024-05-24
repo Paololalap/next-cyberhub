@@ -5,11 +5,9 @@ import formatDateToWords from "@/constants/DATE_TO_WORDS";
 import { CalendarDays } from "lucide-react";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Badge } from "./ui/badge";
-import { Open_Sans } from "next/font/google";
 import { cn } from "@/lib/utils";
+import { openSans } from "@/fonts/fonts";
 import Link from "next/link";
-
-const openSans = Open_Sans({ subsets: ["latin"] });
 
 export default function Article({
   title,

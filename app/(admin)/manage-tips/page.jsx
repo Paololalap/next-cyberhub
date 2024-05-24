@@ -1,15 +1,26 @@
-import React from "react";
+import AddEntry from "@/components/button/AddEntry";
 import { connectToDatabase } from "@/lib/connectMongo";
-import Link from "next/link";
 import Image from "next/image";
-import RemoveBtn from "@/components/Removebtn";
+import Remove from "@/components/button/Remove";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { CalendarDays } from "lucide-react";
+import UpdateButton from "@/components/button/Update";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import DefaultImage from "@/public/default-image-tips.jpg";
+
 async function getData(perPage, pageNumber) {
   try {
-    // DB Connect
     const client = await connectToDatabase();
     const db = client.db("CyberDB");
 
-    // DB Query
     const items = await db
       .collection("contents")
       .find({ type: "Tips" })
@@ -18,7 +29,9 @@ async function getData(perPage, pageNumber) {
       .limit(perPage)
       .toArray();
 
-    const itemCount = await db.collection("contents").countDocuments({});
+    const itemCount = await db
+      .collection("contents")
+      .countDocuments({ type: "Tips" });
 
     const response = { items, itemCount };
     return response;
@@ -47,62 +60,48 @@ export default async function TipsPage({ searchParams }) {
     }
   }
   return (
-    <div className="h-max items-center bg-[#f7f7e3]">
-      <div className="flex-col items-center justify-center bg-transparent">
-        <div className="flex-col items-center justify-center p-5 text-center text-2xl font-semibold text-[#6e102c]">
-          <span>Manage Tips</span>
-          <hr className="mx-auto w-64 border-2  border-solid border-[#FFB61B]" />
-        </div>
+    <div className="flex min-h-screen w-screen flex-col bg-[#f7f7e3]">
+      <div className="mt-5 text-center text-3xl font-black">
+        Manage Tips and Guides
       </div>
-      <div className="flex flex-col items-center justify-center">
-        <Link
-          href={"/add-content"}
-          className="rounded-md border-2 border-solid border-[#00563F] p-2"
-        >
-          Add Tips Entry
-        </Link>
-      </div>
-      <div className="my-5 flex flex-col items-center justify-center sm:mx-80">
+      <hr className="mx-auto mt-3 w-64 border-2 border-solid border-[#FFB61B]" />
+      <AddEntry>Add Tips Entry</AddEntry>
+      <div className="mx-auto my-5 w-full max-w-[75rem] px-3">
         {data.items.map((item) => (
-          <div key={item._id} className="mb-1">
-            <div className="group flex max-h-56 flex-row overflow-hidden rounded-md border-2 border-solid border-[#00563F] bg-white sm:flex sm:max-h-56 sm:flex-row">
-              <div className="w-2/5 py-10 transition-all hover:scale-[1.03] sm:py-5">
+          <div
+            key={item._id}
+            className="group mt-2 grid grid-cols-1 overflow-hidden rounded-md border-2 border-solid border-[#00563F] bg-white first:mt-0 md:grid-cols-12"
+          >
+            <div className="relative col-span-5 overflow-hidden">
+              <AspectRatio ratio={16 / 9}>
                 <Image
-                  className="rounded-md"
-                  src={item.imageL}
-                  alt="/"
-                  width={640}
-                  height={334}
+                  className="object-cover object-top transition-all md:hover:object-contain"
+                  src={item.imageL ? item.imageL : DefaultImage}
+                  alt={item.title}
                   sizes="(min-width: 680px) 640px, calc(94.44vw + 17px)"
-                  priority
+                  fill
+                  blurDataURL={item.imageL}
                 />
+              </AspectRatio>
+            </div>
+            <div className="col-span-7 flex flex-col p-5">
+              <div className="text-lg font-black">{item.title}</div>
+              <div className="mb-5 flex">
+                <div className="mb-1 mr-10 flex items-center gap-x-1 text-xs sm:text-sm">
+                  <CalendarDays className="size-5" />
+                  <span>{item.date}</span>
+                </div>
+                <div className="text-xs italic sm:text-sm">
+                  <span>{item.tags.join(" / ").replace(/,/g, "/,")}</span>
+                </div>
               </div>
-              <div className="flex w-3/5 flex-col justify-between p-5 sm:flex sm:flex-col sm:p-5">
-                <div className="sm:flex sm:flex-col">
-                  <div className="text-sm font-bold text-gray-500 group-hover:underline sm:text-sm">
-                    {item.title}
-                  </div>
-                  <div className="mb-5">
-                    <div className="mb-1 mr-10 text-xs sm:text-sm">
-                      <span>{item.date}</span>
-                    </div>
-                    <div className="text-xs sm:text-sm">
-                      <span>{item.tags.join(" / ").replace(/,/g, "/,")}</span>
-                    </div>
-                  </div>
-                  <div className="text-xs sm:text-sm">
-                    <span>{item.description}</span>
-                  </div>
-                </div>
-                <div className="flex flex-row-reverse text-xs sm:text-sm">
-                  <Link
-                    href={`/edit-content/${item._id}`}
-                    className="mx-1 rounded-md border-2 border-solid border-[#00563F] p-2"
-                  >
-                    Update
-                  </Link>
-                  <RemoveBtn id={item._id.buffer.toString("hex")} />
-                </div>
+              <div className="h-full">{item.description}</div>
+              <div className="mt-5 flex gap-x-2 md:mt-0 md:self-end">
+                <UpdateButton id={item._id.buffer.toString("hex")} />
+                <Remove
+                  id={item._id.buffer.toString("hex")}
+                  className={"border-2 border-[#8a1438]"}
+                />
               </div>
             </div>
           </div>
@@ -111,43 +110,40 @@ export default async function TipsPage({ searchParams }) {
         {isPageOutOfRange ? (
           <div>No more pages...</div>
         ) : (
-          <div className="mt-16 flex items-center justify-center">
-            <div className="border-light-green flex gap-4 rounded-[10px] border-[1px] p-4">
-              {page === 1 ? (
-                <div className="opacity-60" aria-disabled="true">
-                  Previous
-                </div>
-              ) : (
-                <Link href={`?page=${prevPage}`} aria-label="Previous Page">
-                  Previous
-                </Link>
-              )}
-
-              {pageNumbers.map((pageNumber, index) => (
-                <Link
-                  key={index}
-                  className={
-                    page === pageNumber
-                      ? "rounded-md bg-[#00563f] px-2 text-[#FFB61B]"
-                      : "rounded-md px-1 hover:bg-[#00563f]"
-                  }
-                  href={`?page=${pageNumber}`}
-                >
-                  {pageNumber}
-                </Link>
-              ))}
-
-              {page === totalPages ? (
-                <div className="opacity-60" aria-disabled="true">
-                  Next
-                </div>
-              ) : (
-                <Link href={`?page=${nextPage}`} aria-label="Next Page">
-                  Next
-                </Link>
-              )}
-            </div>
-          </div>
+          <Pagination className={"mt-3"}>
+            <PaginationContent>
+              <PaginationItem>
+                {page === 1 ? (
+                  <PaginationPrevious className="pointer-events-none opacity-70" />
+                ) : (
+                  <PaginationPrevious href={`?page=${prevPage}`} />
+                )}
+              </PaginationItem>
+              <PaginationItem>
+                {pageNumbers.map((page, index) => (
+                  <PaginationLink key={index} href={`?page=${page}`}>
+                    {page}
+                  </PaginationLink>
+                ))}
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationEllipsis />
+              </PaginationItem>
+              <PaginationItem>
+                {page === totalPages ? (
+                  <PaginationNext
+                    className="pointer-events-none opacity-70"
+                    aria-disabled="true"
+                  />
+                ) : (
+                  <PaginationNext
+                    href={`?page=${nextPage}`}
+                    aria-label="Next PageNumber"
+                  />
+                )}
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
         )}
       </div>
     </div>

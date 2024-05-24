@@ -1,5 +1,5 @@
 import connectMongoDB from "@/lib/db";
-import Announcement from "@/models/announce"; // Import your Announcement model
+import Announcement from "@/models/announce";
 import { NextResponse } from "next/server";
 
 export async function DELETE(request) {

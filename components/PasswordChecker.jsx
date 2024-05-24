@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { useState } from "react";
 import zxcvbn from "zxcvbn";
@@ -25,7 +25,7 @@ const PasswordStrengthMeter = ({ password }) => {
     }
   };
 
-  const funcProgressColor = () => {
+  const progressColor = () => {
     switch (testResult.score) {
       case 0:
         return "bg-gray-400";
@@ -46,7 +46,7 @@ const PasswordStrengthMeter = ({ password }) => {
     <>
       <div className="h-2 overflow-hidden rounded-md bg-gray-200">
         <div
-          className={`h-full ${funcProgressColor()}`}
+          className={`h-full ${progressColor()}`}
           style={{ width: `${num}%` }}
         ></div>
       </div>
@@ -64,7 +64,7 @@ export default function PasswordChecker() {
   };
 
   return (
-    <div className="flex items-center justify-center ">
+    <div className="flex w-screen items-center justify-center px-5 md:px-0">
       <div className="w-full max-w-md rounded-lg border-2 border-solid border-black bg-white p-6 shadow-md">
         <h2 className="mb-4 text-center text-xl font-semibold">
           Password Checker
@@ -80,10 +80,14 @@ export default function PasswordChecker() {
           {password.length > 0 && (
             <button
               type="button"
-              className="absolute right-3 top-1/2 opacity-75 -translate-y-1/2 transform"
+              className="absolute right-3 top-1/2 -translate-y-1/2 transform opacity-75"
               onClick={togglePasswordVisibility}
             >
-              {showPassword ? <EyeOff /> : <Eye />}
+              {showPassword ? (
+                <EyeOff className="size-5" />
+              ) : (
+                <Eye className="size-5" />
+              )}
             </button>
           )}
         </div>

@@ -1,4 +1,4 @@
-import EditContentForm from "@/components/EditContentForm";
+import EditContentForm from "@/components/form/EditContent";
 
 const getContentById = async (id) => {
   try {
