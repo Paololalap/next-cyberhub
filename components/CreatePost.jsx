@@ -39,7 +39,7 @@ export const CreatePost = ({ author }) => {
 
   const onSubmit = async () => {
     if (!content || !author) {
-      toast({ variant: "Warning", description: "Content field is required" });
+      toast({ variant: "Warning", description: "Description field is required" });
       return;
     }
 
@@ -98,7 +98,7 @@ export const CreatePost = ({ author }) => {
         >
           What do you want to ask or share?
         </div>
-        <Dialog>
+        <Dialog className="w-screen max-w-[900px]">
           <DialogTrigger asChild>
             <Button
               variant="primary"
@@ -108,17 +108,18 @@ export const CreatePost = ({ author }) => {
               Ask / Share
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
+          <DialogContent className="flex flex-col sm:h-auto sm:w-auto gap-2">
             <DialogHeader>
               <DialogTitle className="text-center font-bold">
                 Create Post
               </DialogTitle>
             </DialogHeader>
+            <Label htmlFor='content'>Description</Label>
             <Textarea
               placeholder="What do you want to ask or share?"
-              className="mt-2 text-lg placeholder:text-lg"
-              rows="6"
+              className="max-h-[400px] min-h-[300px] text-lg placeholder:text-lg md:resize max-w-[900px] min-w-[800px]"
               onChange={(e) => setContent(e.target.value)}
+              id='content'
               value={content}
             />
             <Label htmlFor="picture" className="w-max cursor-pointer">
@@ -129,7 +130,7 @@ export const CreatePost = ({ author }) => {
               type="file"
               onChange={handleUploadImage}
               accept="image/jpeg, image/jpg, image/png"
-              className="-mt-2 cursor-pointer file:cursor-pointer"
+              className="cursor-pointer file:cursor-pointer"
             />
             <DialogFooter>
               <Button
