@@ -5,11 +5,12 @@ import { Toaster } from "@/components/ui/toaster";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { openSans } from "@/fonts/fonts";
+import Unauthorized from "@/components/Unauthorize";
 
 export default async function AdminLayout({ children }) {
   const session = await getServerSession(authOptions);
   if (session?.user?.role !== "admin") {
-    return <div>unauthorize</div>;
+    return <Unauthorized />;
   }
   return (
     <>
