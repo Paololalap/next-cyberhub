@@ -13,17 +13,21 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Avatar } from "@/components/ui/avatar";
-
+import { useToast } from "@/components/ui/use-toast";
 export default function CommunityPage() {
   const { data: session } = useSession();
   const [author, setAuthor] = useState();
   const [authorEnabled, setAuthorEnabled] = useState(false);
-
+  const { toast } = useToast();
+const [toastShown, setToastShown] = useState(false);
   useEffect(() => {
-    if (session) {
+    if (session && !toastShown) {
       setAuthor(session?.user?.name);
+      toast({ variant: "Success", description: "Welcome to Community!" });
+      setToastShown(true); // Set the state to true after showing the toast
     }
-  }, [session]);
+  }, [session, toastShown, toast]);
+
 
   const toggleAuthor = () => {
     setAuthorEnabled(!authorEnabled);
