@@ -8,7 +8,7 @@ import { LINKS, LINKS_ADMIN } from "@/constants/LINKS";
 import { usePathname } from "next/navigation";
 import { LINK_STYLES } from "@/constants/LINK_STYLES";
 import { ACTIVE_STYLE } from "@/constants/ACTIVE_STYLE";
-import SignOutGoogle from "../button/SignOutGoogle";
+import SignOutGoogle from "@/components/button/SignOutGoogle";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -16,7 +16,7 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-} from "../ui/navigation-menu";
+} from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
 import { X, Menu } from "lucide-react";
 import useMediaQuery from "@/hooks/useMediaQuery";
