@@ -18,7 +18,7 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
-import { X, Menu } from "lucide-react";
+import { X, Menu, Home } from "lucide-react";
 import useMediaQuery from "@/hooks/useMediaQuery";
 
 export default function AdminHeader() {
@@ -73,32 +73,51 @@ export default function AdminHeader() {
               mainMenuOpen ? "block" : "hidden"
             }`}
           >
-            <ul className="mx-auto mt-4 flex max-w-[300px] flex-col whitespace-nowrap rounded-lg bg-[#8A1538] pt-4 text-center font-medium md:max-w-[800px] md:flex-row md:justify-between md:p-0">
+            <ul className="mx-auto mt-4 flex max-w-[300px] flex-col items-center whitespace-nowrap rounded-lg bg-[#8A1538] pt-4 text-center font-medium md:max-w-[800px] md:flex-row md:justify-between md:p-0">
+              <li className="md:mr-2">
+                <Link href="/">
+                  <div className="rounded px-3 py-2 text-white hover:bg-[#6e102c]">
+                    <Home className="hidden text-white md:block" />
+                  </div>
+                </Link>
+                <Link href="/" className={cn(LINK_STYLES, "md:hidden")}>
+                  Home
+                </Link>
+              </li>
               {LINKS_ADMIN.map((link) => (
                 <li key={link.id}>
                   <Link
                     href={link.href}
-                    className={`${LINK_STYLES} ${
-                      pathname === link.href ? ACTIVE_STYLE : ""
-                    }`}
+                    className={cn(
+                      LINK_STYLES,
+                      pathname === link.href
+                        ? [ACTIVE_STYLE, "bg-[#6e102c]"]
+                        : "",
+                      "hover:bg-[#6e102c]",
+                    )}
                   >
                     {link.text}
                   </Link>
                 </li>
               ))}
-              {smallScreen &&
-                LINKS.map((link) => (
-                  <li key={link.id}>
-                    <Link
-                      href={link.href}
-                      className={`${LINK_STYLES} ${
-                        pathname === link.href ? ACTIVE_STYLE : ""
-                      }`}
-                    >
-                      {link.text}
-                    </Link>
-                  </li>
-                ))}
+              {smallScreen && (
+                <>
+                  {LINKS.map((link) => (
+                    <li key={link.id}>
+                      <Link
+                        href={link.href}
+                        className={cn(
+                          LINK_STYLES,
+                          pathname === link.href ? ACTIVE_STYLE : "",
+                        )}
+                      >
+                        {link.text}
+                      </Link>
+                    </li>
+                  ))}
+                  <SignOutGoogle className="bg-[#FFB61B] text-black hover:bg-[#FFB61B]/80" />
+                </>
+              )}
             </ul>
           </nav>
         </div>
@@ -118,7 +137,7 @@ export default function AdminHeader() {
                         href={link.href}
                         className={cn(
                           LINK_STYLES,
-                          "rounded-none text-black hover:text-white md:hover:bg-[#00563F]"
+                          "rounded-none text-black hover:text-white md:hover:bg-[#00563F]",
                         )}
                       >
                         {link.text}

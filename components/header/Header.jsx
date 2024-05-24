@@ -88,19 +88,38 @@ export default function Header() {
               mainMenuOpen ? "block" : "hidden"
             }`}
           >
-            <ul className="mx-auto mt-4 flex max-w-[300px] flex-col whitespace-nowrap rounded-lg bg-[#8A1538] pt-4 text-center font-medium md:max-w-[800px] items-center md:flex-row md:justify-between md:p-0">
+            <ul className="mx-auto mt-4 flex max-w-[300px] flex-col items-center whitespace-nowrap rounded-lg bg-[#8A1538] pt-4 text-center font-medium md:max-w-[800px] md:flex-row md:justify-between md:p-0">
               <li className="md:mr-2">
-                <Link href='/'>
-                  <Home className="text-white"/>
+                <Link href="/">
+                  <div
+                    className={cn(
+                      "hidden md:block rounded px-3 py-2 text-white hover:bg-[#6e102c]",
+                      pathname === "/" && " bg-[#6e102c]",
+                    )}
+                  >
+                    <Home className=" text-white" />
+                  </div>
+                </Link>
+                <Link
+                  href="/"
+                  className={cn(
+                    LINK_STYLES,
+                    "w-screen md:hidden",
+                    pathname === "/" && "bg-[#6e102c]",
+                  )}
+                >
+                  Home
                 </Link>
               </li>
               {LINKS.map((link) => (
                 <li key={link.id}>
                   <Link
                     href={link.href}
-                    className={`${LINK_STYLES} ${
-                      pathname === link.href ? ACTIVE_STYLE : ""
-                    }`}
+                    className={cn(
+                      LINK_STYLES,
+                      pathname === link.href ? ACTIVE_STYLE : "",
+                      "w-screen md:w-auto",
+                    )}
                   >
                     {link.text}
                   </Link>
@@ -112,9 +131,11 @@ export default function Header() {
                     <li key={link.id}>
                       <Link
                         href={link.href}
-                        className={`${LINK_STYLES} ${
-                          pathname === link.href ? ACTIVE_STYLE : ""
-                        }`}
+                        className={cn(
+                          LINK_STYLES,
+                          pathname === link.href ? ACTIVE_STYLE : "",
+                          "w-screen md:w-auto",
+                        )}
                       >
                         {link.text}
                       </Link>
