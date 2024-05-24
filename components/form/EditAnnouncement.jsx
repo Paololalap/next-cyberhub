@@ -45,7 +45,7 @@ function EditAnnounceForm({ id, title, content, startDate, endDate }) {
   };
 
   return (
-    <div className="w-screen px-3 pt-10 md:px-0">
+    <div className="px-3 md:px-0">
       <form
         className="mx-auto rounded-lg border-t-[6px] border-[#8a1538] p-4 shadow-2xl md:w-fit"
         onSubmit={handleSubmit(onSubmit)}
