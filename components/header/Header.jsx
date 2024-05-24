@@ -22,6 +22,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Avatar } from "../ui/avatar";
 import useMediaQuery from "@/hooks/useMediaQuery";
+import { Home } from "lucide-react";
 
 export default function Header() {
   const { data: session } = useSession();
@@ -87,7 +88,12 @@ export default function Header() {
               mainMenuOpen ? "block" : "hidden"
             }`}
           >
-            <ul className="mx-auto mt-4 flex max-w-[300px] flex-col whitespace-nowrap rounded-lg bg-[#8A1538] pt-4 text-center font-medium md:max-w-[800px] md:flex-row md:justify-between md:p-0">
+            <ul className="mx-auto mt-4 flex max-w-[300px] flex-col whitespace-nowrap rounded-lg bg-[#8A1538] pt-4 text-center font-medium md:max-w-[800px] items-center md:flex-row md:justify-between md:p-0">
+              <li className="md:mr-2">
+                <Link href='/'>
+                  <Home className="text-white"/>
+                </Link>
+              </li>
               {LINKS.map((link) => (
                 <li key={link.id}>
                   <Link
