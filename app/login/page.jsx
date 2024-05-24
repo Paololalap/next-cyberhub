@@ -14,7 +14,7 @@ export default async function LoginPage() {
 
   return (
     <main className="flex">
-      <Image src={Oblation} fill className="object-cover" alt="UP Oblation" />
+      <Image src={Oblation} fill className="object-cover" alt="UP Oblation" priority />
       <LoginForm />
     </main>
   );
