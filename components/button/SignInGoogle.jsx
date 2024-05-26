@@ -1,14 +1,40 @@
 "use client";
 
 import { signIn } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function SignInGoogle() {
+  const searchParams = useSearchParams();
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const errorParam = searchParams.get("error");
+    if (errorParam) {
+      setError(errorParam);
+    }
+  }, [searchParams]);
+
+  const getErrorMessage = (error) => {
+    switch (error) {
+      case "EmailDenied":
+        return 'You must sign in with a "@upou.edu.ph" email.';
+      default:
+        return "An unknown error occurred.";
+    }
+  };
   return (
     <div className="flex h-[50vh] items-center justify-center">
       <div className="text-center">
-        <p className="mb-4 text-xl font-bold">Sign in using @upou.edu.ph email to access this page.</p>
+        {error ? (
+          <p className="mb-4 text-red-500">{getErrorMessage(error)}</p>
+        ) : (
+          <p className="mb-4 text-xl font-bold">
+            Sign in using @upou.edu.ph email to access this page.
+          </p>
+        )}
         <button
-          className="flex gap-x-4 rounded bg-[#8A1538] px-4 py-2 font-bold text-white hover:bg-[#6e102c] mx-auto"
+          className="mx-auto flex gap-x-4 rounded bg-[#8A1538] px-4 py-2 font-bold text-white hover:bg-[#6e102c]"
           onClick={() => signIn("google")}
         >
           <svg

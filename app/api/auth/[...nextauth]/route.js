@@ -8,30 +8,33 @@ import GoogleProvider from "next-auth/providers/google";
 export const authOptions = {
   providers: [
     GoogleProvider({
-      async profile(profile) {
-       await connectMongoDB();
-        const user = await User.findOne({ email: profile.email });
-        try {
-         if (!user) {
-           await User.create({
-             username: profile.name,
-             email: profile.email,
-             role: "user",
-           });
-         }
-       } catch (error) {
-         console.log("Error: ", error);
-        }
-        
-       return {
-         _id: user._id.toString(),
-         ...profile,
-         id: profile.sub,
-         role: user ? user.role : "user",
-       };
-      },
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      profile: async (profile) => {
+        await connectMongoDB();
+
+        let user = await User.findOne({ email: profile.email });
+
+        if (!user) {
+          try {
+            user = await User.create({
+              username: profile.name,
+              email: profile.email,
+              role: "user",
+            });
+          } catch (error) {
+            console.log("Error creating user: ", error);
+            throw new Error("Failed to create user");
+          }
+        }
+
+        return {
+          _id: user._id.toString(),
+          ...profile,
+          id: profile.sub,
+          role: user.role,
+        };
+      },
     }),
     CredentialsProvider({
       name: "credentials",
@@ -71,11 +74,20 @@ export const authOptions = {
       if (token?.role) session.user.role = token.role;
       return session;
     },
-   
+
     async jwt({ token, user }) {
       if (user?._id) token._id = user._id;
       if (user?.role) token.role = user.role;
       return token;
+    },
+    async signIn({ account, profile }) {
+      if (
+        account.provider === "google" &&
+        !profile.email.endsWith("@upou.edu.ph")
+      ) {
+        return "/community?error=EmailDenied";
+      }
+      return true; // Allow sign in for other providers or if email ends with "@upou.edu.ph"
     },
   },
 
@@ -85,6 +97,7 @@ export const authOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
     signIn: "/login",
+    error: "/community",
   },
 };
 
