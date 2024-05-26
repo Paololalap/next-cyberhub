@@ -1,7 +1,7 @@
 import { Lock } from "lucide-react";
 import React from "react";
 
-const Unauthorized = () => {
+export default function Unauthorized() {
   return (
     <div className="flex h-screen items-center justify-center bg-gray-100">
       <div className="text-center">
@@ -13,6 +13,4 @@ const Unauthorized = () => {
       </div>
     </div>
   );
-};
-
-export default Unauthorized;
+}
