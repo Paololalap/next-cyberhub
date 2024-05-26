@@ -3,7 +3,11 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Textarea } from "@/components/ui/textarea";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { CalendarIcon, Loader2 } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
@@ -17,8 +21,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
-import { Label } from "../ui/label";
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 
 function EditContentForm({
   id,

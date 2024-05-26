@@ -20,7 +20,7 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
-import { Avatar } from "../ui/avatar";
+import { Avatar } from "@/components/ui/avatar";
 import useMediaQuery from "@/hooks/useMediaQuery";
 import { Home } from "lucide-react";
 

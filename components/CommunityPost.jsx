@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { CheckCheck, Pin, PinOff, Ellipsis, MessageCircle } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { Avatar } from "./ui/avatar";
+import { Avatar } from "@/components/ui/avatar";
 import Image from "next/image";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import {
@@ -10,8 +10,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Button } from "./ui/button";
-import { Textarea } from "./ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 
