@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -23,15 +23,21 @@ export default function SearchBar() {
   };
 
   return (
-    <form onSubmit={handleSearch} className="flex items-center">
+    <form
+      onSubmit={handleSearch}
+      className="mx-auto mt-5 flex w-full max-w-md items-center overflow-hidden rounded-lg bg-white shadow-md"
+    >
       <input
         type="text"
         value={searchTerm}
         onChange={handleChange}
         placeholder="Search..."
-        className="rounded border p-2"
+        className="w-full p-4 text-gray-700 focus:outline-none"
       />
-      <button type="submit" className="ml-2 rounded bg-blue-500 p-2 text-white">
+      <button
+        type="submit"
+        className="bg-[#8a1438] p-4 text-white transition duration-300 hover:bg-[#8a1438]/50 focus:outline-none"
+      >
         Search
       </button>
     </form>
