@@ -135,6 +135,7 @@ export default function AccountSettingsPage() {
       }
     };
     fetchData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (!user) {
