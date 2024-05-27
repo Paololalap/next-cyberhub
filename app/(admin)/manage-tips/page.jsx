@@ -15,36 +15,53 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import DefaultImage from "@/public/default-image-tips.jpg";
-
-async function getData(perPage, pageNumber) {
+import SearchBar from "@/components/SearchBar";
+async function getData(searchQuery, perPage, pageNumber) {
   try {
+    // DB Connect
     const client = await connectToDatabase();
     const db = client.db("CyberDB");
 
+    const query = {
+      $and: [
+        { type: "Tips" },
+        searchQuery
+          ? {
+              $or: [
+                { title: { $regex: searchQuery, $options: "i" } },
+                { description: { $regex: searchQuery, $options: "i" } },
+                { body: { $regex: searchQuery, $options: "i" } },
+                { author: { $regex: searchQuery, $options: "i" } },
+                { tags: { $regex: searchQuery, $options: "i" } },
+              ],
+            }
+          : {},
+      ],
+    };
+
+    // DB Query
     const items = await db
       .collection("contents")
-      .find({ type: "Tips" })
+      .find(query)
       .sort({ createdAt: -1 })
       .skip(perPage * (pageNumber - 1))
       .limit(perPage)
       .toArray();
 
-    const itemCount = await db
-      .collection("contents")
-      .countDocuments({ type: "Tips" });
+    const itemCount = await db.collection("contents").countDocuments(query);
 
-    const response = { items, itemCount };
-    return response;
+    return { items, itemCount };
   } catch (error) {
     throw new Error("Failed to fetch data. Please try again later.");
   }
 }
 
 export default async function TipsPage({ searchParams }) {
+  const searchQuery = searchParams.q || "";
   let page = parseInt(searchParams.page, 10);
   page = !page || page < 1 ? 1 : page;
   const perPage = 8;
-  const data = await getData(perPage, page);
+  const data = await getData(searchQuery, perPage, page);
 
   const totalPages = Math.ceil(data.itemCount / perPage);
 
@@ -65,6 +82,9 @@ export default async function TipsPage({ searchParams }) {
         Manage Tips and Guides
       </div>
       <hr className="mx-auto mt-3 w-64 border-2 border-solid border-[#FFB61B]" />
+      <div className="flex flex-col items-center justify-center">
+        <SearchBar /> {/* Include SearchBar component */}
+      </div>
       <AddEntry>Add Tips Entry</AddEntry>
       <div className="mx-auto my-5 w-full max-w-[75rem] px-3">
         {data.items.map((item) => (
