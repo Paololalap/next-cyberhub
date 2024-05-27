@@ -34,8 +34,8 @@ const LatestAnnouncement = async () => {
           alt="UP Oblation"
           priority
         />
-        <div className="absolute left-1/2 top-1/2 z-10 -mt-5 flex max-h-[350px] -translate-x-1/2 -translate-y-1/2 flex-col rounded-xl bg-white/80 max-w-screen-md w-screen">
-          <div className="rounded-t-xl bg-[#8a1438] p-4 text-center text-5xl font-bold text-white md:text-6xl lg:whitespace-nowrap">
+        <div className="absolute left-1/2 top-1/2 z-10 -mt-5 flex max-h-[350px] w-screen min-w-[30rem] max-w-screen-md -translate-x-1/2 -translate-y-1/2 flex-col rounded-xl bg-white/80">
+          <div className="rounded-t-xl bg-[#8a1438] p-4 text-center text-5xl font-bold text-white md:text-6xl">
             {title}
           </div>
           <div className="pl-4 pt-4 font-semibold text-[#8a1438]">
