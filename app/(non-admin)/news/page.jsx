@@ -16,52 +16,59 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import SearchBar from "@/components/SearchBar";
-async function getData(searchQuery, perPage, pageNumber) {
-  try {
-    // DB Connect
-    const client = await connectToDatabase();
-    const db = client.db("CyberDB");
 
-    const query = {
-      $and: [
-        { type: "News" },
-        searchQuery
-          ? {
-              $or: [
-                { title: { $regex: searchQuery, $options: "i" } },
-                { description: { $regex: searchQuery, $options: "i" } },
-                { body: { $regex: searchQuery, $options: "i" } },
-                { author: { $regex: searchQuery, $options: "i" } },
-                { tags: { $regex: searchQuery, $options: "i" } },
-              ],
-            }
-          : {},
-      ],
-    };
+async function getData(searchQuery, perPage, pageNumber, selectedTags) {
+  const client = await connectToDatabase();
+  const db = client.db("CyberDB");
 
-    // DB Query
-    const items = await db
-      .collection("contents")
-      .find(query)
-      .sort({ createdAt: -1 })
-      .skip(perPage * (pageNumber - 1))
-      .limit(perPage)
-      .toArray();
+  const tagQuery =
+    selectedTags.length > 0 ? { tags: { $in: selectedTags } } : {};
 
-    const itemCount = await db.collection("contents").countDocuments(query);
+  const query = {
+    $and: [
+      { type: "News" },
+      searchQuery
+        ? {
+            $or: [
+              { title: { $regex: searchQuery, $options: "i" } },
+              { description: { $regex: searchQuery, $options: "i" } },
+              { body: { $regex: searchQuery, $options: "i" } },
+              { author: { $regex: searchQuery, $options: "i" } },
+              { tags: { $regex: searchQuery, $options: "i" } },
+            ],
+          }
+        : {},
+      tagQuery,
+    ],
+  };
 
-    return { items, itemCount };
-  } catch (error) {
-    throw new Error("Failed to fetch data. Please try again later.");
-  }
+  const items = await db
+    .collection("contents")
+    .find(query)
+    .sort({ createdAt: -1 })
+    .skip(perPage * (pageNumber - 1))
+    .limit(perPage)
+    .toArray();
+
+  const itemCount = await db.collection("contents").countDocuments(query);
+
+  return { items, itemCount };
+}
+
+async function getTags() {
+  const client = await connectToDatabase();
+  const db = client.db("CyberDB");
+  return db.collection("contents").distinct("tags", { type: "News" });
 }
 
 export default async function NewsPage({ searchParams }) {
   const searchQuery = searchParams.q || "";
-  let page = parseInt(searchParams.page, 10);
-  page = !page || page < 1 ? 1 : page;
+  const page = parseInt(searchParams.page, 10) || 1;
   const perPage = 8;
-  const data = await getData(searchQuery, perPage, page);
+  const selectedTags = searchParams.tags ? searchParams.tags.split(",") : [];
+
+  const data = await getData(searchQuery, perPage, page, selectedTags);
+  const tags = await getTags();
 
   const totalPages = Math.ceil(data.itemCount / perPage);
 
@@ -76,6 +83,7 @@ export default async function NewsPage({ searchParams }) {
       pageNumbers.push(i);
     }
   }
+
   return (
     <div className="mx-auto flex min-h-screen w-fit flex-col">
       <div className="mt-5 break-all text-center text-3xl font-black">
@@ -83,7 +91,7 @@ export default async function NewsPage({ searchParams }) {
       </div>
       <hr className="mx-auto mb-5 mt-3 w-screen max-w-64 border-2 border-solid border-[#FFB61B]" />
       <div className="flex flex-col items-center justify-center">
-        <SearchBar /> {/* Include SearchBar component */}
+        <SearchBar tags={tags} /> {/* Pass tags as a prop */}
       </div>
       <div className="mx-auto mb-2 w-screen max-w-[75rem] px-3">
         {page === 1 && data.latestNews && (
