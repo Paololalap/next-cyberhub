@@ -1,10 +1,8 @@
+import SearchBar from "@/components/SearchBar";
 import AddEntry from "@/components/button/AddEntry";
-import { connectToDatabase } from "@/lib/connectMongo";
-import Image from "next/image";
 import Remove from "@/components/button/Remove";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { CalendarDays } from "lucide-react";
 import UpdateButton from "@/components/button/Update";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 import {
   Pagination,
   PaginationContent,
@@ -14,8 +12,10 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { connectToDatabase } from "@/lib/connectMongo";
 import DefaultImage from "@/public/default-image-tips.jpg";
-import SearchBar from "@/components/SearchBar";
+import { CalendarDays } from "lucide-react";
+import Image from "next/image";
 async function getData(searchQuery, perPage, pageNumber) {
   try {
     // DB Connect
