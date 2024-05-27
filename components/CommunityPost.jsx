@@ -21,7 +21,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
-
+import { formatTimeAgo } from '@/constants/DATE_TO_WORDS';
 export default function CommunityPosts({ author }) {
   const { data: session } = useSession();
   const [posts, setPosts] = useState([]);
@@ -341,7 +341,7 @@ export default function CommunityPosts({ author }) {
             onChange={handleSearchChange}
             className="w-full rounded-md border border-gray-300 px-9 py-2 focus:outline-none focus-visible:ring focus-visible:ring-[#8a1438]"
           />
-          <Search className="absolute top-1/2 -translate-y-1/2 left-2 size-5" />
+          <Search className="absolute left-2 top-1/2 size-5 -translate-y-1/2" />
         </div>
       </div>
       {filteredPosts.slice(0, visiblePostsCount).map((post) => (
@@ -354,7 +354,9 @@ export default function CommunityPosts({ author }) {
               {/* {post.author[0]} */}
               {post.image ? post.image : post.author[0]}
             </Avatar>
-            <div className="flex-1 px-2 py-2 font-bold">{post.author}</div>
+            <div className="flex-1 px-2 py-2 ">
+            <div className="font-bold">{post.author}</div>
+            <div className="text-sm">{formatTimeAgo(post.createdAt)}</div></div>
             <div className="relative inline-block text-left">
               <Popover>
                 <PopoverTrigger>
