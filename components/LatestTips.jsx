@@ -1,11 +1,11 @@
-import Image from "next/image";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { CalendarDays } from "lucide-react";
-import Link from "next/link";
-import DefaultTipsImage from "@/public/default-image-tips.jpg";
 import ReadMore from "@/components/button/ReadMore";
-import { connectToDatabase } from "@/lib/connectMongo";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 import formatDateToWords from "@/constants/DATE_TO_WORDS";
+import { connectToDatabase } from "@/lib/connectMongo";
+import DefaultTipsImage from "@/public/default-image-tips.jpg";
+import { CalendarDays } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
 async function getLatestTips() {
   try {

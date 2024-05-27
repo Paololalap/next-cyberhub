@@ -1,12 +1,12 @@
 "use client";
-import React from "react";
-import Image from "next/image";
-import formatDateToWords from "@/constants/DATE_TO_WORDS";
-import { CalendarDays } from "lucide-react";
+
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
+import formatDateToWords from "@/constants/DATE_TO_WORDS";
 import { openSans } from "@/fonts/fonts";
+import { cn } from "@/lib/utils";
+import { CalendarDays } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 export default function Article({

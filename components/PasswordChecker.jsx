@@ -1,8 +1,8 @@
 "use client";
 
+import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import zxcvbn from "zxcvbn";
-import { Eye, EyeOff } from "lucide-react";
 
 const PasswordStrengthMeter = ({ password }) => {
   const testResult = zxcvbn(password);

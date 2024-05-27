@@ -1,7 +1,7 @@
-import PhTransparentSeal from "@/public/philippine-transparency-seal.png";
-import FreedomOfInformation from "@/public/freedom-of-information.png";
-import CitizenCharter from "@/public/citizen-charter.png";
 import PTS from "@/public/PTS.png";
+import CitizenCharter from "@/public/citizen-charter.png";
+import FreedomOfInformation from "@/public/freedom-of-information.png";
+import PhTransparentSeal from "@/public/philippine-transparency-seal.png";
 
 export const SEALS = [
   {

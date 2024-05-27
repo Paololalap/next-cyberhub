@@ -1,5 +1,4 @@
 import { Lock } from "lucide-react";
-import React from "react";
 
 export default function Unauthorized() {
   return (

@@ -1,24 +1,22 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogClose,
 } from "@/components/ui/dialog";
-
-import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import React, { useState, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useRef, useState } from "react";
 
 export const CreatePost = ({ author }) => {
   const { toast } = useToast();

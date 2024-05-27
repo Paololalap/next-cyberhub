@@ -1,11 +1,6 @@
-import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { CalendarDays } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import { connectToDatabase } from "@/lib/connectMongo";
-import formatDateToWords from "@/constants/DATE_TO_WORDS";
-import DefaultImage from "@/public/default-image-news.jpg";
+import SearchBar from "@/components/SearchBar";
 import ReadMore from "@/components/button/ReadMore";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 import {
   Pagination,
   PaginationContent,
@@ -15,7 +10,12 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import SearchBar from "@/components/SearchBar";
+import formatDateToWords from "@/constants/DATE_TO_WORDS";
+import { connectToDatabase } from "@/lib/connectMongo";
+import DefaultImage from "@/public/default-image-news.jpg";
+import { CalendarDays } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
 async function getData(searchQuery, perPage, pageNumber, selectedTags) {
   const client = await connectToDatabase();

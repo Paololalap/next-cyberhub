@@ -1,8 +1,6 @@
 import AddAnnouncementButton from "@/components/button/AddAnnouncement";
-import React from "react";
-import formatDateToWords from "@/constants/DATE_TO_WORDS";
-import { connectToDatabase } from "@/lib/connectMongo";
-import { CalendarDays } from "lucide-react";
+import Remove from "@/components/button/RemoveAnnouncement";
+import UpdateButton from "@/components/button/UpdateAnnouncement";
 import {
   Pagination,
   PaginationContent,
@@ -12,8 +10,9 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import UpdateButton from "@/components/button/UpdateAnnouncement";
-import Remove from "@/components/button/RemoveAnnouncement";
+import formatDateToWords from "@/constants/DATE_TO_WORDS";
+import { connectToDatabase } from "@/lib/connectMongo";
+import { CalendarDays } from "lucide-react";
 
 async function getData(perPage, pageNumber) {
   try {

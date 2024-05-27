@@ -1,19 +1,20 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { CreatePost } from "@/components/CreatePost";
+
 import CommunityPosts from "@/components/CommunityPost";
-import { Input } from "@/components/ui/input";
-import { useSession } from "next-auth/react";
+import { CreatePost } from "@/components/CreatePost";
+import { Avatar } from "@/components/ui/avatar";
 import { Checkbox } from "@/components/ui/checkbox";
-import { CircleHelp } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Avatar } from "@/components/ui/avatar";
 import { useToast } from "@/components/ui/use-toast";
+import { CircleHelp } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
 
 export default function CommunityPage() {
   const { data: session } = useSession();
