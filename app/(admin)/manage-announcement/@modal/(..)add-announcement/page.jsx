@@ -34,7 +34,7 @@ export default function AddAnnouncementPage() {
     }
 
     try {
-      const res = await fetch(`${process.env.NEXTAUTH_URL}/api/announces`, {
+      const res = await fetch(`/api/announces`, {
         method: "POST",
         headers: {
           "Content-type": "application/json",

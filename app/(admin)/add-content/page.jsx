@@ -23,7 +23,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 
 export default function AddContentPage() {
   const {

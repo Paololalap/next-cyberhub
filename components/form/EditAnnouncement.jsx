@@ -26,7 +26,7 @@ function EditAnnounceForm({ id, title, content, startDate, endDate }) {
     };
 
     try {
-      const res = await fetch(`${process.env.NEXTAUTH_URL}/api/announces/${id}`, {
+      const res = await fetch(`/api/announces/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

@@ -1,19 +1,13 @@
 "use client";
-import { useForm } from "react-hook-form";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
-import { CalendarIcon, Loader2 } from "lucide-react";
-import { Calendar } from "@/components/ui/calendar";
-import { cn } from "@/lib/utils";
-import { format } from "date-fns";
-import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -22,7 +16,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import { CalendarIcon, Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 
 function EditContentForm({
   id,
@@ -70,7 +70,7 @@ function EditContentForm({
   const onSubmit = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch(`${process.env.NEXTAUTH_URL}/api/content/${id}`, {
+      const res = await fetch(`/api/content/${id}`, {
         method: "PUT",
         headers: {
           "Content-type": "application/json",
@@ -93,7 +93,7 @@ function EditContentForm({
       }
 
       router.refresh();
-      router.push("/");
+      router.back();
     } catch (error) {
       console.log(error);
     }
