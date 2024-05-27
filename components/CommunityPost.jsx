@@ -9,6 +9,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
+import { formatTimeAgo } from '@/constants/DATE_TO_WORDS';
 import { cn } from "@/lib/utils";
 import {
   CheckCheck,
@@ -22,7 +23,6 @@ import {
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-
 export default function CommunityPosts({ author }) {
   const { data: session } = useSession();
   const [posts, setPosts] = useState([]);
@@ -364,7 +364,9 @@ export default function CommunityPosts({ author }) {
               {/* {post.author[0]} */}
               {post.image ? post.image : post.author[0]}
             </Avatar>
-            <div className="flex-1 px-2 py-2 font-bold">{post.author}</div>
+            <div className="flex-1 px-2 py-2 ">
+            <div className="font-bold">{post.author}</div>
+            <div className="text-sm">{formatTimeAgo(post.createdAt)}</div></div>
             <div className="relative inline-block text-left">
               <Popover>
                 <PopoverTrigger>
