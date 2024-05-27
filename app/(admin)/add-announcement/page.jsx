@@ -50,11 +50,11 @@ export default function AddAnnouncementPage() {
       console.log(data);
 
       if (res.ok) {
-        router.push("/");
         toast({
           variant: "Success",
           description: "Announcement added successfully",
         });
+        router.back();
       } else {
         throw new Error("Failed to add announcement");
       }

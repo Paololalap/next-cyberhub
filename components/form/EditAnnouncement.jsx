@@ -38,7 +38,7 @@ function EditAnnounceForm({ id, title, content, startDate, endDate }) {
         throw new Error("Failed to update announcement");
       }
 
-      router.push("/");
+      router.back();
     } catch (error) {
       console.error("Error updating announcement:", error);
     }
