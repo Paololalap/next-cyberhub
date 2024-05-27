@@ -2,9 +2,9 @@
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { Textarea } from "../ui/textarea";
-import { Button } from "../ui/button";
-import { Label } from "../ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 
 function EditAnnounceForm({ id, title, content, startDate, endDate }) {
   const { register, handleSubmit, setValue } = useForm();
@@ -26,7 +26,7 @@ function EditAnnounceForm({ id, title, content, startDate, endDate }) {
     };
 
     try {
-      const res = await fetch(`http://localhost:3000/api/announces/${id}`, {
+      const res = await fetch(`${process.env.NEXTAUTH_URL}/api/announces/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -45,12 +45,12 @@ function EditAnnounceForm({ id, title, content, startDate, endDate }) {
   };
 
   return (
-    <div className="w-screen px-3 pt-10 md:px-0">
+    <div className="px-3 md:px-0">
       <form
         className="mx-auto rounded-lg border-t-[6px] border-[#8a1538] p-4 shadow-2xl md:w-fit"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <h1 className="mx-auto mt-3 w-full text-center text-3xl font-bold break-word">
+        <h1 className="break-word mx-auto mt-3 w-full text-center text-3xl font-bold">
           Update Announcement
         </h1>
         <section className="flex flex-col justify-center md:flex-row md:gap-4">

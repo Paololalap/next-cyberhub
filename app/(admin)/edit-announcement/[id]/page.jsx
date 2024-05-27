@@ -2,7 +2,7 @@ import EditAnnounceForm from "@/components/form/EditAnnouncement";
 
 const getAnnouncementById = async (id) => {
   try {
-    const res = await fetch(`http://localhost:3000/api/announces/${id}`, {
+    const res = await fetch(`${process.env.NEXTAUTH_URL}/api/announces/${id}`, {
       cache: "no-store",
     });
 
@@ -28,12 +28,14 @@ export default async function EditAnnouncement({ params }) {
   const { title, content, startDate, endDate } = announce;
 
   return (
-    <EditAnnounceForm
-      id={id}
-      title={title}
-      content={content}
-      startDate={startDate}
-      endDate={endDate}
-    />
+    <div className="pt-10">
+      <EditAnnounceForm
+        id={id}
+        title={title}
+        content={content}
+        startDate={startDate}
+        endDate={endDate}
+      />
+    </div>
   );
 }

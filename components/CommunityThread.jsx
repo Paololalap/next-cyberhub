@@ -14,12 +14,14 @@ import {
 } from "@/components/ui/tooltip";
 import { Avatar } from "@/components/ui/avatar";
 import { useToast } from "@/components/ui/use-toast";
+
 export default function CommunityPage() {
   const { data: session } = useSession();
   const [author, setAuthor] = useState();
   const [authorEnabled, setAuthorEnabled] = useState(false);
   const { toast } = useToast();
-const [toastShown, setToastShown] = useState(false);
+  const [toastShown, setToastShown] = useState(false);
+  
   useEffect(() => {
     if (session && !toastShown) {
       setAuthor(session?.user?.name);

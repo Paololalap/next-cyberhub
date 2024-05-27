@@ -24,7 +24,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
 export default function AddContentPage() {
   const {
@@ -56,7 +55,7 @@ export default function AddContentPage() {
     }
 
     try {
-      const res = await fetch("http://localhost:3000/api/content", {
+      const res = await fetch("/api/content", {
         method: "POST",
         headers: {
           "Content-type": "application/json",

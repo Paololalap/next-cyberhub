@@ -9,7 +9,7 @@ import {
   Search,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { Avatar } from "./ui/avatar";
+import { Avatar } from "@/components/ui/avatar";
 import Image from "next/image";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import {
@@ -17,8 +17,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Button } from "./ui/button";
-import { Textarea } from "./ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 
@@ -47,9 +47,10 @@ export default function CommunityPosts({ author }) {
   useEffect(() => {
     fetchPosts();
   }, []);
- useEffect(() => {
-   filterPosts();
- }, [posts, searchQuery]);
+  useEffect(() => {
+    filterPosts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [posts, searchQuery]);
   const filterPosts = () => {
     if (!searchQuery.trim()) {
       setFilteredPosts(posts);
@@ -322,8 +323,8 @@ export default function CommunityPosts({ author }) {
     }, 1000);
   };
 
- const handleSearchChange = (event) => {
-   setSearchQuery(event.target.value);
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
   };
   const loadMorePosts = () => {
     setVisiblePostsCount((prevCount) => prevCount + 5);
@@ -332,13 +333,16 @@ export default function CommunityPosts({ author }) {
   return (
     <div className="flex flex-col items-center justify-center gap-y-4 py-2">
       <div className="flex w-full flex-col items-center justify-center bg-white p-6 shadow-md sm:max-w-2xl sm:rounded-lg">
-        <input
-          type="text"
-          placeholder="Search..."
-          value={searchQuery}
-          onChange={handleSearchChange}
-          className="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none"
-        />
+        <div className="relative w-full">
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchQuery}
+            onChange={handleSearchChange}
+            className="w-full rounded-md border border-gray-300 px-9 py-2 focus:outline-none focus-visible:ring focus-visible:ring-[#8a1438]"
+          />
+          <Search className="absolute top-1/2 -translate-y-1/2 left-2 size-5" />
+        </div>
       </div>
       {filteredPosts.slice(0, visiblePostsCount).map((post) => (
         <div

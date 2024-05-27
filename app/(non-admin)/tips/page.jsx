@@ -89,7 +89,7 @@ export default async function NewsPage({ searchParams }) {
       <div className="mt-5 break-all text-center text-3xl font-black">
         Tips and Guides
       </div>
-      <hr className="mx-auto mb-5 mt-3 w-screen max-w-64 border-2 border-solid border-[#FFB61B]" />
+      <hr className="mx-auto mt-3 w-screen max-w-64 border-2 border-solid border-[#FFB61B]" />
       <div className="flex flex-col items-center justify-center">
         <SearchBar tags={tags} /> {/* Pass tags as a prop */}
       </div>

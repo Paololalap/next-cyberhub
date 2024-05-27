@@ -2,7 +2,7 @@ import EditContentForm from "@/components/form/EditContent";
 
 const getContentById = async (id) => {
   try {
-    const res = await fetch(`http://localhost:3000/api/content/${id}`, {
+    const res = await fetch(`${process.env.NEXTAUTH_URL}/api/content/${id}`, {
       cache: "no-store",
     });
 
@@ -23,17 +23,19 @@ export default async function EditContent({ params }) {
     content;
 
   return (
-    <EditContentForm
-      id={id}
-      title={title}
-      tags={tags}
-      author={author}
-      date={date}
-      link={link}
-      description={description}
-      body={body}
-      imageL={imageL}
-      type={type}
-    />
+    <div className="pt-10">
+      <EditContentForm
+        id={id}
+        title={title}
+        tags={tags}
+        author={author}
+        date={date}
+        link={link}
+        description={description}
+        body={body}
+        imageL={imageL}
+        type={type}
+      />
+    </div>
   );
 }

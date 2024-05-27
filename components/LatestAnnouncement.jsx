@@ -1,8 +1,8 @@
-// app/components/LatestAnnouncement.jsx
-
 import React from "react";
 import { connectToDatabase } from "@/lib/connectMongo";
 import formatDateToWords from "@/constants/DATE_TO_WORDS";
+import Oblation from "@/public/oblation-announcement.jpg";
+import Image from "next/image";
 
 const LatestAnnouncement = async () => {
   try {
@@ -25,14 +25,23 @@ const LatestAnnouncement = async () => {
     const { title, startDate, endDate, content } = latestAnnouncement[0];
 
     return (
-      <div className="rounded-md border-2 border-solid border-[#00563F] bg-white p-5">
-        <div className="mb-2 font-bold text-gray-500">{title}</div>
-        <div className="mb-2 text-sm">
-          <span>
-            {formatDateToWords(startDate)} to {formatDateToWords(endDate)}
-          </span>
+      <div className="relative min-h-[60vh] bg-white ">
+        <Image
+          src={Oblation}
+          fill
+          className="object-cover object-top"
+          alt="UP Oblation"
+          priority
+        />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -mt-16 z-10">
+          <div className="font-bold text-white md:text-6xl text-5xl text-center lg:whitespace-nowrap">{title}</div>
+          <div className="mt-6 text-white text-right">
+            <span>
+              {formatDateToWords(startDate)} to {formatDateToWords(endDate)}
+            </span>
+          </div>
+          <div className="text-white mt-2">{content}</div>
         </div>
-        <div className="text-sm">{content}</div>
       </div>
     );
   } catch (error) {

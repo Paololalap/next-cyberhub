@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default function AnnouncementLoadingSkeleton() {
+export default function Loading() {
     return (
       <div className="flex w-screen flex-col bg-[#f7f7e3]">
         <div className="mt-5 text-center text-3xl font-black">
