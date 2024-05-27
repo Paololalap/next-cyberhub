@@ -315,19 +315,28 @@ export default function CommunityPosts({ author }) {
     }
   };
 
-  const handleLoadMorePosts = () => {
-    setIsLoadingLoadMorePost(true);
-    setTimeout(() => {
-      setVisiblePostsCount((prevCount) => prevCount + 5);
-      setIsLoadingLoadMorePost(false);
-    }, 1000);
-  };
-
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
   };
   const loadMorePosts = () => {
     setVisiblePostsCount((prevCount) => prevCount + 5);
+  };
+
+  function simulateEscKeyPress() {
+    const event = new KeyboardEvent("keydown", {
+      key: "Escape",
+      keyCode: 27,
+      code: "Escape",
+      which: 27,
+      bubbles: true,
+    });
+    document.dispatchEvent(event);
+  }
+
+  const handleKeyDown = (postId, event) => {
+    if (event.key === "Enter") {
+      handleCommentSubmit(postId);
+    }
   };
   // Render UI
   return (
@@ -341,7 +350,7 @@ export default function CommunityPosts({ author }) {
             onChange={handleSearchChange}
             className="w-full rounded-md border border-gray-300 px-9 py-2 focus:outline-none focus-visible:ring focus-visible:ring-[#8a1438]"
           />
-          <Search className="absolute top-1/2 -translate-y-1/2 left-2 size-5" />
+          <Search className="absolute left-2 top-1/2 size-5 -translate-y-1/2" />
         </div>
       </div>
       {filteredPosts.slice(0, visiblePostsCount).map((post) => (
@@ -363,10 +372,7 @@ export default function CommunityPosts({ author }) {
                 <PopoverContent className="w-auto p-0">
                   {post._id && (
                     <>
-                      <button
-                        onClick={() => handlePostReport(post._id)}
-                        className="block cursor-pointer px-4 py-2 text-sm text-yellow-700 hover:bg-yellow-100"
-                      >
+                      <button className="block cursor-pointer px-4 py-2 text-sm text-yellow-700 hover:bg-yellow-100">
                         Report Post
                       </button>
                       {(session?.user?.role === "admin" ||
