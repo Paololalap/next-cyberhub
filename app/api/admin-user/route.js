@@ -1,7 +1,7 @@
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import connectMongoDB from "@/lib/db";
 import User from "@/models/user";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { NextResponse } from "next/server";
 
 export async function GET() {

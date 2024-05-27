@@ -1,7 +1,7 @@
 "use client";
-import { Fragment, useEffect, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { useRouter } from "next/navigation";
+import { Fragment, useEffect, useState } from "react";
 
 export default function Modal({ children }) {
   const [isOpen, setIsOpen] = useState(false);

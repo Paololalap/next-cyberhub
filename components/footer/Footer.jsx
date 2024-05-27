@@ -1,14 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import { cn } from "@/lib/utils";
-import { FONT_SIZES } from "@/constants/FONT_SIZES";
-import Seals from "@/components/Seals";
-import UPSystems from "@/components/UPSystems";
 import HelpfulLinks from "@/components/HelpfulLinks";
 import Items from "@/components/Items";
 import NavigationLinks from "@/components/NavigationLinks";
+import Seals from "@/components/Seals";
 import SocialLinks from "@/components/SocialLinks";
+import UPSystems from "@/components/UPSystems";
+import { FONT_SIZES } from "@/constants/FONT_SIZES";
+import { cn } from "@/lib/utils";
+import { useState } from "react";
 
 export default function Footer({ className }) {
   const currentYear = new Date().getFullYear();

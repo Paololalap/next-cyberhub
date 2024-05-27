@@ -1,6 +1,6 @@
 import connectMongoDB from "@/lib/db";
+import { Comment, Post } from "@/models/thread"; // Ensure Comment is imported
 import { NextResponse } from "next/server";
-import { Post, Comment } from "@/models/thread"; // Ensure Comment is imported
 
 export async function POST(request, { params }) {
   const { id } = params;

@@ -1,7 +1,7 @@
-import "@/styles/globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { openSans } from "@/fonts/fonts";
 import { cn } from "@/lib/utils";
+import "@/styles/globals.css";
 
 export const metadata = {
   title: "Cyberhub",

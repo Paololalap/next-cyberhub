@@ -1,8 +1,8 @@
 import connectMongoDB from "@/lib/db";
 import User from "@/models/user";
+import bcrypt from "bcryptjs";
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
-import bcrypt from "bcryptjs";
 import GoogleProvider from "next-auth/providers/google";
 
 export const authOptions = {

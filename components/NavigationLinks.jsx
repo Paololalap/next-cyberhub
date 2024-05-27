@@ -1,6 +1,5 @@
 import { NAVIGATION_LINKS } from '@/constants/NAVIGATION_LINKS';
 import Link from 'next/link';
-import React from 'react'
 
 export default function NavigationLinks() {
   return (

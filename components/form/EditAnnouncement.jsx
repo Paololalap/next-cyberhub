@@ -1,10 +1,11 @@
 "use client";
-import React, { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { Textarea } from "@/components/ui/textarea";
+
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
 
 function EditAnnounceForm({ id, title, content, startDate, endDate }) {
   const { register, handleSubmit, setValue } = useForm();
@@ -26,7 +27,7 @@ function EditAnnounceForm({ id, title, content, startDate, endDate }) {
     };
 
     try {
-      const res = await fetch(`${process.env.NEXTAUTH_URL}/api/announces/${id}`, {
+      const res = await fetch(`/api/announces/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -38,7 +39,7 @@ function EditAnnounceForm({ id, title, content, startDate, endDate }) {
         throw new Error("Failed to update announcement");
       }
 
-      router.push("/");
+      router.back();
     } catch (error) {
       console.error("Error updating announcement:", error);
     }

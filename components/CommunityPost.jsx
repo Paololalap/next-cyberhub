@@ -1,27 +1,28 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import {
-  CheckCheck,
-  Pin,
-  PinOff,
-  Ellipsis,
-  MessageCircle,
-  Search,
-} from "lucide-react";
-import { useSession } from "next-auth/react";
-import { Avatar } from "@/components/ui/avatar";
-import Image from "next/image";
+
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { Avatar } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
-import { Loader2 } from "lucide-react";
 import { formatTimeAgo } from '@/constants/DATE_TO_WORDS';
+import { cn } from "@/lib/utils";
+import {
+  CheckCheck,
+  Ellipsis,
+  Loader2,
+  MessageCircle,
+  Pin,
+  PinOff,
+  Search,
+} from "lucide-react";
+import { useSession } from "next-auth/react";
+import Image from "next/image";
+import { useEffect, useState } from "react";
 export default function CommunityPosts({ author }) {
   const { data: session } = useSession();
   const [posts, setPosts] = useState([]);
@@ -315,19 +316,28 @@ export default function CommunityPosts({ author }) {
     }
   };
 
-  const handleLoadMorePosts = () => {
-    setIsLoadingLoadMorePost(true);
-    setTimeout(() => {
-      setVisiblePostsCount((prevCount) => prevCount + 5);
-      setIsLoadingLoadMorePost(false);
-    }, 1000);
-  };
-
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
   };
   const loadMorePosts = () => {
     setVisiblePostsCount((prevCount) => prevCount + 5);
+  };
+
+  function simulateEscKeyPress() {
+    const event = new KeyboardEvent("keydown", {
+      key: "Escape",
+      keyCode: 27,
+      code: "Escape",
+      which: 27,
+      bubbles: true,
+    });
+    document.dispatchEvent(event);
+  }
+
+  const handleKeyDown = (postId, event) => {
+    if (event.key === "Enter") {
+      handleCommentSubmit(postId);
+    }
   };
   // Render UI
   return (
@@ -365,10 +375,7 @@ export default function CommunityPosts({ author }) {
                 <PopoverContent className="w-auto p-0">
                   {post._id && (
                     <>
-                      <button
-                        onClick={() => handlePostReport(post._id)}
-                        className="block cursor-pointer px-4 py-2 text-sm text-yellow-700 hover:bg-yellow-100"
-                      >
+                      <button className="block cursor-pointer px-4 py-2 text-sm text-yellow-700 hover:bg-yellow-100">
                         Report Post
                       </button>
                       {(session?.user?.role === "admin" ||

@@ -1,12 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Pencil } from "lucide-react";
 import {
   Form,
   FormControl,
@@ -16,9 +11,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import Image from "next/image";
-import { Loader2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2, Pencil } from "lucide-react";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import Loading from "./loading";
 
 const formSchema = z.object({
@@ -74,7 +73,7 @@ export default function AccountSettingsPage() {
       setIsLoading(true);
       const { newFirstName, newLastName, newUsername, newProfilePic } =
         form.getValues();
-      const res = await fetch(`${process.env.NEXTAUTH_URL}/api/admin-user`, {
+      const res = await fetch(`/api/admin-user`, {
         method: "PUT",
         headers: {
           "Content-type": "application/json",

@@ -1,11 +1,11 @@
-import Link from "next/link";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
-import Image from "next/image";
-import { CalendarDays } from "lucide-react";
 import ReadMore from "@/components/button/ReadMore";
-import DefaultNewsImage from "@/public/default-image-news.jpg";
-import { connectToDatabase } from "@/lib/connectMongo";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 import formatDateToWords from "@/constants/DATE_TO_WORDS";
+import { connectToDatabase } from "@/lib/connectMongo";
+import DefaultNewsImage from "@/public/default-image-news.jpg";
+import { CalendarDays } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
 async function getLatestNews() {
   try {

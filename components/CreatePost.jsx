@@ -1,24 +1,22 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogClose,
 } from "@/components/ui/dialog";
-
-import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import React, { useState, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useRef, useState } from "react";
 
 export const CreatePost = ({ author }) => {
   const { toast } = useToast();
@@ -34,12 +32,15 @@ export const CreatePost = ({ author }) => {
   };
 
   const handleExitDialog = () => {
-    dialogCloseRef.current.click(); 
+    dialogCloseRef.current.click();
   };
 
   const onSubmit = async () => {
     if (!content || !author) {
-      toast({ variant: "Warning", description: "Description field is required" });
+      toast({
+        variant: "Warning",
+        description: "Description field is required",
+      });
       return;
     }
 
@@ -56,12 +57,11 @@ export const CreatePost = ({ author }) => {
           userID: session?.user?._id,
         }),
       });
-      const data = await res.json();
-      console.log(data);
+      await res.json();
 
       if (res.ok) {
-        router.push("/community");
         handleExitDialog();
+        router.back();
         setContent("");
         toast({ variant: "Success", description: "Posted" });
       } else {
@@ -108,18 +108,18 @@ export const CreatePost = ({ author }) => {
               Ask / Share
             </Button>
           </DialogTrigger>
-          <DialogContent className="flex flex-col sm:h-auto sm:w-auto gap-2">
+          <DialogContent className="flex flex-col gap-2 sm:h-auto sm:w-auto">
             <DialogHeader>
               <DialogTitle className="text-center font-bold">
                 Create Post
               </DialogTitle>
             </DialogHeader>
-            <Label htmlFor='content'>Description</Label>
+            <Label htmlFor="content">Description</Label>
             <Textarea
               placeholder="What do you want to ask or share?"
-              className="max-h-[400px] min-h-[300px] text-lg placeholder:text-lg md:resize max-w-[900px] min-w-[800px]"
+              className="max-h-[400px] min-h-[300px] min-w-[800px] max-w-[900px] text-lg placeholder:text-lg md:resize"
               onChange={(e) => setContent(e.target.value)}
-              id='content'
+              id="content"
               value={content}
             />
             <Label htmlFor="picture" className="w-max cursor-pointer">
