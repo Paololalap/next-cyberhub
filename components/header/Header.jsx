@@ -94,7 +94,7 @@ export default function Header() {
                 <Link href="/">
                   <div
                     className={cn(
-                      "hidden md:block rounded px-3 py-2 text-white hover:bg-[#6e102c]",
+                      "hidden rounded px-3 py-2 text-white hover:bg-[#6e102c] md:block",
                       pathname === "/" && " bg-[#6e102c]",
                     )}
                   >
@@ -112,6 +112,7 @@ export default function Header() {
                   Home
                 </Link>
               </li>
+
               {LINKS.map((link) => (
                 <li key={link.id}>
                   <Link
