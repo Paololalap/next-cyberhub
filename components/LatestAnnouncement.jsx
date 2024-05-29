@@ -26,16 +26,19 @@ const LatestAnnouncement = async () => {
     const { title, startDate, endDate, content } = latestAnnouncement[0];
 
     return (
-      <div className="relative min-h-[60vh] bg-white ">
+      <div className="relative min-h-[450px] p-10 md:p-0">
         <Image
           src={Oblation}
           fill
-          className="object-cover object-top"
+          className="object-cover object-right md:object-top"
           alt="UP Oblation"
           priority
         />
-        <div className="absolute left-1/2 top-1/2 z-10 -mt-5 flex max-h-[350px] w-screen min-w-[30rem] max-w-screen-md -translate-x-1/2 -translate-y-1/2 flex-col rounded-xl bg-white/80">
-          <div className="rounded-t-xl bg-[#8a1438] p-4 text-center text-5xl font-bold text-white md:text-6xl">
+        <div className="absolute left-1/2 top-1/2 z-10 md:-mt-5 flex max-h-[350px] w-screen max-w-screen-md -translate-x-1/2 -translate-y-1/2 flex-col rounded-xl bg-white/80">
+          <div
+            className="break-word rounded-t-xl bg-[#8a1438] p-4 text-center font-bold text-white md:break-keep md:text-6xl"
+            style={{ fontSize: "clamp(24px, 4vw + 1rem, 48px)" }}
+          >
             {title}
           </div>
           <div className="pl-4 pt-4 font-semibold text-[#8a1438]">
