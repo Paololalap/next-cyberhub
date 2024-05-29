@@ -11,7 +11,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={cn("min-h-screen w-screen", openSans.className)}>
+      <body className={cn("min-h-screen w-screen overflow-x-hidden", openSans.className)}>
         {children}
         <Toaster />
       </body>
