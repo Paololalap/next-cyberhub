@@ -127,12 +127,6 @@ export default function Header() {
                   </Link>
                 </li>
               ))}
-              <Link
-                href={`${process.env.NEXT_PUBLIC_SURVEY_LINK}`}
-                className={cn(LINK_STYLES, " w-auto", "bg-[#00563F]")}
-              >
-                Survey
-              </Link>
               {smallScreen && session?.user?.role === "admin" && (
                 <>
                   {LINKS_ADMIN.map((link) => (
