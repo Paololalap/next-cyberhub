@@ -19,7 +19,7 @@ import Link from "next/link";
 
 async function getData(searchQuery, perPage, pageNumber, selectedTags) {
   const client = await connectToDatabase();
-  const db = client.db("CyberDB");
+  const db = client.db(`${process.env.NEXT_PUBLIC_DB}`);
 
   const tagQuery =
     selectedTags.length > 0 ? { tags: { $in: selectedTags } } : {};
@@ -57,7 +57,7 @@ async function getData(searchQuery, perPage, pageNumber, selectedTags) {
 
 async function getTags() {
   const client = await connectToDatabase();
-  const db = client.db("CyberDB");
+  const db = client.db(`${process.env.NEXT_PUBLIC_DB}`);
   return db.collection("contents").distinct("tags", { type: "Tips" });
 }
 

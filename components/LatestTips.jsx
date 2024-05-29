@@ -10,7 +10,7 @@ import Link from "next/link";
 async function getLatestTips() {
   try {
     const client = await connectToDatabase();
-    const db = client.db("CyberDB");
+    const db = client.db(`${process.env.NEXT_PUBLIC_DB}`);
 
     const latestTips = await db
       .collection("contents")

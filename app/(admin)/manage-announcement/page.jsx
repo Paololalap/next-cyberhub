@@ -18,7 +18,7 @@ async function getData(perPage, pageNumber) {
   try {
     // DB Connect
     const client = await connectToDatabase();
-    const db = client.db("CyberDB");
+    const db = client.db(`${process.env.NEXT_PUBLIC_DB}`);
 
     // DB Query
     const items = await db

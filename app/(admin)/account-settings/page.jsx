@@ -29,7 +29,7 @@ const formSchema = z.object({
 
 async function getUserData() {
   try {
-    const response = await fetch("http://localhost:3000/api/admin-user", {
+    const response = await fetch("/api/admin-user", {
       headers: {
         "Cache-Control": "no-store",
       },
