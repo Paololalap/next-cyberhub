@@ -83,7 +83,9 @@ export default async function AnnouncementsPage({ searchParams }) {
                     </span>
                   </div>
                 </div>
-                <div className="h-full text-xs sm:text-sm">{item.content}</div>
+                <div className="h-full text-xs sm:text-sm">
+                  {item.content.slice(0, 250)}...
+                </div>
                 <div className="mt-5 flex gap-x-2 md:mt-0 md:self-end">
                   <UpdateButton id={item._id.buffer.toString("hex")} />
                   <Remove id={item._id.buffer.toString("hex")} />
