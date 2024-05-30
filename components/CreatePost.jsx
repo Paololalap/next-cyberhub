@@ -18,7 +18,8 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 
-export const CreatePost = ({ author }) => {
+export const CreatePost = ({ author, onPostCreated }) => {
+  // Accept the callback as a prop
   const { toast } = useToast();
   const { data: session } = useSession();
   const [content, setContent] = useState("");
@@ -61,9 +62,9 @@ export const CreatePost = ({ author }) => {
 
       if (res.ok) {
         handleExitDialog();
-        router.back();
         setContent("");
         toast({ variant: "Success", description: "Posted" });
+        onPostCreated(); // Call the callback to refresh posts
       } else {
         throw toast({ variant: "Error", description: "Failed to Post" });
       }

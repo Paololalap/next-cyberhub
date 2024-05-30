@@ -23,7 +23,7 @@ import {
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-export default function CommunityPosts({ author }) {
+export default function CommunityPosts({ author, refresh }) {
   const { data: session } = useSession();
   const [posts, setPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
@@ -47,7 +47,7 @@ export default function CommunityPosts({ author }) {
   };
   useEffect(() => {
     fetchPosts();
-  }, []);
+  }, [refresh]);
   useEffect(() => {
     filterPosts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -365,8 +365,9 @@ export default function CommunityPosts({ author }) {
               {post.image ? post.image : post.author[0]}
             </Avatar>
             <div className="flex-1 px-2 py-2 ">
-            <div className="font-bold">{post.author}</div>
-            <div className="text-sm">{formatTimeAgo(post.createdAt)}</div></div>
+              <div className="font-bold">{post.author}</div>
+              <div className="text-sm">{formatTimeAgo(post.createdAt)}</div>
+            </div>
             <div className="relative inline-block text-left">
               <Popover>
                 <PopoverTrigger>

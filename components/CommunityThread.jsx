@@ -22,7 +22,8 @@ export default function CommunityPage() {
   const [authorEnabled, setAuthorEnabled] = useState(false);
   const { toast } = useToast();
   const [toastShown, setToastShown] = useState(false);
-  
+  const [refreshPosts, setRefreshPosts] = useState(false); // New state variable
+
   useEffect(() => {
     if (session && !toastShown) {
       setAuthor(session?.user?.name);
@@ -31,7 +32,6 @@ export default function CommunityPage() {
     }
   }, [session, toastShown, toast]);
 
-
   const toggleAuthor = () => {
     setAuthorEnabled(!authorEnabled);
     if (!authorEnabled) {
@@ -39,6 +39,10 @@ export default function CommunityPage() {
     } else {
       setAuthor(session?.user?.name);
     }
+  };
+
+  const handlePostCreated = () => {
+    setRefreshPosts((prev) => !prev); // Toggle the state to refresh posts
   };
 
   return (
@@ -82,8 +86,8 @@ export default function CommunityPage() {
         </div>
       </div>
       <div></div>
-      <CreatePost author={author} />
-      <CommunityPosts author={author} />
+      <CreatePost author={author} onPostCreated={handlePostCreated} />
+      <CommunityPosts author={author} refresh={refreshPosts} />
     </>
   );
 }
