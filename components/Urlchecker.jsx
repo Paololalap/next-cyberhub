@@ -72,7 +72,7 @@ export default function UrlChecker() {
   const handleSubmit = async () => {
     setIsLoading(true);
     try {
-      await Promise.all([handleGSafeBrowsing(), handleIPQuality()]);
+      await Promise.allSettled([handleGSafeBrowsing(), handleIPQuality()]);
     } catch (error) {
       // Handle any errors that occur during the execution of either promise
       console.error("Error during handleSubmit:", error);
