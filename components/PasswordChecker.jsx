@@ -1,6 +1,8 @@
 "use client";
 
-import { Eye, EyeOff } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useCopyToClipboard } from "@uidotdev/usehooks";
+import { Copy, Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import zxcvbn from "zxcvbn";
 
@@ -55,16 +57,23 @@ const PasswordStrengthMeter = ({ password }) => {
   );
 };
 
-export default function PasswordChecker() {
+export default function PasswordChecker({ className }) {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [copiedText, copyToClipboard] = useCopyToClipboard();
+  const hasCopiedText = Boolean(copiedText);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
   return (
-    <div className="flex w-screen items-center justify-center px-5 md:px-0">
+    <div
+      className={cn(
+        "flex items-center justify-center px-5 md:px-0",
+        className,
+      )}
+    >
       <div className="w-full max-w-md rounded-lg border-2 border-solid border-black bg-white p-6 shadow-md">
         <h2 className="mb-4 text-center text-xl font-semibold">
           Password Checker
@@ -75,12 +84,14 @@ export default function PasswordChecker() {
             className="w-full rounded-md border border-gray-300 px-4 py-2 focus:border-black focus:outline-none"
             placeholder="Password"
             value={password}
+            autoComplete="off"
             onChange={(e) => setPassword(e.target.value)}
           />
+
           {password.length > 0 && (
             <button
               type="button"
-              className="absolute right-3 top-1/2 -translate-y-1/2 transform opacity-75"
+              className="absolute right-9 top-1/2 grid size-7 -translate-y-1/2 place-items-center rounded-full hover:bg-black/10 hover:opacity-75"
               onClick={togglePasswordVisibility}
             >
               {showPassword ? (
@@ -88,6 +99,16 @@ export default function PasswordChecker() {
               ) : (
                 <Eye className="size-5" />
               )}
+            </button>
+          )}
+          {password.length > 0 && (
+            <button
+              type="button"
+              disabled={hasCopiedText}
+              onClick={() => copyToClipboard(password)}
+              className="absolute right-2 top-1/2 grid size-7 -translate-y-1/2 cursor-pointer place-items-center rounded-full hover:bg-black/10 hover:opacity-75"
+            >
+              <Copy className="size-4 " />
             </button>
           )}
         </div>
