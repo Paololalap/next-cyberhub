@@ -1,22 +1,13 @@
-"use client";
-
 import HelpfulLinks from "@/components/HelpfulLinks";
 import Items from "@/components/Items";
 import NavigationLinks from "@/components/NavigationLinks";
 import Seals from "@/components/Seals";
 import SocialLinks from "@/components/SocialLinks";
 import UPSystems from "@/components/UPSystems";
-import { FONT_SIZES } from "@/constants/FONT_SIZES";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
 
 export default function Footer({ className }) {
   const currentYear = new Date().getFullYear();
-  const [fontSize, setFontSize] = useState(15);
-
-  const handleFontSizeChange = (newFontSize) => {
-    setFontSize(newFontSize);
-  };
 
   return (
     <footer className={cn(className, "break-all md:break-keep")}>
@@ -27,7 +18,7 @@ export default function Footer({ className }) {
             University of the Philippines
           </h4>
           <nav className="mb-[50px]">
-            <UPSystems fontSize={fontSize} />
+            <UPSystems />
           </nav>
         </div>
 
@@ -36,7 +27,7 @@ export default function Footer({ className }) {
             Helpful Links
           </h4>
           <nav className="mb-[50px]">
-            <HelpfulLinks fontSize={fontSize} />
+            <HelpfulLinks />
           </nav>
         </div>
         <div className="hidden md:block md:flex-1 xl:hidden"></div>
@@ -48,26 +39,7 @@ export default function Footer({ className }) {
               UP Open University
             </h4>
 
-            <Items fontSize={fontSize} />
-          </div>
-
-          <div className="z-10 flex flex-col">
-            <h4 className="mb-[28px] text-[14px] font-[700] uppercase tracking-widest text-[#333c4e]">
-              Change Text Size
-            </h4>
-
-            <ul className="flex flex-wrap items-baseline gap-x-2 sm:flex-nowrap">
-              {FONT_SIZES.map((item, index) => (
-                <li key={index}>
-                  <button
-                    className={`text-[${item.size}px] text-[#8a1538]`}
-                    onClick={() => handleFontSizeChange(item.size)}
-                  >
-                    {item.label}
-                  </button>
-                </li>
-              ))}
-            </ul>
+            <Items />
           </div>
         </div>
         <div className="hidden xl:block"></div>

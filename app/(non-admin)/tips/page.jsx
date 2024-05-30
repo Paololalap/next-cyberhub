@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/pagination";
 import formatDateToWords from "@/constants/DATE_TO_WORDS";
 import { connectToDatabase } from "@/lib/connectMongo";
-import DefaultImage from "@/public/default-image-news.jpg";
+import DefaultImage from "@/public/default-image-tips.jpg";
 import { CalendarDays } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";

@@ -9,8 +9,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
+import { Clipboard, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -19,7 +20,7 @@ const formSchema = z.object({
   url: z.string().url("Please enter a valid URL."),
 });
 
-export default function UrlChecker() {
+export default function UrlChecker({ className }) {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: { url: "" },
@@ -34,7 +35,7 @@ export default function UrlChecker() {
     try {
       setIsLoadingGSafeBrowsing(true); // Set loading state to true
       const { url } = form.getValues();
-      const response = await fetch(`${process.env.NEXTAUTH_URL}/api/google-api`, {
+      const response = await fetch(`/api/google-api`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url }),
@@ -53,14 +54,11 @@ export default function UrlChecker() {
     try {
       setIsLoadingIPQuality(true); // Set loading state to true
       const { url } = form.getValues();
-      const response = await fetch(
-        `${process.env.NEXTAUTH_URL}/api/ipquality-api`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ url }),
-        },
-      );
+      const response = await fetch(`/api/ipquality-api`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url }),
+      });
       const data = await response.json();
       const { risk_score } = data;
       setRiskScore(risk_score);
@@ -74,12 +72,32 @@ export default function UrlChecker() {
 
   const handleSubmit = async () => {
     setIsLoading(true);
-    await handleGSafeBrowsing();
-    await handleIPQuality();
+    try {
+      await Promise.allSettled([handleGSafeBrowsing(), handleIPQuality()]);
+    } catch (error) {
+      // Handle any errors that occur during the execution of either promise
+      console.error("Error during handleSubmit:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handlePaste = async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      form.setValue("url", text);
+    } catch (error) {
+      console.error("Failed to read clipboard contents: ", error);
+    }
   };
 
   return (
-    <div className="mt-5 flex w-screen items-center justify-center px-5 md:px-0">
+    <div
+      className={cn(
+        "mt-5 flex w-screen items-center justify-center px-5 md:px-0",
+        className,
+      )}
+    >
       <div className="w-full max-w-md rounded-lg border-2 border-solid border-black bg-white p-6 shadow-md">
         <h2 className="mb-4 text-center text-xl font-semibold">URL Checker</h2>
         <div className="mb-4">
@@ -94,11 +112,20 @@ export default function UrlChecker() {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Input
-                        placeholder="e.g., https://google.com"
-                        className="w-full rounded-md border border-gray-300 px-4 py-2 focus:border-black focus:outline-none"
-                        {...field}
-                      />
+                      <div className="relative">
+                        <Input
+                          placeholder="e.g., https://google.com"
+                          className="w-full rounded-md border border-gray-300 px-4 py-2 pr-10 focus:border-black focus:outline-none"
+                          {...field}
+                        />
+                        <button
+                          type="button"
+                          className="absolute right-2 top-1/2 grid size-7 -translate-y-1/2 place-items-center rounded-full hover:bg-black/10 hover:opacity-75"
+                          onClick={handlePaste}
+                        >
+                          <Clipboard className="size-5" />
+                        </button>
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
