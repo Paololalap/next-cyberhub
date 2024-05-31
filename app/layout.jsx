@@ -1,10 +1,7 @@
-import { Inter, Open_Sans } from "next/font/google";
-import "./globals.css";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import { Toaster } from "@/components/ui/toaster";
-const inter = Inter({ subsets: ["latin"] });
-const openSans = Open_Sans({ subsets: ["latin"] });
+import { openSans } from "@/fonts/fonts";
+import { cn } from "@/lib/utils";
+import "@/styles/globals.css";
 
 export const metadata = {
   title: "Cyberhub",
@@ -14,11 +11,9 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        {/* <Header /> */}
+      <body className={cn("min-h-screen w-screen overflow-x-hidden", openSans.className)}>
         {children}
         <Toaster />
-        {/* <Footer className={openSans.className} /> */}
       </body>
     </html>
   );

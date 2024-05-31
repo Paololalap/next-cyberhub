@@ -1,8 +1,10 @@
-'use client'
+"use client";
 
+import { cn } from "@/lib/utils";
+import { useCopyToClipboard } from "@uidotdev/usehooks";
+import { Copy, Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import zxcvbn from "zxcvbn";
-import { Eye, EyeOff } from "lucide-react";
 
 const PasswordStrengthMeter = ({ password }) => {
   const testResult = zxcvbn(password);
@@ -25,7 +27,7 @@ const PasswordStrengthMeter = ({ password }) => {
     }
   };
 
-  const funcProgressColor = () => {
+  const progressColor = () => {
     switch (testResult.score) {
       case 0:
         return "bg-gray-400";
@@ -46,7 +48,7 @@ const PasswordStrengthMeter = ({ password }) => {
     <>
       <div className="h-2 overflow-hidden rounded-md bg-gray-200">
         <div
-          className={`h-full ${funcProgressColor()}`}
+          className={`h-full ${progressColor()}`}
           style={{ width: `${num}%` }}
         ></div>
       </div>
@@ -55,16 +57,23 @@ const PasswordStrengthMeter = ({ password }) => {
   );
 };
 
-export default function PasswordChecker() {
+export default function PasswordChecker({ className }) {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [copiedText, copyToClipboard] = useCopyToClipboard();
+  const hasCopiedText = Boolean(copiedText);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
   return (
-    <div className="flex items-center justify-center ">
+    <div
+      className={cn(
+        "flex items-center justify-center px-5 md:px-0",
+        className,
+      )}
+    >
       <div className="w-full max-w-md rounded-lg border-2 border-solid border-black bg-white p-6 shadow-md">
         <h2 className="mb-4 text-center text-xl font-semibold">
           Password Checker
@@ -75,15 +84,31 @@ export default function PasswordChecker() {
             className="w-full rounded-md border border-gray-300 px-4 py-2 focus:border-black focus:outline-none"
             placeholder="Password"
             value={password}
+            autoComplete="off"
             onChange={(e) => setPassword(e.target.value)}
           />
+
           {password.length > 0 && (
             <button
               type="button"
-              className="absolute right-3 top-1/2 opacity-75 -translate-y-1/2 transform"
+              className="absolute right-9 top-1/2 grid size-7 -translate-y-1/2 place-items-center rounded-full hover:bg-black/10 hover:opacity-75"
               onClick={togglePasswordVisibility}
             >
-              {showPassword ? <EyeOff /> : <Eye />}
+              {showPassword ? (
+                <EyeOff className="size-5" />
+              ) : (
+                <Eye className="size-5" />
+              )}
+            </button>
+          )}
+          {password.length > 0 && (
+            <button
+              type="button"
+              disabled={hasCopiedText}
+              onClick={() => copyToClipboard(password)}
+              className="absolute right-2 top-1/2 grid size-7 -translate-y-1/2 cursor-pointer place-items-center rounded-full hover:bg-black/10 hover:opacity-75"
+            >
+              <Copy className="size-4 " />
             </button>
           )}
         </div>

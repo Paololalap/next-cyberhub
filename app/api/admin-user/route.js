@@ -1,12 +1,10 @@
-// app/api/admin-user/route.js
-
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import connectMongoDB from "@/lib/db";
 import User from "@/models/user";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "../auth/[...nextauth]/route";
 import { NextResponse } from "next/server";
 
-export async function GET(request) {
+export async function GET() {
   await connectMongoDB();
 
   // Get the session object
@@ -27,7 +25,6 @@ export async function GET(request) {
     return NextResponse.json({ error: "User not found" }, { status: 404 });
   }
 
-  // const { firstName, lastName, username, profilePic } = user;
   return NextResponse.json({ user });
 }
 

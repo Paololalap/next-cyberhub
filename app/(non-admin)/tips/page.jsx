@@ -1,43 +1,74 @@
-import React from "react";
-import { connectToDatabase } from "@/lib/connectMongo";
-import Link from "next/link";
-import Image from "next/image";
+import SearchBar from "@/components/SearchBar";
+import ReadMore from "@/components/button/ReadMore";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import formatDateToWords from "@/constants/DATE_TO_WORDS";
+import { connectToDatabase } from "@/lib/connectMongo";
+import DefaultImage from "@/public/default-image-tips.jpg";
+import { CalendarDays } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
-async function getData(perPage, pageNumber) {
-  try {
-    // DB Connect
-    const client = await connectToDatabase();
-    const db = client.db("CyberDB");
+async function getData(searchQuery, perPage, pageNumber, selectedTags) {
+  const client = await connectToDatabase();
+  const db = client.db(`${process.env.NEXT_PUBLIC_DB}`);
 
-    // DB Query
+  const tagQuery =
+    selectedTags.length > 0 ? { tags: { $in: selectedTags } } : {};
 
-    const items = await db
-      .collection("contents")
-      .find({
-        type: "Tips",
-      })
-      .sort({ createdAt: -1 })
-      .skip(perPage * (pageNumber - 1))
-      .limit(perPage)
-      .toArray();
+  const query = {
+    $and: [
+      { type: "Tips" },
+      searchQuery
+        ? {
+            $or: [
+              { title: { $regex: searchQuery, $options: "i" } },
+              { description: { $regex: searchQuery, $options: "i" } },
+              { body: { $regex: searchQuery, $options: "i" } },
+              { author: { $regex: searchQuery, $options: "i" } },
+              { tags: { $regex: searchQuery, $options: "i" } },
+            ],
+          }
+        : {},
+      tagQuery,
+    ],
+  };
 
-    const itemCount = await db
-      .collection("contents")
-      .countDocuments({ type: "Tips" });
+  const items = await db
+    .collection("contents")
+    .find(query)
+    .sort({ createdAt: -1 })
+    .skip(perPage * (pageNumber - 1))
+    .limit(perPage)
+    .toArray();
 
-    const response = { items, itemCount };
-    return response;
-  } catch (error) {
-    throw new Error("Failed to fetch data. Please try again later.");
-  }
+  const itemCount = await db.collection("contents").countDocuments(query);
+
+  return { items, itemCount };
 }
 
-export default async function TipsPage({ searchParams }) {
-  let page = parseInt(searchParams.page, 10);
-  page = !page || page < 1 ? 1 : page;
-  const perPage = 10;
-  const data = await getData(perPage, page);
+async function getTags() {
+  const client = await connectToDatabase();
+  const db = client.db(`${process.env.NEXT_PUBLIC_DB}`);
+  return db.collection("contents").distinct("tags", { type: "Tips" });
+}
+
+export default async function NewsPage({ searchParams }) {
+  const searchQuery = searchParams.q || "";
+  const page = parseInt(searchParams.page, 10) || 1;
+  const perPage = 8;
+  const selectedTags = searchParams.tags ? searchParams.tags.split(",") : [];
+
+  const data = await getData(searchQuery, perPage, page, selectedTags);
+  const tags = await getTags();
 
   const totalPages = Math.ceil(data.itemCount / perPage);
 
@@ -52,98 +83,143 @@ export default async function TipsPage({ searchParams }) {
       pageNumbers.push(i);
     }
   }
+
   return (
-    <div className="h-max items-center bg-[#f7f7e3]">
-      <div className="flex-col items-center justify-center bg-transparent">
-        <div className="flex-col items-center justify-center p-5 text-center text-2xl font-semibold text-[#6e102c]">
-          <span>Tips</span>
-          <hr className="mx-auto w-64 border-2  border-solid border-[#FFB61B]" />
-        </div>
+    <div className="mx-auto flex min-h-screen w-fit flex-col">
+      <div className="mt-5 break-all text-center text-3xl font-black">
+        Tips and Guides
       </div>
-      <div className="my-5 flex flex-col items-center justify-center sm:mx-52">
-        {data.items.map((item) => (
-          <div key={item._id} className="mb-1">
-            <Link href={`/more-info/${item._id}`}>
-              <div className="group flex max-h-56 flex-row overflow-hidden rounded-md border-2 border-solid border-[#00563F] bg-white sm:flex sm:max-h-56 sm:flex-row">
-                <div
-                  id="feed-image"
-                  className="w-2/5 py-10 transition-all hover:scale-[1.03] sm:py-0"
-                >
-                  <Image
-                    className="rounded-md"
-                    src={item.imageL}
-                    alt="/"
-                    width={640}
-                    height={334}
-                    sizes="(min-width: 680px) 640px, calc(94.44vw + 17px)"
-                  />
+      <hr className="mx-auto mt-3 w-screen max-w-64 border-2 border-solid border-[#FFB61B]" />
+      <div className="flex flex-col items-center justify-center">
+        <SearchBar tags={tags} /> {/* Pass tags as a prop */}
+      </div>
+      <div className="mx-auto mb-2 w-screen max-w-[75rem] px-3">
+        {page === 1 && data.latestNews && (
+          <div
+            key={data.latestNews._id}
+            className="group mt-2 grid grid-cols-1 overflow-hidden rounded-md border-2 border-solid border-[#00563F] bg-white first:mt-0 md:grid-cols-12"
+          >
+            <Link
+              href={`/article/${data.latestNews._id}`}
+              className="relative col-span-5 overflow-hidden"
+            >
+              <AspectRatio ratio={16 / 9}>
+                <Image
+                  className="object-cover object-top md:hover:object-contain md:hover:object-center"
+                  src={
+                    data.latestNews.imageL
+                      ? data.latestNews.imageL
+                      : DefaultImage
+                  }
+                  alt={data.latestNews.title}
+                  fill
+                  sizes="(min-width: 680px) 640px, calc(94.44vw + 17px)"
+                  placeholder="blur"
+                  blurDataURL={data.latestNews.imageL}
+                />
+              </AspectRatio>
+            </Link>
+
+            <div className="col-span-7 flex flex-col p-5">
+              <div className="text-lg font-black">{data.latestNews.title}</div>
+              <div className="mb-5 flex">
+                <div className="mb-1 mr-10 flex items-center gap-x-1 text-xs sm:text-sm">
+                  <CalendarDays className="size-5" />
+                  <span>{formatDateToWords(data.latestNews.date)}</span>
                 </div>
-                <div className="flex w-3/5 flex-col justify-between p-5 sm:flex sm:flex-col sm:p-5">
-                  <div className="sm:flex sm:flex-col">
-                    <div className="text-sm font-bold text-gray-500 group-hover:underline sm:text-sm">
-                      {item.title}
-                    </div>
-                    <div className="mb-5">
-                      <div className="mb-1 mr-10 text-xs sm:text-sm">
-                        <span>{formatDateToWords(item.date)}</span>
-                      </div>
-                      <div className="text-xs sm:text-sm">
-                        <span>{item.tags.join(" / ").replace(/,/g, "/,")}</span>
-                      </div>
-                    </div>
-                    <div className="text-xs sm:text-sm">
-                      <span>{item.description}</span>
-                    </div>
-                  </div>
-                  <div className="flex flex-row-reverse text-xs sm:text-sm">
-                    <span>Read more</span>
-                  </div>
+                <div className="text-xs italic sm:text-sm">
+                  <span>
+                    {data.latestNews.tags.join(" / ").replace(/,/g, "/,")}
+                  </span>
                 </div>
               </div>
+              <div className="h-full">{data.latestNews.description}</div>
+              <div className="mt-5 flex gap-x-2 md:mt-0 md:self-end">
+                <ReadMore id={data.latestNews._id.buffer.toString("hex")} />
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+      <div className="mx-auto w-screen max-w-[75rem] px-3">
+        {data.items.map((item) => (
+          <div
+            key={item._id}
+            className="group mt-2 grid grid-cols-1 overflow-hidden rounded-md border-2 border-solid border-[#00563F] bg-white first:mt-0 md:grid-cols-12"
+          >
+            <Link
+              href={`/article/${item._id}`}
+              className="relative col-span-5 overflow-hidden bg-white"
+            >
+              <AspectRatio ratio={16 / 9}>
+                <Image
+                  className="object-cover object-top md:hover:object-contain md:hover:object-center"
+                  src={item.imageL ? item.imageL : DefaultImage}
+                  alt={item.title}
+                  fill
+                  sizes="(min-width: 680px) 640px, calc(94.44vw + 17px)"
+                  blurDataURL={item.imageL}
+                  placeholder="blur"
+                />
+              </AspectRatio>
             </Link>
+
+            <div className="col-span-7 flex flex-col p-5">
+              <div className="text-lg font-black">{item.title}</div>
+              <div className="mb-5 flex">
+                <div className="mb-1 mr-10 flex items-center gap-x-1 text-xs sm:text-sm">
+                  <CalendarDays className="size-5" />
+                  <span>{formatDateToWords(item.date)}</span>
+                </div>
+                <div className="text-xs italic sm:text-sm">
+                  <span>{item.tags.join(" / ").replace(/,/g, "/,")}</span>
+                </div>
+              </div>
+              <div className="h-full">{item.description}</div>
+              <div className="mt-5 flex gap-x-2 md:mt-0 md:self-end">
+                <ReadMore id={item._id.buffer.toString("hex")} />
+              </div>
+            </div>
           </div>
         ))}
 
         {isPageOutOfRange ? (
-          <div>No more pages...</div>
+          <div className="h-screen">No results...</div>
         ) : (
-          <div className="mt-16 flex items-center justify-center">
-            <div className="border-light-green flex gap-4 rounded-[10px] border-[1px] p-4">
-              {page === 1 ? (
-                <div className="opacity-60" aria-disabled="true">
-                  Previous
-                </div>
-              ) : (
-                <Link href={`?page=${prevPage}`} aria-label="Previous Page">
-                  Previous
-                </Link>
-              )}
-
-              {pageNumbers.map((pageNumber, index) => (
-                <Link
-                  key={index}
-                  className={
-                    page === pageNumber
-                      ? "fw-bold rounded-md bg-[#00563f] px-2 text-[#FFB61B]"
-                      : "rounded-md px-1 hover:bg-[#00563f]"
-                  }
-                  href={`?page=${pageNumber}`}
-                >
-                  {pageNumber}
-                </Link>
-              ))}
-
-              {page === totalPages ? (
-                <div className="opacity-60" aria-disabled="true">
-                  Next
-                </div>
-              ) : (
-                <Link href={`?page=${nextPage}`} aria-label="Next Page">
-                  Next
-                </Link>
-              )}
-            </div>
-          </div>
+          <Pagination className={"my-3"}>
+            <PaginationContent className="flex-wrap">
+              <PaginationItem>
+                {page === 1 ? (
+                  <PaginationPrevious className="pointer-events-none opacity-70" />
+                ) : (
+                  <PaginationPrevious href={`?page=${prevPage}`} />
+                )}
+              </PaginationItem>
+              <PaginationItem>
+                {pageNumbers.map((page, index) => (
+                  <PaginationLink key={index} href={`?page=${page}`}>
+                    {page}
+                  </PaginationLink>
+                ))}
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationEllipsis />
+              </PaginationItem>
+              <PaginationItem>
+                {page === totalPages ? (
+                  <PaginationNext
+                    className="pointer-events-none opacity-70"
+                    aria-disabled="true"
+                  />
+                ) : (
+                  <PaginationNext
+                    href={`?page=${nextPage}`}
+                    aria-label="Next PageNumber"
+                  />
+                )}
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
         )}
       </div>
     </div>

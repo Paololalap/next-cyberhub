@@ -7,6 +7,8 @@ const userSchema = new Schema(
     profilePic: String,
     firstName: String,
     lastName: String,
+    role: String,
+    email: String,
   },
   { timestamps: true },
 );
